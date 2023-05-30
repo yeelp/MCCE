@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "yeelp.mcce.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  "PlayerMixin",
+  "ServerPlayerASMMixin",
+  "ServerPlayerInteractionManagerMixin",
+  "ServerWorldMixin",
+  "ServerWorldASMMixin",
+  "BlockMixin",
+  "ItemEntityMixin",
+  "ItemStackMixin",
+  "EntityMixin"
+  ],
+  "client": [
+  "KeyboardMixin",
+  "KeyboardASMMixin",
+  "InGameHudMixin",
+  "DrawableHelperMixin"  
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

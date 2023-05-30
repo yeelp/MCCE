@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "mcce",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Minecraft: Chaos Edition",
+  "description": "Activates random effects at random times, to help or hinder the player. Insanity intended.",
   "authors": [
-    "Me!"
+    "Yeelp"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -19,11 +19,14 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "yeelp.mcce.MCCE"
+    ],
+    "client": [
+      "yeelp.mcce.client.MCCEClient"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "mcce.mixins.json"
   ],
 
   "depends": {
