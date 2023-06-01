@@ -56,6 +56,9 @@ public final class ChaosEffectRegistry {
 		register(InverseEffect::new);
 		register(BackToSquareOneEffect::new);
 		register(TripleThreatEffect::new);
+		register(MobVisionEffect::new);
+		register(EquilibriumEffect::new);
+		register(UpdateAquaticEffect::new);
 	}
 	
 	public static void register(Supplier<? extends ChaosEffect> effect) {

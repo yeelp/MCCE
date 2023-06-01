@@ -1,38 +1,18 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.network.MemoryGameStatusPacket;
 
-public final class MemoryGameEffect extends AbstractTimedChaosEffect {
+public final class MemoryGameEffect extends StatusPacketSendingChaosEffect<MemoryGameStatusPacket> {
 
 	protected MemoryGameEffect() {
-		super(1000, 1500);
-	}
-
-	@Override
-	public void applyEffect(PlayerEntity player) {
-		if(player instanceof ServerPlayerEntity) {
-			new MemoryGameStatusPacket(true).sendPacket((ServerPlayerEntity) player);
-		}
+		super(1000, 1500, MemoryGameStatusPacket::new);
 	}
 
 	@Override
 	public String getName() {
 		return "memorygame";
-	}
-
-	@Override
-	public void registerCallbacks() {
-		return;
-	}
-
-	@Override
-	public void onEffectEnd(PlayerEntity player) {
-		if(player instanceof ServerPlayerEntity) {
-			new MemoryGameStatusPacket(false).sendPacket((ServerPlayerEntity) player);
-		}
 	}
 
 	@Override

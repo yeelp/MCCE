@@ -50,7 +50,7 @@ public class ChunkyEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return MCCEAPI.accessor.isChaosEffectActive(player, CrumbleEffect.class);
+		return !MCCEAPI.accessor.isChaosEffectActive(player, CrumbleEffect.class);
 	}
 	
 	private static final class BlockBreakHandler implements After {

@@ -27,9 +27,10 @@ public final class CycleOfLifeEffect extends SimpleTimedChaosEffect {
 		return "cycleoflife";
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
+		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, SuddenDeathEffect.class, EquilibriumEffect.class);
 	}
 
 	@Override

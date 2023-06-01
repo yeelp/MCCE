@@ -78,9 +78,10 @@ public final class SuddenDeathEffect extends AbstractAttributeChaosEffect {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, CycleOfLifeEffect.class) && !player.getActiveStatusEffects().containsKey(StatusEffects.WITHER);
+		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, CycleOfLifeEffect.class, EquilibriumEffect.class) && !player.getActiveStatusEffects().containsKey(StatusEffects.WITHER);
 	}
 
 }

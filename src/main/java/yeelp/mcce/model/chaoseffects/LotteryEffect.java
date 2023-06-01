@@ -22,7 +22,6 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.Tracker;
 
@@ -72,7 +71,6 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
 		AFFECTED_PLAYERS.remove(player);
-		MCCE.LOGGER.info("Lottery Ended");
 	}
 
 	@Override
@@ -95,7 +93,7 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 		@Override
 		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
 			MCCEAPI.mutator.modifyEffect(player, LotteryEffect.class, (ce) -> {
-				if(ce.getTriggersRemaining() <= 0 || !AFFECTED_PLAYERS.tracked(player)) {
+				if(ce.getTriggersRemaining() <= 0 || !AFFECTED_PLAYERS.tracked(player) || !player.getMainHandStack().getItem().isSuitableFor(state)) {
 					return;
 				}
 				if(!state.streamTags().anyMatch((tag) -> tag == BlockTags.PICKAXE_MINEABLE)) {

@@ -7,6 +7,7 @@ import org.spongepowered.include.com.google.common.collect.ImmutableList;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -23,7 +24,6 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
@@ -43,6 +43,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 	private static final Map<Class<? extends ToolItem>, Item> TOOL_MAPPER = Maps.newHashMap();
 	private static final Map<EquipmentSlot, Item> ARMOR_MAPPER = Maps.newHashMap();
 	private static final Map<Item, Set<Item>> ITEM_MAPPER = Maps.newHashMap();
+	private static final Set<Item> BLACKLIST = Sets.newHashSet();
 
 	private static final Iterable<EquipmentSlot> ARMOR_SLOTS = ImmutableList.<EquipmentSlot>builder().add(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET).build();
 
@@ -61,9 +62,14 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 		ITEM_MAPPER.put(Items.GOLD_INGOT, ImmutableSet.<Item>builder().add(Items.COPPER_INGOT, Items.IRON_INGOT, Items.NETHERITE_INGOT, Items.BRICK, Items.NETHER_BRICK).build());
 		ITEM_MAPPER.put(Items.GOLD_NUGGET, ImmutableSet.<Item>builder().add(Items.IRON_NUGGET, Items.NETHERITE_SCRAP).build());
 		ITEM_MAPPER.put(Items.GOLDEN_HORSE_ARMOR, ImmutableSet.<Item>builder().add(Items.IRON_HORSE_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.DIAMOND_HORSE_ARMOR).build());
-		ITEM_MAPPER.put(Items.GOLDEN_APPLE, ImmutableSet.of(Items.APPLE));
 		ITEM_MAPPER.put(Items.GOLDEN_CARROT, ImmutableSet.of(Items.CARROT));
 		ITEM_MAPPER.put(Items.LIGHT_WEIGHTED_PRESSURE_PLATE, ImmutableSet.<Item>builder().add(Items.ACACIA_PRESSURE_PLATE, Items.BAMBOO_PRESSURE_PLATE, Items.BIRCH_PRESSURE_PLATE, Items.CHERRY_PRESSURE_PLATE, Items.CRIMSON_PRESSURE_PLATE, Items.DARK_OAK_PRESSURE_PLATE, Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.JUNGLE_PRESSURE_PLATE, Items.MANGROVE_PRESSURE_PLATE, Items.OAK_PRESSURE_PLATE, Items.POLISHED_BLACKSTONE_PRESSURE_PLATE, Items.SPRUCE_PRESSURE_PLATE, Items.STONE_PRESSURE_PLATE, Items.WARPED_PRESSURE_PLATE).build());
+
+		BLACKLIST.add(Items.BELL);
+		BLACKLIST.add(Items.RAW_GOLD);
+		BLACKLIST.add(Items.RAW_GOLD_BLOCK);
+		BLACKLIST.add(Items.GOLD_BLOCK);
+		BLACKLIST.add(Items.ENCHANTED_GOLDEN_APPLE);
 	}
 
 	public MidasTouchEffect() {
@@ -109,7 +115,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 		}
 		for(Hand hand : Hand.values()) {
 			ItemStack stack = player.getStackInHand(hand);
-			if(!stack.isEmpty()) {
+			if(!stack.isEmpty() && !BLACKLIST.contains(stack.getItem())) {
 				if(stack.getItem() instanceof ToolItem) {
 					Item itemToSet = TOOL_MAPPER.get(stack.getItem().getClass());
 					if(itemToSet != null && !stack.getItem().equals(itemToSet)) {
@@ -117,13 +123,22 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 					}
 				}
 				else if(stack.getItem() instanceof ArmorItem) {
-					Item armor = ARMOR_MAPPER.get(((ArmorItem)stack.getItem()).getSlotType());
+					Item armor = ARMOR_MAPPER.get(((ArmorItem) stack.getItem()).getSlotType());
 					if(armor != null && !armor.equals(stack.getItem())) {
 						player.setStackInHand(hand, makeGold(stack, armor));
 					}
 				}
+				else if(stack.getItem() == Items.APPLE) {
+					if(stack.hasGlint()) {
+						player.setStackInHand(hand, makeGold(stack, Items.ENCHANTED_GOLDEN_APPLE));
+					}
+					else {
+						player.setStackInHand(hand, makeGold(stack, Items.GOLDEN_APPLE));
+					}
+				}
 				else {
 					boolean transmuted = false, needsTransmuting = true;
+
 					for(Item item : ITEM_MAPPER.keySet()) {
 						if(stack.getItem().equals(item)) {
 							needsTransmuting = false;
@@ -136,7 +151,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 						}
 					}
 					if(!transmuted && needsTransmuting) {
-						if(stack.getItem() instanceof BlockItem) {
+						if(stack.getItem() instanceof BlockItem && doesTurnToGold(((BlockItem) stack.getItem()).getBlock().getDefaultState())) {
 							player.setStackInHand(hand, makeGold(stack, Items.GOLD_BLOCK));
 						}
 						else {
@@ -169,7 +184,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 			}
 		});
 	}
-	
+
 	private static ItemStack makeGold(ItemStack stackToChange, Item gold) {
 		ItemStack stack = new ItemStack(gold);
 		stack.setCount(stackToChange.getCount());
@@ -184,10 +199,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 	}
 
 	private static final boolean doesTurnToGold(BlockState state) {
-		return !(state.isIn(BlockTags.FLOWER_POTS) ||
-				!state.getMaterial().blocksMovement() ||
-				state.getBlock() == Blocks.GOLD_BLOCK) &&
-				state.getFluidState().isEmpty();
+		return !(!state.getMaterial().blocksMovement() || state.getBlock() == Blocks.RAW_GOLD_BLOCK || state.getBlock() == Blocks.GOLD_BLOCK || state.getBlock() == Blocks.BELL || state.getBlock() == Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE) && state.getFluidState().isEmpty();
 	}
-	
+
 }

@@ -25,7 +25,7 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 	
 	@ModifyVariable(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), ordinal = 0)
 	private Vec3d alterMovement(Vec3d input, MovementType type, @SuppressWarnings("unused") Vec3d moveInput) {
-		if(type != MovementType.PLAYER && type != MovementType.PLAYER) {
+		if(type != MovementType.PLAYER && type != MovementType.SELF) {
 			return input;
 		}
 		Entity entity = (Entity) (Object) this;
