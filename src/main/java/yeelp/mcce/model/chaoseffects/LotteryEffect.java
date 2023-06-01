@@ -100,7 +100,7 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 					return;
 				}
 				int num = ce.getRNG().nextInt(1, 64);
-				float weight = 100f;
+				float weight = ce.getRNG().nextFloat(100.0f);
 				Collections.shuffle(WEIGHTED_LIST);
 				Iterator<Map.Entry<Item, Float>> it = WEIGHTED_LIST.iterator();
 				Item item;
