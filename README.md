@@ -1,3 +1,4 @@
+![](https://raw.githubusercontent.com/yeelp/MCCE/1.19/images/MCCE_logo.png)
 # MCCE
 
 Minecraft: Chaos Edition (MCCE) is a mod which causes the game to apply chaotic effects over time, leading to insanity, chaos, and a unique challenge.
