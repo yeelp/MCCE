@@ -14,7 +14,7 @@ MCCE is best played blind, though for those curious here's some more details!
 
 <details>
    <summary>How MCCE Works</summary>
-   MCCE applies one of *forty* different "Chaos Effects" every 750 ticks thereabouts. The interval between effects is random, and sometimes multiple effects can be applied at once. The [wiki](https://github.com/yeelp/MCCE/wiki) goes over each Chaos Effect and mechanics in detail.
+   MCCE applies one of *forty* different "Chaos Effects" every 750 ticks thereabouts. The interval between effects is random, and sometimes multiple effects can be applied at once. The wiki goes over each Chaos Effect and mechanics in detail.
 </details>
 
 <details>
