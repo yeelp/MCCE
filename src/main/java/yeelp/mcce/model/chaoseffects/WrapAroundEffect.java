@@ -13,7 +13,7 @@ public final class WrapAroundEffect extends SimpleTimedChaosEffect {
 	public void applyEffect(PlayerEntity player) {
 		World world = player.getWorld();
 		if(player.getY() <= world.getDimension().minY()) {
-			player.refreshPositionAfterTeleport(player.getX(), world.getTopY(), player.getZ());
+			player.teleport(player.getX(), world.getTopY(), player.getZ());
 		}
 	}
 

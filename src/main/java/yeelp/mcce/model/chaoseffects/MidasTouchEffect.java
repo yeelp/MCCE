@@ -1,6 +1,7 @@
 package yeelp.mcce.model.chaoseffects;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.spongepowered.include.com.google.common.collect.ImmutableList;
@@ -24,6 +25,7 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
@@ -40,6 +42,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 
 	private static final Tracker AFFECTED_PLAYERS = new Tracker();
 	private static final BlockState GOLD_STATE = Blocks.GOLD_BLOCK.getDefaultState();
+	private static final BlockState GOLD_PRESSURE_PLATE_STATE = Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE.getDefaultState();
 	private static final Map<Class<? extends ToolItem>, Item> TOOL_MAPPER = Maps.newHashMap();
 	private static final Map<EquipmentSlot, Item> ARMOR_MAPPER = Maps.newHashMap();
 	private static final Map<Item, Set<Item>> ITEM_MAPPER = Maps.newHashMap();
@@ -58,18 +61,19 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 		ARMOR_MAPPER.put(EquipmentSlot.CHEST, Items.GOLDEN_CHESTPLATE);
 		ARMOR_MAPPER.put(EquipmentSlot.LEGS, Items.GOLDEN_LEGGINGS);
 		ARMOR_MAPPER.put(EquipmentSlot.FEET, Items.GOLDEN_BOOTS);
+		
 
 		ITEM_MAPPER.put(Items.GOLD_INGOT, ImmutableSet.<Item>builder().add(Items.COPPER_INGOT, Items.IRON_INGOT, Items.NETHERITE_INGOT, Items.BRICK, Items.NETHER_BRICK).build());
 		ITEM_MAPPER.put(Items.GOLD_NUGGET, ImmutableSet.<Item>builder().add(Items.IRON_NUGGET, Items.NETHERITE_SCRAP).build());
 		ITEM_MAPPER.put(Items.GOLDEN_HORSE_ARMOR, ImmutableSet.<Item>builder().add(Items.IRON_HORSE_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.DIAMOND_HORSE_ARMOR).build());
 		ITEM_MAPPER.put(Items.GOLDEN_CARROT, ImmutableSet.of(Items.CARROT));
-		ITEM_MAPPER.put(Items.LIGHT_WEIGHTED_PRESSURE_PLATE, ImmutableSet.<Item>builder().add(Items.ACACIA_PRESSURE_PLATE, Items.BAMBOO_PRESSURE_PLATE, Items.BIRCH_PRESSURE_PLATE, Items.CHERRY_PRESSURE_PLATE, Items.CRIMSON_PRESSURE_PLATE, Items.DARK_OAK_PRESSURE_PLATE, Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.JUNGLE_PRESSURE_PLATE, Items.MANGROVE_PRESSURE_PLATE, Items.OAK_PRESSURE_PLATE, Items.POLISHED_BLACKSTONE_PRESSURE_PLATE, Items.SPRUCE_PRESSURE_PLATE, Items.STONE_PRESSURE_PLATE, Items.WARPED_PRESSURE_PLATE).build());
 
 		BLACKLIST.add(Items.BELL);
 		BLACKLIST.add(Items.RAW_GOLD);
 		BLACKLIST.add(Items.RAW_GOLD_BLOCK);
 		BLACKLIST.add(Items.GOLD_BLOCK);
 		BLACKLIST.add(Items.ENCHANTED_GOLDEN_APPLE);
+		BLACKLIST.add(Items.LIGHT_WEIGHTED_PRESSURE_PLATE);
 	}
 
 	public MidasTouchEffect() {
@@ -109,10 +113,23 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		BlockPos pos = player.getBlockPos().down();
+		BlockPos pos = player.getBlockPos();
 		World world = player.getWorld();
-		if(!world.isAir(pos) && doesTurnToGold(world.getBlockState(pos))) {
-			world.setBlockState(player.getBlockPos().down(), GOLD_STATE);
+		boolean secondPass = false;
+		while(true) {
+			final BlockPos p = pos;
+			final boolean b = secondPass;
+			BlockState state = world.getBlockState(p);
+			getGoldenBlockState(state).ifPresent((s) -> {
+				if((!b && s == GOLD_PRESSURE_PLATE_STATE) || (b && s == GOLD_STATE)) {
+					world.setBlockState(p, s);
+				}
+			});
+			if(secondPass) {
+				break;
+			}
+			pos = pos.down();
+			secondPass = !secondPass;
 		}
 		for(Hand hand : Hand.values()) {
 			ItemStack stack = player.getStackInHand(hand);
@@ -136,6 +153,9 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 					else {
 						player.setStackInHand(hand, makeGold(stack, Items.GOLDEN_APPLE));
 					}
+				}
+				else if(stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock().getDefaultState().isIn(BlockTags.PRESSURE_PLATES)) {
+					player.setStackInHand(hand, makeGold(stack, Items.LIGHT_WEIGHTED_PRESSURE_PLATE));
 				}
 				else {
 					boolean transmuted = false, needsTransmuting = true;
@@ -172,16 +192,17 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 
 	@Override
 	public void onBlockInteract(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult hitResult) {
-		if(MCCEAPI.accessor.isChaosEffectActive(player, MidasTouchEffect.class) && AFFECTED_PLAYERS.tracked(player.getUuid()) && doesTurnToGold(world.getBlockState(hitResult.getBlockPos()))) {
-			world.setBlockState(hitResult.getBlockPos(), GOLD_STATE);
+		if(MCCEAPI.accessor.isChaosEffectActive(player, MidasTouchEffect.class) && AFFECTED_PLAYERS.tracked(player.getUuid())) {
+			BlockPos pos = hitResult.getBlockPos();
+			getGoldenBlockState(world.getBlockState(pos)).ifPresent((s) -> world.setBlockState(pos, s));
 		}
 	}
 
 	@Override
 	public void onBlockBreaking(ServerWorld world, int entityId, BlockPos pos, int progress) {
 		((ServerWorldASMMixin) world).getServer().getPlayerManager().getPlayerList().stream().filter((player) -> player.getId() == entityId).findFirst().ifPresent((player) -> {
-			if(MCCEAPI.accessor.isChaosEffectActive(player, MidasTouchEffect.class) && AFFECTED_PLAYERS.tracked(player.getUuid()) && doesTurnToGold(world.getBlockState(pos))) {
-				world.setBlockState(pos, GOLD_STATE);
+			if(MCCEAPI.accessor.isChaosEffectActive(player, MidasTouchEffect.class) && AFFECTED_PLAYERS.tracked(player.getUuid())) {
+				getGoldenBlockState(world.getBlockState(pos)).ifPresent((s) -> world.setBlockState(pos, s));
 			}
 		});
 	}
@@ -202,7 +223,17 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 	@SuppressWarnings("deprecation")
 	private static final boolean doesTurnToGold(BlockState state) {
 		//works, should find suitable replacement for blocksMovement()
-		return !(!state.blocksMovement() || state.getBlock() == Blocks.RAW_GOLD_BLOCK || state.getBlock() == Blocks.GOLD_BLOCK || state.getBlock() == Blocks.BELL || state.getBlock() == Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE) && state.getFluidState().isEmpty();
+		return !(!state.blocksMovement() || state.getBlock() == Blocks.RAW_GOLD_BLOCK || state.getBlock() == Blocks.GOLD_BLOCK || state.getBlock() == Blocks.BELL || state.isIn(BlockTags.PRESSURE_PLATES)) && state.getFluidState().isEmpty();
+	}
+	
+	private static final Optional<BlockState> getGoldenBlockState(BlockState state) {
+		if(state.isIn(BlockTags.PRESSURE_PLATES) && state.getBlock() != Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE) {
+			return Optional.of(GOLD_PRESSURE_PLATE_STATE);
+		}
+		else if(doesTurnToGold(state)) {
+			return Optional.of(GOLD_STATE);
+		}
+		return Optional.empty();
 	}
 
 }

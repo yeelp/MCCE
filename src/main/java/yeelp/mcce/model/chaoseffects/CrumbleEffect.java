@@ -71,7 +71,7 @@ public final class CrumbleEffect extends AbstractTimedChaosEffect {
 		}
 		
 		private static boolean isEffectActiveAndContextApplicable(PlayerEntity player) {
-			return PlayerUtils.getServerPlayerIfServerWorld(player).filter((p) -> p.interactionManager.getGameMode().equals(GameMode.SPECTATOR) && MCCEAPI.accessor.isChaosEffectActive(p, CrumbleEffect.class)).isPresent();
+			return PlayerUtils.getServerPlayerIfServerWorld(player).filter((p) -> !p.interactionManager.getGameMode().equals(GameMode.SPECTATOR) && MCCEAPI.accessor.isChaosEffectActive(p, CrumbleEffect.class)).isPresent();
 		}
 	}
 

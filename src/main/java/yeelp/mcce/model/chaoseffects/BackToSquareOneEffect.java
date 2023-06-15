@@ -12,7 +12,7 @@ public final class BackToSquareOneEffect extends AbstractInstantChaosEffect {
 	public void applyEffect(PlayerEntity player) {
 		BlockPos pos = player.getWorld().getSpawnPos();
 		player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 100, 3));
-		player.refreshPositionAfterTeleport(pos.getX(), pos.getY(), pos.getZ());
+		player.teleport(pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

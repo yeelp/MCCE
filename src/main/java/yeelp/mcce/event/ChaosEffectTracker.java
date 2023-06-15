@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import net.minecraft.entity.player.PlayerEntity;
-import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
@@ -21,7 +20,6 @@ public final class ChaosEffectTracker implements PlayerTickCallback {
 			pces.tickDurationUntilNextEffect();
 			if(pces.hasDurationUntilNextEffectExpired()) {
 				ChaosEffect ce = ChaosEffectRegistry.getRandomApplicableEffectForPlayer(player);
-				MCCE.LOGGER.info(ce.getName());
 				pces.addNewEffect(player, ce);
 				pces.resetDurationUntilNextEffect();
 			}
