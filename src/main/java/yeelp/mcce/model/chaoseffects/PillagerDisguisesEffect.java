@@ -44,25 +44,26 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		Box range = new Box(player.getBlockPos().north(10).east(10).down(10), player.getBlockPos().south(10).west(10).up(10));
-		player.world.getEntitiesByClass(VillagerEntity.class, range, (villager) -> !villager.isBaby()).forEach((villager) -> {
-			MobEntity entity = this.getPillagerEntity(player.getBlockPos(), player.world);
+		World world = player.getWorld();
+		world.getEntitiesByClass(VillagerEntity.class, range, (villager) -> !villager.isBaby()).forEach((villager) -> {
+			MobEntity entity = this.getPillagerEntity(player.getBlockPos(), world);
 			setUpEntity(entity, villager);
-			player.world.spawnEntity(entity);
+			world.spawnEntity(entity);
 		});
-		player.world.getEntitiesByClass(AllayEntity.class, range, Predicates.alwaysTrue()).forEach((allay) -> {
-			VexEntity vex = new VexEntity(EntityType.VEX, player.world);
+		world.getEntitiesByClass(AllayEntity.class, range, Predicates.alwaysTrue()).forEach((allay) -> {
+			VexEntity vex = new VexEntity(EntityType.VEX, world);
 			setUpEntity(vex, allay);
-			ItemStack stack = new ItemStack(player.world.getLocalDifficulty(player.getBlockPos()).isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
+			ItemStack stack = new ItemStack(world.getLocalDifficulty(player.getBlockPos()).isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
 			if(this.getRNG().nextFloat() < 0.3f) {
-				EnchantmentHelper.enchant(player.world.getRandom(), stack, this.getRNG().nextInt(10, 40), false);
+				EnchantmentHelper.enchant(world.getRandom(), stack, this.getRNG().nextInt(10, 40), false);
 			}
 			vex.equipStack(EquipmentSlot.MAINHAND, stack);
-			player.world.spawnEntity(vex);
+			world.spawnEntity(vex);
 		});
-		player.world.getEntitiesByClass(IronGolemEntity.class, range, (golem) -> !golem.isPlayerCreated()).forEach((golem) -> {
-			RavagerEntity ravager = new RavagerEntity(EntityType.RAVAGER, player.world);
+		world.getEntitiesByClass(IronGolemEntity.class, range, (golem) -> !golem.isPlayerCreated()).forEach((golem) -> {
+			RavagerEntity ravager = new RavagerEntity(EntityType.RAVAGER, world);
 			setUpEntity(ravager, golem);
-			player.world.spawnEntity(ravager);
+			world.spawnEntity(ravager);
 		});
 	}
 
@@ -78,7 +79,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.world.getRegistryKey() == World.OVERWORLD;
+		return player.getWorld().getRegistryKey() == World.OVERWORLD;
 	}
 	
 	private MobEntity getPillagerEntity(BlockPos ref, World world) {

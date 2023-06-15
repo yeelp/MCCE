@@ -11,9 +11,9 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class EnchantmentEffect extends AbstractInstantChaosEffect {
 
@@ -21,8 +21,9 @@ public final class EnchantmentEffect extends AbstractInstantChaosEffect {
 	
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		if(player.getInventory().getMainHandStack().hasEnchantments()) {
-			player.getInventory().getMainHandStack().removeSubNbt(ItemStack.ENCHANTMENTS_KEY);
+		ItemStack mainHand = player.getInventory().getMainHandStack();
+		if(mainHand.hasEnchantments()) {
+			mainHand.removeSubNbt(ItemStack.ENCHANTMENTS_KEY);
 		}
 		int times = this.getRNG().nextInt(5);
 		Collections.shuffle(ENCHANTS, this.getRNG());
@@ -30,11 +31,9 @@ public final class EnchantmentEffect extends AbstractInstantChaosEffect {
 		do {
 			Enchantment enchant = enchants.remove();			
 			int level = enchant.isCursed() ? 1 : this.getRNG().nextInt(10) + 1;
-			player.getInventory().getMainHandStack().addEnchantment(enchant, level);
+			mainHand.addEnchantment(enchant, level);
 		}while(times-- > 0);
-		if(player instanceof ServerPlayerEntity) {
-			new SoundPacket(NetworkingConstants.SoundPacketConstants.ENCHANT_ID, this.getRNG().nextFloat(0.5f, 1.0f), 1.0f).sendPacket((ServerPlayerEntity) player);
-		}
+		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(NetworkingConstants.SoundPacketConstants.ENCHANT_ID, this.getRNG().nextFloat(0.5f, 1.0f), 1.0f)::sendPacket);
 	}
 
 	@Override

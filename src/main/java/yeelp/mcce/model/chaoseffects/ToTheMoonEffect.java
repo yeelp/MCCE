@@ -1,9 +1,9 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class ToTheMoonEffect extends SimpleTimedChaosEffect {
 
@@ -16,8 +16,8 @@ public final class ToTheMoonEffect extends SimpleTimedChaosEffect {
 	public void applyEffect(PlayerEntity player) {
 		player.addVelocity(0, Math.E, 0);
 		player.velocityModified = true;
-		if(!this.soundPlayed && player instanceof ServerPlayerEntity) {
-			new SoundPacket(NetworkingConstants.SoundPacketConstants.FIREWORK_LAUNCHES_ID, 1.0f, 1.0f).sendPacket((ServerPlayerEntity) player);
+		if(!this.soundPlayed) {
+			PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(NetworkingConstants.SoundPacketConstants.FIREWORK_LAUNCHES_ID, 1.0f, 1.0f)::sendPacket);
 			this.soundPlayed = true;
 		}
 	}

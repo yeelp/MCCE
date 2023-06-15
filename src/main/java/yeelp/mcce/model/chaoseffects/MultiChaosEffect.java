@@ -1,7 +1,6 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 
 public abstract class MultiChaosEffect extends AbstractInstantChaosEffect {
@@ -17,7 +16,6 @@ public abstract class MultiChaosEffect extends AbstractInstantChaosEffect {
 		boolean preventRecursion = false;
 		do {
 			ChaosEffect ce = getEffect(player, preventRecursion);
-			MCCE.LOGGER.info(ce.getName());
 			MCCEAPI.mutator.addNewChaosEffect(player, ce);
 			preventRecursion = true;
 		}while(--this.times > 0);

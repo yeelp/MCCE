@@ -1,12 +1,11 @@
 package yeelp.mcce.client.event;
 
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import yeelp.mcce.client.event.ClientRenderCallbacks.AfterShaderSetCallback;
 import yeelp.mcce.client.event.ClientRenderCallbacks.RenderHealthCallback;
 import yeelp.mcce.util.Tracker;
@@ -23,7 +22,7 @@ public class RainbowGuiHandler implements RenderHealthCallback {
 	}
 
 	@Override
-	public void onRender(MatrixStack stack, PlayerEntity player, int x, int y, int lines, int regenHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking) {
+	public void onRender(DrawContext context, PlayerEntity player, int x, int y, int lines, int regenHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking) {
 		if(!AFFECTED_PLAYERS.tracked(player)) {
 			return;
 		}
@@ -43,7 +42,7 @@ public class RainbowGuiHandler implements RenderHealthCallback {
 
 		private float h = 0;
 		@Override
-		public void afterShaderSet(Matrix4f matrix, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1) {
+		public void afterShaderSet(Identifier texture, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1) {
 			if(RainbowGuiHandler.drawingHearts) {
 				this.h += 0.5;
 				RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);

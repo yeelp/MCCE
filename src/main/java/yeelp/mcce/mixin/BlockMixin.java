@@ -1,10 +1,15 @@
 package yeelp.mcce.mixin;
 
+import java.util.Optional;
+import java.util.function.Predicate;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.google.common.base.Predicates;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -24,6 +29,9 @@ import yeelp.mcce.model.chaoseffects.BouncyEffect;
 @Mixin(Block.class)
 public abstract class BlockMixin extends AbstractBlock {
 	
+	private static final Predicate<PlayerEntity> BOUNCY_ACTIVE = (p) -> MCCEAPI.accessor.isChaosEffectActive(p, BouncyEffect.class);
+	private static final Predicate<PlayerEntity> BOUNCY_CHECK = BOUNCY_ACTIVE.and((p) -> p.fallDistance > 0.125f).and(Predicates.not(PlayerEntity::isSneaking));
+	
 	public BlockMixin(Settings settings) {
 		super(settings);
 	}
@@ -39,26 +47,22 @@ public abstract class BlockMixin extends AbstractBlock {
 	@SuppressWarnings("static-method")
 	@Inject(method = "onEntityLand(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"), cancellable = true)
 	private void modifyLanding(@SuppressWarnings("unused") BlockView world, Entity entity, CallbackInfo info) {
-		if(!(entity instanceof ServerPlayerEntity)) {
-			return;
-		}
-		PlayerEntity player = (PlayerEntity) entity;
-		if(player.fallDistance > 0.125f && !player.isSneaking() && MCCEAPI.accessor.isChaosEffectActive(player, BouncyEffect.class)) {
-			player.setVelocity(player.getVelocity().multiply(1.0, -1.0, 1.0));
-			player.velocityModified = true;
+		getPlayerIfBouncy(entity).ifPresent((p) -> {
+			p.setVelocity(p.getVelocity().multiply(1.0, -1.0, 1.0));
+			p.velocityModified = true;
 			info.cancel();
-		}
+		});
 	}
 	
 	@SuppressWarnings("static-method")
 	@Inject(method = "onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V", at = @At("HEAD"), cancellable = true)
 	private void preventFallDamage(@SuppressWarnings("unused") World world, @SuppressWarnings("unused") BlockState state, @SuppressWarnings("unused") BlockPos pos, Entity entity, @SuppressWarnings("unused") float fallDistance, CallbackInfo info) {
-		if(!(entity instanceof ServerPlayerEntity)) {
-			return;
-		}
-		PlayerEntity player = (PlayerEntity) entity;
-		if(player.fallDistance > 0.125f && !player.isSneaking() && MCCEAPI.accessor.isChaosEffectActive(player, BouncyEffect.class)) {
+		if(getPlayerIfBouncy(entity).isPresent()) {
 			info.cancel();
 		}
+	}
+	
+	private static Optional<PlayerEntity> getPlayerIfBouncy(Entity entity) {
+		return Optional.of(entity).filter(ServerPlayerEntity.class::isInstance).map(PlayerEntity.class::cast).filter(BOUNCY_CHECK);
 	}
 }

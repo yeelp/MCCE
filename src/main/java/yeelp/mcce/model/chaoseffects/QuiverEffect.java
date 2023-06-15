@@ -1,8 +1,8 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.network.QuiverUpdatePacket;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class QuiverEffect extends SimpleTimedChaosEffect {
 
@@ -13,9 +13,7 @@ public final class QuiverEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		if(player instanceof ServerPlayerEntity) {
-			new QuiverUpdatePacket(this.getRNG().nextFloat(-AMOUNT, AMOUNT), this.getRNG().nextFloat(-AMOUNT, AMOUNT)).sendPacket((ServerPlayerEntity) player);			
-		}
+		PlayerUtils.getServerPlayer(player).ifPresent(new QuiverUpdatePacket(this.getRNG().nextFloat(-AMOUNT, AMOUNT), this.getRNG().nextFloat(-AMOUNT, AMOUNT))::sendPacket);
 	}
 
 	@Override

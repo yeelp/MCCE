@@ -1,11 +1,11 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.util.PlayerUtils;
 
 public class OofEffect extends AbstractInstantChaosEffect {
 
@@ -16,9 +16,7 @@ public class OofEffect extends AbstractInstantChaosEffect {
 		direction = direction.add(0, this.getRNG().nextDouble(0.15, 0.95), 0);
 		player.addVelocity(direction);
 		player.velocityModified = true;
-		if(player instanceof ServerPlayerEntity) {
-			new SoundPacket(NetworkingConstants.SoundPacketConstants.KNOCKBACK_ID, 1.0f, 1.0f).sendPacket((ServerPlayerEntity) player);
-		}
+		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(NetworkingConstants.SoundPacketConstants.KNOCKBACK_ID, 1.0f, 1.0f)::sendPacket);
 	}
 
 	@Override

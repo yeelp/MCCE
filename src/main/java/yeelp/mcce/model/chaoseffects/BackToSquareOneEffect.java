@@ -10,7 +10,7 @@ public final class BackToSquareOneEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		BlockPos pos = player.world.getSpawnPos();
+		BlockPos pos = player.getWorld().getSpawnPos();
 		player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 100, 3));
 		player.refreshPositionAfterTeleport(pos.getX(), pos.getY(), pos.getZ());
 	}
@@ -22,7 +22,7 @@ public final class BackToSquareOneEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.world.getRegistryKey() == World.OVERWORLD && Math.random() < 0.5;
+		return player.getWorld().getRegistryKey() == World.OVERWORLD && Math.random() < 0.5;
 	}
 
 }

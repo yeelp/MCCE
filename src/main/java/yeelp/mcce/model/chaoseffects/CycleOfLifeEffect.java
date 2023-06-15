@@ -1,11 +1,11 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SilentStatUpdatePacket;
 import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class CycleOfLifeEffect extends SimpleTimedChaosEffect {
 
@@ -16,10 +16,10 @@ public final class CycleOfLifeEffect extends SimpleTimedChaosEffect {
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		player.setHealth(this.getRNG().nextFloat(1, player.getMaxHealth()));
-		if(player instanceof ServerPlayerEntity) {
-			new SilentStatUpdatePacket(player).sendPacket((ServerPlayerEntity) player);
-			new SoundPacket(NetworkingConstants.SoundPacketConstants.UI_BUTTON_CLICK_ID, this.getRNG().nextFloat(0.0f, 2.0f), 0.25f).sendPacket((ServerPlayerEntity) player);
-		}
+		PlayerUtils.getServerPlayer(player).ifPresent((p) -> {
+			new SilentStatUpdatePacket(p).sendPacket(p);
+			new SoundPacket(NetworkingConstants.SoundPacketConstants.UI_BUTTON_CLICK_ID, this.getRNG().nextFloat(0.0f, 2.0f), 0.25f).sendPacket(p);
+		});
 	}
 
 	@Override

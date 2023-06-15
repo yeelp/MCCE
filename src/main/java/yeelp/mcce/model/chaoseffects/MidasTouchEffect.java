@@ -110,8 +110,9 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
 		BlockPos pos = player.getBlockPos().down();
-		if(!player.world.isAir(pos) && doesTurnToGold(player.world.getBlockState(pos))) {
-			player.world.setBlockState(player.getBlockPos().down(), GOLD_STATE);
+		World world = player.getWorld();
+		if(!world.isAir(pos) && doesTurnToGold(world.getBlockState(pos))) {
+			world.setBlockState(player.getBlockPos().down(), GOLD_STATE);
 		}
 		for(Hand hand : Hand.values()) {
 			ItemStack stack = player.getStackInHand(hand);
@@ -198,8 +199,10 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 		return stack;
 	}
 
+	@SuppressWarnings("deprecation")
 	private static final boolean doesTurnToGold(BlockState state) {
-		return !(!state.getMaterial().blocksMovement() || state.getBlock() == Blocks.RAW_GOLD_BLOCK || state.getBlock() == Blocks.GOLD_BLOCK || state.getBlock() == Blocks.BELL || state.getBlock() == Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE) && state.getFluidState().isEmpty();
+		//works, should find suitable replacement for blocksMovement()
+		return !(!state.blocksMovement() || state.getBlock() == Blocks.RAW_GOLD_BLOCK || state.getBlock() == Blocks.GOLD_BLOCK || state.getBlock() == Blocks.BELL || state.getBlock() == Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE) && state.getFluidState().isEmpty();
 	}
 
 }

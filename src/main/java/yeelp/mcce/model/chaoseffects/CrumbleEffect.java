@@ -3,7 +3,6 @@ package yeelp.mcce.model.chaoseffects;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -11,6 +10,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class CrumbleEffect extends AbstractTimedChaosEffect {
 
@@ -71,10 +71,7 @@ public final class CrumbleEffect extends AbstractTimedChaosEffect {
 		}
 		
 		private static boolean isEffectActiveAndContextApplicable(PlayerEntity player) {
-			return player instanceof ServerPlayerEntity &&
-					!player.world.isClient &&
-					!((ServerPlayerEntity) player).interactionManager.getGameMode().equals(GameMode.SPECTATOR) &&
-					MCCEAPI.accessor.isChaosEffectActive(player, CrumbleEffect.class);
+			return PlayerUtils.getServerPlayerIfServerWorld(player).filter((p) -> p.interactionManager.getGameMode().equals(GameMode.SPECTATOR) && MCCEAPI.accessor.isChaosEffectActive(p, CrumbleEffect.class)).isPresent();
 		}
 	}
 

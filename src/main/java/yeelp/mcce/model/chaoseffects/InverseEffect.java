@@ -6,6 +6,7 @@ import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.PlayerTickCallback;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.util.PlayerUtils;
 import yeelp.mcce.util.Tracker;
 
 public final class InverseEffect extends AbstractTimedChaosEffect {
@@ -25,8 +26,8 @@ public final class InverseEffect extends AbstractTimedChaosEffect {
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		AFFECTED_PLAYERS.add(player);
-		if(!this.silent && player instanceof ServerPlayerEntity) {
-			new SoundPacket(NetworkingConstants.SoundPacketConstants.INVERSE_START, 1.0f, 1.0f).sendPacket((ServerPlayerEntity) player);
+		if(!this.silent) {
+			PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(NetworkingConstants.SoundPacketConstants.INVERSE_START, 1.0f, 1.0f)::sendPacket);
 		}
 	}
 
@@ -74,7 +75,7 @@ public final class InverseEffect extends AbstractTimedChaosEffect {
 
 		@Override
 		public void tick(PlayerEntity player) {
-			if(InverseEffect.isAffected(player) && !player.world.isClient && !MCCEAPI.accessor.isChaosEffectActive(player, InverseEffect.class)) {
+			if(InverseEffect.isAffected(player) && PlayerUtils.isPlayerWorldServer(player) && !MCCEAPI.accessor.isChaosEffectActive(player, InverseEffect.class)) {
 				MCCEAPI.mutator.addNewChaosEffect(player, new InverseEffect(1));
 			}
 		}

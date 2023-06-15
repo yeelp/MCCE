@@ -12,10 +12,10 @@ import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class SuddenDeathEffect extends AbstractAttributeChaosEffect {
 	private static final UUID HEALTH_UUID = UUID.fromString("cee68503-98f7-443b-a041-596d567150da"),
@@ -29,9 +29,7 @@ public final class SuddenDeathEffect extends AbstractAttributeChaosEffect {
 	public void applyEffect(PlayerEntity player) {
 		super.applyEffect(player);
 		player.heal(0.01f);
-		if(player instanceof ServerPlayerEntity) {
-			new SoundPacket(NetworkingConstants.SoundPacketConstants.POWER_UP_ID, 1.0f, 1.0f).sendPacket((ServerPlayerEntity) player);			
-		}
+		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(NetworkingConstants.SoundPacketConstants.POWER_UP_ID, 1.0f, 1.0f)::sendPacket);
 	}
 
 
@@ -40,9 +38,7 @@ public final class SuddenDeathEffect extends AbstractAttributeChaosEffect {
 	public void onEffectEnd(PlayerEntity player) {
 		super.onEffectEnd(player);
 		player.heal(player.getMaxHealth());
-		if(player instanceof ServerPlayerEntity) {
-			new SoundPacket(NetworkingConstants.SoundPacketConstants.POWER_DOWN_ID, 1.0f, 1.0f).sendPacket((ServerPlayerEntity) player);			
-		}
+		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(NetworkingConstants.SoundPacketConstants.POWER_DOWN_ID, 1.0f, 1.0f)::sendPacket);
 	}
 
 

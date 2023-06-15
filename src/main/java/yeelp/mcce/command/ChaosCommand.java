@@ -47,34 +47,37 @@ public final class ChaosCommand {
 	private static int applyEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
 		ChaosEffect ce = effect == null ? ChaosEffectRegistry.getRandomEffect() : getChaosEffectOrThrow(effect);
 		MCCEAPI.mutator.addNewChaosEffect(src.getPlayer(), ce);
-		src.sendFeedback(Text.literal("Success!"), false);
+		src.sendFeedback(() -> Text.literal("Success!"), false);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int checkEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
 		ChaosEffect ce = getChaosEffectOrThrow(effect);
 		boolean active = MCCEAPI.accessor.isChaosEffectActive(src.getPlayer(), ce.getClass());
-		src.sendFeedback(active ? Text.literal("Yes!") : Text.literal("No"), false);
+		src.sendFeedback(() -> active ? Text.literal("Yes!") : Text.literal("No"), false);
 		return active ? Command.SINGLE_SUCCESS : 0;
 	}
 	
 	private static int removeEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
 		ChaosEffect ce = effect == null ? null : getChaosEffectOrThrow(effect);
 		PlayerEntity player = src.getPlayer();
+		int result;
+		String msg = "Success!";
 		if(ce == null) {
 			int count = Iterators.size(MCCEAPI.accessor.getPlayerChaosEffectState(player).iterator());
 			MCCEAPI.mutator.clear(player);
-			src.sendFeedback(Text.literal("Success!"), false);
-			return count;
+			result = count;
 		}
 		else if(MCCEAPI.mutator.removeChaosEffect(player, ce.getClass())) {
-			src.sendFeedback(Text.literal("Success!"), false);
-			return Command.SINGLE_SUCCESS;
+			result = Command.SINGLE_SUCCESS;
 		}
 		else {
-			src.sendFeedback(Text.literal("Effect not present..."), false);
-			return 0;
+			msg = "Effect not present...";
+			result = 0;
 		}
+		final Text text = Text.literal(msg);
+		src.sendFeedback(() -> text, false);
+		return result;
 	}
 	
 	private static String getEffectArg(CommandContext<ServerCommandSource> ctx) {

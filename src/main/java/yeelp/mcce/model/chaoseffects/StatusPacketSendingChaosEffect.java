@@ -10,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.PlayerTickCallback;
 import yeelp.mcce.network.StatusPacket;
+import yeelp.mcce.util.PlayerUtils;
 import yeelp.mcce.util.Tracker;
 
 public abstract class StatusPacketSendingChaosEffect<P extends StatusPacket> extends AbstractTimedChaosEffect {
@@ -59,7 +60,7 @@ public abstract class StatusPacketSendingChaosEffect<P extends StatusPacket> ext
 		public void tick(PlayerEntity player) {
 			//If the player saves and quits while the ChaosEffect is active and then joins a different world where the ChaosEffect is inactive
 			//They will be "tracked" but will not have the effect active, so send a packet to disable the client side effects and stop tracking them.
-			if(player.world.isClient) {
+			if(PlayerUtils.isPlayerWorldClient(player)) {
 				return;
 			}
 			boolean tracked = TRACKERS.get(this.clazz).tracked(player);

@@ -1,11 +1,10 @@
 package yeelp.mcce.client.event;
 
-import org.joml.Matrix4f;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 
 public interface ClientRenderCallbacks {
 	
@@ -30,7 +29,7 @@ public interface ClientRenderCallbacks {
 			}
 		}
 		
-		void onRender(MatrixStack stack, PlayerEntity player, int x, int y, int lines, int regenHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking);
+		void onRender(DrawContext context, PlayerEntity player, int x, int y, int lines, int regenHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking);
 	}
 	
 	@FunctionalInterface
@@ -42,6 +41,6 @@ public interface ClientRenderCallbacks {
 			}
 		});
 		
-		void afterShaderSet(Matrix4f matrix, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1);
+		void afterShaderSet(Identifier texture, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1);
 	}
 }

@@ -23,6 +23,7 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 	
 	private static final Map<UUID, Vec3d> MOVEMENT_TRACKER = Maps.newHashMap();
 	
+	@SuppressWarnings("resource")
 	@ModifyVariable(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), ordinal = 0)
 	private Vec3d alterMovement(Vec3d input, MovementType type, @SuppressWarnings("unused") Vec3d moveInput) {
 		if(type != MovementType.PLAYER && type != MovementType.SELF) {
@@ -31,7 +32,7 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 		Entity entity = (Entity) (Object) this;
 		if(entity instanceof PlayerEntity && InverseEffect.isAffected((PlayerEntity) entity)) {
 			Vec3d newInput = input.multiply(-1, 1, -1);
-			if(entity.world.isClient) {
+			if(entity.getWorld().isClient) {
 				MOVEMENT_TRACKER.put(entity.getUuid(), newInput);
 				return newInput;
 			}

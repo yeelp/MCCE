@@ -11,9 +11,10 @@ import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
 
 public final class ChaosEffectTracker implements PlayerTickCallback {
 
+	@SuppressWarnings("resource")
 	@Override
 	public void tick(PlayerEntity player) {
-		if(player.world.isClient || player.isDead()) {
+		if(player.getWorld().isClient || player.isDead()) {
 			return;
 		}
 		MCCEAPI.mutator.modifyEffectState(player, (pces) -> {
