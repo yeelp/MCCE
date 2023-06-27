@@ -23,7 +23,7 @@ public final class SwitcherooEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return (int) player.getHealth() != player.getHungerManager().getFoodLevel() && player.getHungerManager().getFoodLevel() > 0 && MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
+		return (int) player.getHealth() != player.getHungerManager().getFoodLevel() && player.getHungerManager().getFoodLevel() > 0 && !MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
 	}
 
 }
