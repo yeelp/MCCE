@@ -69,7 +69,7 @@ public final class IOUEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return MCCEAPI.accessor.isChaosEffectActive(player, MidasTouchEffect.class);
+		return !MCCEAPI.accessor.isChaosEffectActive(player, MidasTouchEffect.class);
 	}
 	
 	private static final class BlockDropChanger implements ModifyBlockDrops {
