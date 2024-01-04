@@ -44,7 +44,7 @@ public final class ChaosEffectRegistry {
 		register(MyBodyAsAShieldEffect::new);
 		register(InfestationEffect::new);
 		register(ButterFingersEffect::new);
-		register(QuiverEffect::new);
+		//register(QuiverEffect::new);
 		register(SwitcherooEffect::new);
 		register(ItemEvaporationEffect::new);
 		register(WrapAroundEffect::new);

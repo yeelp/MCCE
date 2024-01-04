@@ -73,6 +73,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 		BLACKLIST.add(Items.RAW_GOLD_BLOCK);
 		BLACKLIST.add(Items.GOLD_BLOCK);
 		BLACKLIST.add(Items.ENCHANTED_GOLDEN_APPLE);
+		BLACKLIST.add(Items.GOLDEN_APPLE);
 		BLACKLIST.add(Items.LIGHT_WEIGHTED_PRESSURE_PLATE);
 	}
 
