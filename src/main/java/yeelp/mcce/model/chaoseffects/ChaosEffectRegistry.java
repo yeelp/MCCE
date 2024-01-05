@@ -59,6 +59,9 @@ public final class ChaosEffectRegistry {
 		register(MobVisionEffect::new);
 		register(EquilibriumEffect::new);
 		register(UpdateAquaticEffect::new);
+		register(ItemRainEffect::new);
+		register(MobRainEffect::new);
+		register(SuperFishEffect::new);
 	}
 	
 	public static void register(Supplier<? extends ChaosEffect> effect) {
