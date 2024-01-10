@@ -44,7 +44,7 @@ public final class ChaosEffectRegistry {
 		register(MyBodyAsAShieldEffect::new);
 		register(InfestationEffect::new);
 		register(ButterFingersEffect::new);
-		//register(QuiverEffect::new);
+		//register(QuiverEffect::new);  Disabled due to motion sickness.
 		register(SwitcherooEffect::new);
 		register(ItemEvaporationEffect::new);
 		register(WrapAroundEffect::new);
@@ -62,6 +62,10 @@ public final class ChaosEffectRegistry {
 		register(ItemRainEffect::new);
 		register(MobRainEffect::new);
 		register(SuperFishEffect::new);
+		register(GiantEffect::new);
+		register(BatBombEffect::new);
+		register(UndeadEffect::new);
+		register(ParticleEffect::new);
 	}
 	
 	public static void register(Supplier<? extends ChaosEffect> effect) {

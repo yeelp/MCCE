@@ -1,5 +1,7 @@
 package yeelp.mcce.network;
 
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -11,6 +13,67 @@ public interface NetworkingConstants {
 	static final Identifier MEMORY_GAME_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "memorygamestatus");
 	static final Identifier RAINBOW_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "rainbow");
 	static final Identifier QUIVER_UPDATE_PACKET_ID = new Identifier(MCCE.MODID, "quiverupdate");
+	
+	public static final class ParticlePacketConstants {
+		private ParticlePacketConstants() {
+			//not to be instantiated
+		}
+		
+		public static final Identifier PARTICLE_PACKET_ID = new Identifier(MCCE.MODID, "particle");
+		
+		public static final byte DAMAGE_INDICATOR = 0;
+		public static final byte NAUTILUS = 1;
+		public static final byte EXPLOSION = 2;
+		public static final byte SONIC_BOOM = 3;
+		public static final byte CHERRY = 4;
+		public static final byte SOUL = 5;
+		public static final byte HEART = 6;
+		public static final byte NOTE = 7;
+		public static final byte TOTEM = 8;
+		public static final byte WITCH = 9;
+		public static final byte SPORE = 10;
+		public static final byte CAMPFIRE = 11;
+		public static final byte ASH = 12;
+		public static final byte SPARK = 13;
+		public static final byte BUBBLE = 14;
+		
+		public static ParticleEffect getParticle(byte b) {
+			switch(b) {
+				case DAMAGE_INDICATOR:
+					return ParticleTypes.DAMAGE_INDICATOR;
+				case NAUTILUS:
+					return ParticleTypes.NAUTILUS;
+				case EXPLOSION:
+					return ParticleTypes.EXPLOSION;
+				case SONIC_BOOM:
+					return ParticleTypes.SONIC_BOOM;
+				case CHERRY:
+					return ParticleTypes.CHERRY_LEAVES;
+				case SOUL:
+					return ParticleTypes.SOUL;
+				case HEART:
+					return ParticleTypes.HEART;
+				case NOTE:
+					return ParticleTypes.NOTE;
+				case TOTEM:
+					return ParticleTypes.TOTEM_OF_UNDYING;
+				case WITCH:
+					return ParticleTypes.WITCH;
+				case SPORE:
+					return ParticleTypes.SPORE_BLOSSOM_AIR;
+				case CAMPFIRE:
+					return ParticleTypes.CAMPFIRE_SIGNAL_SMOKE;
+				case ASH:
+					return ParticleTypes.ASH;
+				case SPARK:
+					return ParticleTypes.ELECTRIC_SPARK;
+				case BUBBLE:
+					return ParticleTypes.BUBBLE_COLUMN_UP;
+				default:
+					return null;
+			}
+		}
+	}
 	
 	public static final class SoundPacketConstants {
 		private SoundPacketConstants() {
