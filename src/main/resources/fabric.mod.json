@@ -3,7 +3,7 @@
   "id": "mcce",
   "version": "${version}",
 
-  "name": "Minecraft: Chaos Edition",
+  "name": "Chaos Edition",
   "description": "Activates random effects at random times, to help or hinder the player. Insanity intended.",
   "authors": [
     "Yeelp"
