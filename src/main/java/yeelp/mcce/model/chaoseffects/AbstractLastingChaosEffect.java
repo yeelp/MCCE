@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public abstract class AbstractLastingChaosEffect extends AbstractChaosEffect {
 
+	protected static final String DURATION_KEY = "duration";
 	private int duration;
 	
 	protected AbstractLastingChaosEffect(int duration) {
@@ -35,5 +36,9 @@ public abstract class AbstractLastingChaosEffect extends AbstractChaosEffect {
 	}
 	
 	protected abstract void tickAdditionalEffectLogic(PlayerEntity player);
+	
+	protected static int getIntInRange(int min, int max) {
+		return (int) ((max - min) * Math.random()) + min + 1;
+	}
 
 }

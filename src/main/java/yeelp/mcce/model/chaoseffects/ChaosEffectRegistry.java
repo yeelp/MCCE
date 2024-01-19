@@ -66,6 +66,8 @@ public final class ChaosEffectRegistry {
 		register(BatBombEffect::new);
 		register(UndeadEffect::new);
 		register(ParticleEffect::new);
+		register(ReorganizeEffect::new);
+		register(EquipmentRandomizerEffect::new);
 	}
 	
 	public static void register(Supplier<? extends ChaosEffect> effect) {

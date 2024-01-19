@@ -132,7 +132,6 @@ public class MobRainEffect extends AbstractRainEffect {
 			return entity;
 		});
 		VALID_MOBS.add((world) -> new SnifferEntity(EntityType.SNIFFER, world));
-		VALID_MOBS.add((world) -> new SnowGolemEntity(EntityType.SNOW_GOLEM, world));
 		VALID_MOBS.add((world) -> new SpectralArrowEntity(EntityType.SPECTRAL_ARROW, world));
 		VALID_MOBS.add((world) -> new SpiderEntity(EntityType.SPIDER, world));
 		VALID_MOBS.add((world) -> new SquidEntity(EntityType.SQUID, world));
@@ -172,7 +171,7 @@ public class MobRainEffect extends AbstractRainEffect {
 		Entity e = VALID_MOBS.stream().skip(this.getRNG().nextInt(VALID_MOBS.size())).findFirst().map((f) -> f.apply(player.getWorld())).get();
 		e.setPos(player.getX() + this.getRNG().nextDouble(-20, 20), player.getWorld().getTopY(), player.getZ() + this.getRNG().nextDouble(-20, 20));
 		e.setVelocity(0.0, 0.1, 0.0);
-		if(e instanceof MobEntity && !(e instanceof SlimeEntity || e instanceof MagmaCubeEntity)) {
+		if(e instanceof MobEntity) {
 			((MobEntity) e).setPersistent();
 		}
 		return e;

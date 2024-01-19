@@ -4,9 +4,8 @@ import net.minecraft.nbt.NbtCompound;
 
 public abstract class AbstractTimedChaosEffect extends AbstractLastingChaosEffect {
 
-	private static final String DURATION_KEY = "duration";
 	protected AbstractTimedChaosEffect(int durationMin, int durationMax) {
-		super((int) ((durationMax - durationMin) * Math.random()) + durationMin + 1);
+		super(AbstractLastingChaosEffect.getIntInRange(durationMin, durationMax));
 	}
 
 	@Override
