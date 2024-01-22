@@ -15,6 +15,9 @@ public final class CycleOfLifeEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
+		if(player.getMaxHealth() <= 1) {
+			return;
+		}
 		player.setHealth(this.getRNG().nextFloat(1, player.getMaxHealth()));
 		PlayerUtils.getServerPlayer(player).ifPresent((p) -> {
 			new SilentStatUpdatePacket(p).sendPacket(p);
@@ -30,7 +33,7 @@ public final class CycleOfLifeEffect extends SimpleTimedChaosEffect {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, SuddenDeathEffect.class, EquilibriumEffect.class);
+		return player.getMaxHealth() > 1 && !MCCEAPI.accessor.areAnyChaosEffectsActive(player, SuddenDeathEffect.class, EquilibriumEffect.class);
 	}
 
 	@Override

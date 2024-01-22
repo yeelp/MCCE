@@ -5,7 +5,7 @@ import net.minecraft.nbt.NbtCompound;
 public abstract class AbstractTriggeredChaosEffect extends AbstractTimedChaosEffect {
 
 	private int triggers;
-	private static final String TRIGGERS_KEY = "triggers";
+	static final String TRIGGERS_KEY = "triggers";
 	
 	protected AbstractTriggeredChaosEffect(int durationMin, int durationMax, int triggersMin, int triggersMax) {
 		super(durationMin, durationMax);

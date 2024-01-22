@@ -142,6 +142,16 @@ public class GiantEffect extends AbstractInstantChaosEffect {
 					break;
 				}
 			}
+			if(this.getRNG().nextDouble() < 0.3) {
+				ItemStack weapon = new ItemStack(this.getRNG().nextDouble() < 0.2 ? Items.IRON_SWORD : Items.IRON_SHOVEL);
+				if(enchant) {
+					EnchantmentHelper.enchant(player.getWorld().getRandom(), weapon, this.getRNG().nextInt(10, 40), true);
+				}
+				giant.equipStack(EquipmentSlot.MAINHAND, weapon);
+			}
+			if(this.getRNG().nextBoolean()) {
+				giant.equipStack(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
+			}
 		}
 		player.getWorld().spawnEntity(giant);
 	}

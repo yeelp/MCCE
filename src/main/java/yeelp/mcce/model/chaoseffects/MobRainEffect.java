@@ -59,7 +59,6 @@ import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SalmonEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.SnifferEntity;
-import net.minecraft.entity.passive.SnowGolemEntity;
 import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.entity.passive.TadpoleEntity;
@@ -75,6 +74,7 @@ import net.minecraft.entity.projectile.SpectralArrowEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.entity.projectile.thrown.ExperienceBottleEntity;
 import net.minecraft.world.World;
+import yeelp.mcce.util.ChaosLib;
 
 public class MobRainEffect extends AbstractRainEffect {
 
@@ -168,7 +168,7 @@ public class MobRainEffect extends AbstractRainEffect {
 
 	@Override
 	protected Entity getEntityToSpawn(PlayerEntity player) {
-		Entity e = VALID_MOBS.stream().skip(this.getRNG().nextInt(VALID_MOBS.size())).findFirst().map((f) -> f.apply(player.getWorld())).get();
+		Entity e = ChaosLib.getRandomElementFrom(VALID_MOBS, this.getRNG()).apply(player.getWorld());
 		e.setPos(player.getX() + this.getRNG().nextDouble(-20, 20), player.getWorld().getTopY(), player.getZ() + this.getRNG().nextDouble(-20, 20));
 		e.setVelocity(0.0, 0.1, 0.0);
 		if(e instanceof MobEntity) {

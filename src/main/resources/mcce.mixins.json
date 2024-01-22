@@ -12,7 +12,8 @@
   "BlockMixin",
   "ItemEntityMixin",
   "ItemStackMixin",
-  "EntityMixin"
+  "EntityMixin",
+  "EntityASMMixin"
   ],
   "client": [
   "KeyboardMixin",

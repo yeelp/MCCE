@@ -11,9 +11,7 @@ public final class ButterFingersEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.getHandItems().forEach((stack) -> {
-			player.dropItem(stack, true);
-		});
+		player.getHandItems().forEach((stack) -> player.dropItem(stack, true));
 		PlayerInventory inv = player.getInventory();
 		inv.main.set(inv.selectedSlot, ItemStack.EMPTY);
 		inv.offHand.set(0, ItemStack.EMPTY);

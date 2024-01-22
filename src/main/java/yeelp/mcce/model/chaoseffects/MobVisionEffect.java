@@ -4,7 +4,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Box;
+import yeelp.mcce.util.ChaosLib;
 
 public final class MobVisionEffect extends SimpleTimedChaosEffect {
 
@@ -14,7 +14,7 @@ public final class MobVisionEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.getWorld().getEntitiesByClass(LivingEntity.class, new Box(player.getBlockPos().east(16).north(16).up(16), player.getBlockPos().west(16).south(16).down(16)), (entity) -> entity != player).forEach((entity) -> entity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 20)));
+		player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 16), (entity) -> entity != player).forEach((entity) -> entity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 20)));
 	}
 
 	@Override

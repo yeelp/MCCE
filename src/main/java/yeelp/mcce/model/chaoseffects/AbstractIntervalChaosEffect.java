@@ -3,11 +3,11 @@ package yeelp.mcce.model.chaoseffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 
-public abstract class IntervalChaosEffect extends AbstractLastingChaosEffect {
+public abstract class AbstractIntervalChaosEffect extends AbstractLastingChaosEffect {
 
 	private int interval, intervalMin, intervalMax;
 	private static final String INTERVAL_KEY = "interval", INTERVAL_MIN_KEY = "intervalMin", INTERVAL_MAX_KEY = "intervalMax";
-	protected IntervalChaosEffect(int durationMin, int durationMax, int intervalMin, int intervalMax) {
+	protected AbstractIntervalChaosEffect(int durationMin, int durationMax, int intervalMin, int intervalMax) {
 		super(AbstractLastingChaosEffect.getIntInRange(durationMin, durationMax));
 		this.intervalMin = intervalMin;
 		this.intervalMax = intervalMax;

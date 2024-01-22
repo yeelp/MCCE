@@ -28,7 +28,7 @@ public final class QuiverEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return false; //Turned off due to motion sickness issues.
 	}
 
 }

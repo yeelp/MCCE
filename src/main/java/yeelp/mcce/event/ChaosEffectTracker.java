@@ -24,14 +24,33 @@ public final class ChaosEffectTracker implements PlayerTickCallback {
 				pces.resetDurationUntilNextEffect();
 			}
 			Queue<ChaosEffect> effectsToRemove = new LinkedList<ChaosEffect>();
+			Queue<ChaosEffect> processSeparately = new LinkedList<ChaosEffect>();
 			for(ChaosEffect ce : pces) {
-				ce.tickEffect(player);
-				if(ce.durationRemaining() <= 0) {
+				if(ce.canModifyEffectState()) {
+					processSeparately.add(ce);
+				}
+				else if (tickChaosEffect(player, ce)) {
+					effectsToRemove.add(ce);
+				}
+			}
+			for(ChaosEffect ce : processSeparately) {
+				if(tickChaosEffect(player, ce)) {
 					effectsToRemove.add(ce);
 				}
 			}
 			effectsToRemove.forEach(pces::removeEffect);
 		});
+	}
+	
+	/**
+	 * Tick a {@link ChaosEffect} on a {@code player} then check if the duration is zero
+	 * @param player Player to affect.
+	 * @param effect ChaosEffect to tick.
+	 * @return true if the ChaosEffect's duration via {@link ChaosEffect#durationRemaining()} is now zero.
+	 */
+	private static boolean tickChaosEffect(PlayerEntity player, ChaosEffect effect) {
+		effect.tickEffect(player);
+		return effect.durationRemaining() <= 0;
 	}
 
 	@Override

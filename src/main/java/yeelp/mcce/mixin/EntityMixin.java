@@ -16,6 +16,7 @@ import net.minecraft.server.command.CommandOutput;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.entity.EntityLike;
+import yeelp.mcce.model.chaoseffects.ClippyEffect;
 import yeelp.mcce.model.chaoseffects.InverseEffect;
 
 @Mixin(Entity.class)
@@ -26,19 +27,26 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 	@SuppressWarnings("resource")
 	@ModifyVariable(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), ordinal = 0)
 	private Vec3d alterMovement(Vec3d input, MovementType type, @SuppressWarnings("unused") Vec3d moveInput) {
-		if(type != MovementType.PLAYER && type != MovementType.SELF) {
+		Entity entity = (Entity) (Object) this;
+		if(!(entity instanceof PlayerEntity)) {
 			return input;
 		}
-		Entity entity = (Entity) (Object) this;
-		if(entity instanceof PlayerEntity && InverseEffect.isAffected((PlayerEntity) entity)) {
-			Vec3d newInput = input.multiply(-1, 1, -1);
-			if(entity.getWorld().isClient) {
-				MOVEMENT_TRACKER.put(entity.getUuid(), newInput);
-				return newInput;
-			}
-			if((newInput = MOVEMENT_TRACKER.getOrDefault(entity.getUuid(), input)).equals(input)) {
-				return newInput;
-			}		
+		PlayerEntity player = (PlayerEntity) entity;
+		if(ClippyEffect.isAffected(player)) {
+			player.noClip = true;
+			((EntityASMMixin) entity).setOnGround(false);
+		}
+		if(type == MovementType.PISTON || type == MovementType.SELF) {
+			if(InverseEffect.isAffected(player)) {
+				Vec3d newInput = input.multiply(-1, 1, -1);
+				if(entity.getWorld().isClient) {
+					MOVEMENT_TRACKER.put(entity.getUuid(), newInput);
+					return newInput;
+				}
+				if((newInput = MOVEMENT_TRACKER.getOrDefault(entity.getUuid(), input)).equals(input)) {
+					return newInput;
+				}		
+			}			
 		}
 		return input;
 	}

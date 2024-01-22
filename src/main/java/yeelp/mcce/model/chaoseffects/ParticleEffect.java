@@ -12,7 +12,7 @@ public class ParticleEffect extends SimpleTimedChaosEffect {
 	
 	private static final String ID_KEY = "particle_id";
 
-	protected ParticleEffect() {
+	public ParticleEffect() {
 		super(2000, 3000);
 		this.type = this.getRNG().nextInt(PARTICLE_TYPES_AMOUNT);
 	}

@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 public class UndeadEffect extends SimpleTimedChaosEffect {
 
-	protected UndeadEffect() {
+	public UndeadEffect() {
 		super(1800, 2000);
 	}
 

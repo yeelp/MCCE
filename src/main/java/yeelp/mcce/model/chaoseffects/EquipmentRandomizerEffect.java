@@ -35,11 +35,11 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
+import yeelp.mcce.util.ChaosLib;
 
-public class EquipmentRandomizerEffect extends IntervalChaosEffect {
+public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 
 	private static final UUID SPYGLASS_FOLLOW_RANGE = UUID.fromString("5d3c1939-beb6-41ce-9a1e-7bf36d49f51d");
 
@@ -103,8 +103,8 @@ public class EquipmentRandomizerEffect extends IntervalChaosEffect {
 			@Override
 			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
 				SlotItems.applyArmorModifications(stack, rand);
-				if(stack.getItem() == this.items[7]) {
-					BeaconBoost boost = BeaconBoost.values()[rand.nextInt(BeaconBoost.values().length)];
+				if(stack.getItem() == Items.BEACON) {
+					BeaconBoost boost = ChaosLib.getRandomElementFrom(BeaconBoost.values(), rand);
 					stack.addAttributeModifier(boost.getAttribute(), boost.createModifier(), EquipmentSlot.HEAD);
 				}
 			}
@@ -194,7 +194,7 @@ public class EquipmentRandomizerEffect extends IntervalChaosEffect {
 			@Override
 			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
 				if(stack.getItem() == this.items[2]) {
-					PotionUtil.setPotion(stack, this.effects[rand.nextInt(this.effects.length)]);
+					PotionUtil.setPotion(stack, ChaosLib.getRandomElementFrom(this.effects, rand));
 				}
 			}
 
@@ -284,7 +284,7 @@ public class EquipmentRandomizerEffect extends IntervalChaosEffect {
 		}
 
 		ItemStack createRandomStack(World world, LocalDifficulty local, Random rand) {
-			ItemStack stack = new ItemStack(this.items[rand.nextInt(this.items.length)]);
+			ItemStack stack = new ItemStack(ChaosLib.getRandomElementFrom(this.items, rand));
 			this.applyModifications(world, local, stack, rand);
 			if(local.isHarderThan(rand.nextFloat(5.0f))) {
 				EnchantmentHelper.enchant(world.getRandom(), stack, (int) (rand.nextInt((int) (25 + local.getLocalDifficulty() / 2.0f)) + local.getLocalDifficulty()), true);
@@ -316,8 +316,8 @@ public class EquipmentRandomizerEffect extends IntervalChaosEffect {
 		private static void applyTrims(ItemStack stack, Random rand) {
 			NbtCompound nbt = stack.getOrCreateNbt();
 			NbtCompound trim = new NbtCompound();
-			trim.putString(MATERIAL_KEY, TRIM_MATERIALS[rand.nextInt(TRIM_MATERIALS.length)]);
-			trim.putString(PATTERN_KEY, TRIM_PATTERNS[rand.nextInt(TRIM_PATTERNS.length)]);
+			trim.putString(MATERIAL_KEY, ChaosLib.getRandomElementFrom(TRIM_MATERIALS, rand));
+			trim.putString(PATTERN_KEY, ChaosLib.getRandomElementFrom(TRIM_PATTERNS, rand));
 			nbt.put(ArmorTrim.NBT_KEY, trim);
 		}
 	}
@@ -344,17 +344,20 @@ public class EquipmentRandomizerEffect extends IntervalChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		Box range = new Box(player.getBlockPos().north(10).east(10).down(10), player.getBlockPos().south(10).west(10).up(10));
 		World world = player.getWorld();
 		LocalDifficulty local = world.getLocalDifficulty(player.getBlockPos());
 		TARGETS.forEach((clazz) -> {
-			world.getEntitiesByClass(clazz, range, (entity) -> true).forEach((mob) -> {
+			world.getEntitiesByClass(clazz, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 20), (entity) -> true).forEach((mob) -> {
 				for(SlotItems slot : SlotItems.values()) {
-					mob.equipStack(slot.getSlot(), slot.createRandomStack(world, local, this.getRNG()));
+					if(this.getRNG().nextDouble() >= 0.1) {
+						mob.equipStack(slot.getSlot(), slot.createRandomStack(world, local, this.getRNG()));						
+					}
+					else {
+						mob.equipStack(slot.getSlot(), ItemStack.EMPTY);
+					}
 				}
 			});
 		});
-
 	}
 
 	@Override
@@ -374,7 +377,7 @@ public class EquipmentRandomizerEffect extends IntervalChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return player.getWorld().getDimensionEntry() != World.END;
 	}
 
 }

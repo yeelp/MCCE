@@ -63,7 +63,7 @@ public final class InverseEffect extends AbstractTimedChaosEffect {
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
 		if(AFFECTED_PLAYERS.tracked(player)) {
 			return;
-		};
+		}
 		AFFECTED_PLAYERS.add(player);
 	}
 	

@@ -49,5 +49,10 @@ public abstract class AbstractInstantChaosEffect extends AbstractChaosEffect {
 	protected boolean canStack() {
 		return false;
 	}
-	
+
+	@Override
+	public final boolean canModifyEffectState() {
+		return false;
+	}
+
 }

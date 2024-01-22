@@ -2,20 +2,19 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import yeelp.mcce.util.ChaosLib;
 
 public class BatBombEffect extends SimpleTimedChaosEffect {
 
-	protected BatBombEffect() {
+	public BatBombEffect() {
 		super(1200, 2400);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		Box range = new Box(player.getBlockPos().down(5).east(5).south(5), player.getBlockPos().up(5).west(5).north(5));
 		World world = player.getWorld();
-		world.getEntitiesByClass(BatEntity.class, range, (bat) -> true).forEach((bat) -> {
+		world.getEntitiesByClass(BatEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 5), (bat) -> true).forEach((bat) -> {
 			world.createExplosion(bat, bat.getX(), bat.getY(), bat.getZ(), this.getRNG().nextFloat(2.0f, 6.0f), World.ExplosionSourceType.MOB);
 			bat.discard();
 		});

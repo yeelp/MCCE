@@ -38,7 +38,7 @@ public abstract class AbstractLastingChaosEffect extends AbstractChaosEffect {
 	protected abstract void tickAdditionalEffectLogic(PlayerEntity player);
 	
 	protected static int getIntInRange(int min, int max) {
-		return (int) ((max - min) * Math.random()) + min + 1;
+		return (int) ((max - min + 1) * Math.random()) + min;
 	}
 
 }
