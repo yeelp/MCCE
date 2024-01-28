@@ -1,6 +1,5 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -49,7 +48,7 @@ public final class ChaosEffectRegistry {
 		register(MyBodyAsAShieldEffect::new);
 		register(InfestationEffect::new, true);
 		register(ButterFingersEffect::new);
-		register(QuiverEffect::new);  // Registered, but made to be never applicable due to motion sickness.
+		register(QuiverEffect::new);
 		register(SwitcherooEffect::new, true);
 		register(ItemEvaporationEffect::new);
 		register(WrapAroundEffect::new);
@@ -77,6 +76,7 @@ public final class ChaosEffectRegistry {
 		register(RepeatingEffect::new);
 		register(MagnetEffect::new);
 		register(ClippyEffect::new);
+		register(StutterSoundEffect::new);
 	}
 	
 	public static ChaosEffect register(Supplier<? extends ChaosEffect> effect) {
@@ -108,15 +108,25 @@ public final class ChaosEffectRegistry {
 	}
 	
 	public static ChaosEffect getRandomEffect() {
-		Iterator<Supplier<? extends ChaosEffect>> it = REGISTRY.values().iterator();
-		int i = RNG.nextInt(REGISTRY.size());
-		Supplier<? extends ChaosEffect> sup;
-		for(sup = it.next(); i > 0; i--, sup = it.next());
-		return sup.get();
+		List<String> lst = EFFECT_INSTANCES.values().stream().filter((s) -> {
+			if(s instanceof OptionalEffect) {
+				return ((OptionalEffect) s).enabled();
+			}
+			return true;
+		}).map(ChaosEffect::getName).toList();
+		return getEffect(ChaosLib.getRandomElementFrom(lst, RNG));
 	}
 	
 	public static ChaosEffect getRandomApplicableEffectForPlayer(PlayerEntity player) {
-		List<String> lst = EFFECT_INSTANCES.values().stream().filter((s) -> s.applicable(player)).map(ChaosEffect::getName).toList();
+		List<String> lst = EFFECT_INSTANCES.values().stream().filter((s) -> {
+			if(s.applicable(player)) {
+				if(s instanceof OptionalEffect) {
+					return ((OptionalEffect) s).enabled();
+				}
+				return true;
+			}
+			return false;
+		}).map(ChaosEffect::getName).toList();
 		return getEffect(ChaosLib.getRandomElementFrom(lst, RNG));
 	}
 	

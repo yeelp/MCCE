@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.api.MCCEAPIAccessor;
@@ -115,6 +116,17 @@ public enum MCCEAPIImpl implements MCCEAPIAccessor, MCCEAPIMutator {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void setDespawnTimer(Entity entity, int duration) {
+		//Players can't despawn.
+		if(entity instanceof PlayerEntity) {
+			return;
+		}
+		ServerState state = ServerState.getServerState(entity.getServer());
+		state.getDespawnTimer(entity.getUuid()).setTimer(duration);
+		state.markDirty();
 	}
 
 	private static PlayerChaosEffectState getEffectStateFromServerState(ServerState state, PlayerEntity player) {

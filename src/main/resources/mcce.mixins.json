@@ -19,7 +19,8 @@
   "KeyboardMixin",
   "KeyboardASMMixin",
   "InGameHudMixin",
-  "DrawContextMixin"  
+  "DrawContextMixin",
+  "ClientWorldMixin"  
   ],
   "injectors": {
     "defaultRequire": 1

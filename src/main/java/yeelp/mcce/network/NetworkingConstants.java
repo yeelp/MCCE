@@ -13,6 +13,7 @@ public interface NetworkingConstants {
 	static final Identifier MEMORY_GAME_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "memorygamestatus");
 	static final Identifier RAINBOW_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "rainbow");
 	static final Identifier QUIVER_UPDATE_PACKET_ID = new Identifier(MCCE.MODID, "quiverupdate");
+	static final Identifier STUTTER_SOUND_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "stuttersoundstatus");
 	
 	public static final class ParticlePacketConstants {
 		private ParticlePacketConstants() {

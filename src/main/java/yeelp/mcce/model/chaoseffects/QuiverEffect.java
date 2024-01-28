@@ -1,14 +1,15 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
+import yeelp.mcce.ModConfig;
 import yeelp.mcce.network.QuiverUpdatePacket;
 import yeelp.mcce.util.PlayerUtils;
 
-public final class QuiverEffect extends SimpleTimedChaosEffect {
+public final class QuiverEffect extends SimpleTimedChaosEffect implements OptionalEffect {
 
 	private static final float AMOUNT = 1f;
 	protected QuiverEffect() {
-		super(2000, 3000);
+		super(1000, 1500);
 	}
 
 	@Override
@@ -28,7 +29,12 @@ public final class QuiverEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return false; //Turned off due to motion sickness issues.
+		return true;
+	}
+
+	@Override
+	public boolean enabled() {
+		return ModConfig.getInstance().game.quiver;
 	}
 
 }

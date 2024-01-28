@@ -2,8 +2,10 @@ package yeelp.mcce.api;
 
 import java.util.function.Consumer;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.model.PlayerChaosEffectState;
+import yeelp.mcce.model.ServerState;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
 
 /**
@@ -59,5 +61,12 @@ public interface MCCEAPIMutator {
 	 * @param modification the modification to make
 	 */
 	<E extends ChaosEffect> void modifyEffect(PlayerEntity player, Class<E> clazz, Consumer<E> modification);
+	
+	/**
+	 * Set a despawn timer for an entity
+	 * @param entity The entity to set the timer for.
+	 * @param duration the duration to set.
+	 */
+	void setDespawnTimer(Entity entity, int duration);
 
 }
