@@ -1,5 +1,7 @@
 package yeelp.mcce.model.chaoseffects;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -7,6 +9,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -19,6 +22,7 @@ public final class ChaosEffectRegistry {
 	
 	private static final Map<String, Supplier<? extends ChaosEffect>> REGISTRY = Maps.newHashMap();
 	private static final Map<String, ChaosEffect> EFFECT_INSTANCES = Maps.newHashMap();
+	private static final List<String> EFFECT_NAMES = Lists.newArrayList();
 	private static final Set<String> REPEATING_REGISTRY = Sets.newHashSet();
 	private static final Random RNG = new Random();
 	
@@ -77,6 +81,12 @@ public final class ChaosEffectRegistry {
 		register(MagnetEffect::new);
 		register(ClippyEffect::new);
 		register(StutterSoundEffect::new);
+		register(SluggishEffect::new);
+		register(SoundEffect::new, true);
+		register(GhastEffect::new, true);
+		register(FishLauncherEffect::new);
+		register(LovablePhantomEffect::new);
+		register(HeartyEffect::new);
 	}
 	
 	public static ChaosEffect register(Supplier<? extends ChaosEffect> effect) {
@@ -85,6 +95,7 @@ public final class ChaosEffectRegistry {
 		String name = ce.getName();
 		REGISTRY.put(name, effect);
 		EFFECT_INSTANCES.put(name, ce);
+		EFFECT_NAMES.add(name);
 		return ce;
 	}
 	
@@ -108,26 +119,22 @@ public final class ChaosEffectRegistry {
 	}
 	
 	public static ChaosEffect getRandomEffect() {
-		List<String> lst = EFFECT_INSTANCES.values().stream().filter((s) -> {
-			if(s instanceof OptionalEffect) {
-				return ((OptionalEffect) s).enabled();
-			}
-			return true;
-		}).map(ChaosEffect::getName).toList();
-		return getEffect(ChaosLib.getRandomElementFrom(lst, RNG));
+		Iterator<String> it = getShuffledNamesIterator();
+		ChaosEffect ce = null;
+		while(!optionalEffectFilter(ce = EFFECT_INSTANCES.get(it.next())));
+		return getEffect(ce.getName());
 	}
 	
 	public static ChaosEffect getRandomApplicableEffectForPlayer(PlayerEntity player) {
-		List<String> lst = EFFECT_INSTANCES.values().stream().filter((s) -> {
-			if(s.applicable(player)) {
-				if(s instanceof OptionalEffect) {
-					return ((OptionalEffect) s).enabled();
-				}
-				return true;
+		Iterator<String> it = getShuffledNamesIterator();
+		String name;
+		for(name = it.next(); it.hasNext(); name = it.next()) {
+			ChaosEffect ce = EFFECT_INSTANCES.get(name);
+			if(optionalEffectFilter(ce) && ce.applicable(player)) {
+				break;
 			}
-			return false;
-		}).map(ChaosEffect::getName).toList();
-		return getEffect(ChaosLib.getRandomElementFrom(lst, RNG));
+		}
+		return getEffect(name);
 	}
 	
 	public static ChaosEffect createEffectFromNbt(String name, NbtCompound nbt) {
@@ -142,6 +149,18 @@ public final class ChaosEffectRegistry {
 	
 	public static Stream<ChaosEffect> getAllEffects() {
 		return REGISTRY.values().stream().map(Supplier::get);
+	}
+	
+	private static Iterator<String> getShuffledNamesIterator() {
+		Collections.shuffle(EFFECT_NAMES);
+		return EFFECT_NAMES.iterator();
+	}
+	
+	private static boolean optionalEffectFilter(ChaosEffect ce) {
+		if(ce instanceof OptionalEffect) {
+			return ((OptionalEffect) ce).enabled();
+		}
+		return true;
 	}
 	
 }

@@ -13,7 +13,8 @@
   "ItemEntityMixin",
   "ItemStackMixin",
   "EntityMixin",
-  "EntityASMMixin"
+  "EntityASMMixin",
+  "LivingEntityMixin"
   ],
   "client": [
   "KeyboardMixin",

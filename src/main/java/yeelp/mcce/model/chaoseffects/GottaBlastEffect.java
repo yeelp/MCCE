@@ -11,6 +11,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
+import yeelp.mcce.api.MCCEAPI;
 
 public class GottaBlastEffect extends AbstractAttributeChaosEffect {
 
@@ -44,7 +45,7 @@ public class GottaBlastEffect extends AbstractAttributeChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return !MCCEAPI.accessor.isChaosEffectActive(player, SluggishEffect.class);
 	}
 
 }

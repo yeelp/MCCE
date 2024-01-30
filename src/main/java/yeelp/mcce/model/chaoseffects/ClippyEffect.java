@@ -62,6 +62,9 @@ public class ClippyEffect extends AbstractTimedChaosEffect {
 		if(!AFFECTED_PLAYERS.tracked(player)) {
 			AFFECTED_PLAYERS.add(player);
 		}
+		if(!player.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
+			player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, this.durationRemaining()));
+		}
 	}
 	
 	private static final class ClippyTickHandler implements PlayerTickCallback {

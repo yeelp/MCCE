@@ -3,9 +3,12 @@ package yeelp.mcce.util;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -108,5 +111,36 @@ public final class ChaosLib {
 	 */
 	public static Box getBoxCenteredOnPosWithRadius(BlockPos pos, int radius) {
 		return new Box(pos.east(radius).north(radius).up(radius), pos.west(radius).south(radius).down(radius));
+	}
+
+	/**
+	 * Get a random {@link BlockPos} within a certain range.
+	 * 
+	 * @param outer        The outer range to get a BlockPos within
+	 * @param innerExclude An inner range that is inside {@code outer} that the
+	 *                     BlockPos must not be in. If {@code null}, then any
+	 *                     BlockPos in {@code outer} is acceptable for this
+	 *                     condition.
+	 * @param satisfactory A test to perform on the selected BlockPos to determine
+	 *                     if it is satisfactory for selection. If {@code null},
+	 *                     there is no additional test performed.
+	 * @param tries        The number of tries to perform.
+	 * @param rng          The current {@link Random} generator
+	 * @return an {@link Optional} wrapping a BlockPos that is within {@code outer},
+	 *         not within {@code inner} (if it is not null), and satisfies
+	 *         {@code satisfactory} (if it is not null). Otherwise, an empty
+	 *         Optional is returned if no such BlockPos is found.
+	 */
+	public static Optional<BlockPos> getPosWithin(Box outer, @Nullable Box innerExclude, @Nullable Predicate<BlockPos> satisfactory, int tries, Random rng) {
+		for(int i = 0; i < tries; i++) {
+			BlockPos pos = new BlockPos(rng.nextInt((int) outer.minX, (int) outer.maxX), rng.nextInt((int) outer.minY, (int) outer.maxY), rng.nextInt((int) outer.minZ, (int) outer.maxZ));
+			if(innerExclude != null && innerExclude.contains(pos.getX(), pos.getY(), pos.getZ())) {
+				continue;
+			}
+			if(satisfactory.test(pos)) {
+				return Optional.of(pos);
+			}
+		}
+		return Optional.empty();
 	}
 }

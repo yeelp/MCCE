@@ -43,7 +43,9 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 		}
 		MinecraftServer server = entity.getServer();
 		if(server != null) {
-			ServerState.getServerState(server).removeTimer(entity.getUuid());			
+			ServerState state = ServerState.getServerState(server);
+			state.removeTimer(entity.getUuid());
+			state.markDirty();
 		}
 	}
 	
@@ -56,8 +58,8 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 		}
 		PlayerEntity player = (PlayerEntity) entity;
 		if(ClippyEffect.isAffected(player)) {
+			((EntityASMMixin) entity).setOnGround(false);				
 			player.noClip = true;
-			((EntityASMMixin) entity).setOnGround(false);
 		}
 		if(type == MovementType.PISTON || type == MovementType.SELF) {
 			if(InverseEffect.isAffected(player)) {

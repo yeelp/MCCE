@@ -3,6 +3,7 @@ package yeelp.mcce.model.chaoseffects;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
+import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
 
 public class BatBombEffect extends SimpleTimedChaosEffect {
@@ -32,7 +33,7 @@ public class BatBombEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() < player.getWorld().getSeaLevel();
+		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() < player.getWorld().getSeaLevel() && MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
 	}
 
 }

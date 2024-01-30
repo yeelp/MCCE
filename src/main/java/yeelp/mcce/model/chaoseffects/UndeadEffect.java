@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import yeelp.mcce.api.MCCEAPI;
 
 public class UndeadEffect extends SimpleTimedChaosEffect {
 
@@ -47,7 +48,7 @@ public class UndeadEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() >= player.getWorld().getSeaLevel();
+		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() >= player.getWorld().getSeaLevel() && MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
 	}
 
 }

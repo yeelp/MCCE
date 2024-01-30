@@ -96,6 +96,27 @@ public interface NetworkingConstants {
 		public static final byte ENCHANT_ID = 10;
 		public static final byte INVERSE_START = 11;
 		public static final byte INVERSE_END = 12;
+		public static final byte BASALT_DELTAS_ADDITIONS = 13;
+		public static final byte ARROW_HIT_PLAYER = 14;
+		public static final byte BELL_RESONATE = 15;
+		public static final byte BLAZE_AMBIENT = 16;
+		public static final byte CHEST_LOCKED = 17;
+		public static final byte CREEPER_PRIMED = 18;
+		public static final byte EVOKER_WOLOLO = 19;
+		public static final byte FIREWORK_TWINKLE = 20;
+		public static final byte FOX_AMBIENT = 21;
+		public static final byte GHAST_AMBIENT = 22;
+		public static final byte DRINK_HONEY = 23;
+		public static final byte ITEM_BREAK = 24;
+		public static final byte STRAD = 25;
+		public static final byte STAL = 26;
+		public static final byte WARD = 27;
+		public static final byte PHANTOM_AMBIENT = 28;
+		public static final byte PHANTOM_SWOOP = 29;
+		public static final byte SCULK_SENSOR = 30;
+		public static final byte SILVERFISH_AMBIENT = 31;
+		public static final byte GOAT_HORN = 32;
+		public static final byte LOVABLE_PHANTOM_SPAWN_ID = 33;
 		
 		public static SoundEvent getSound(byte b) {
 			switch(b) {
@@ -125,6 +146,48 @@ public interface NetworkingConstants {
 					return SoundEvents.ENTITY_ENDERMAN_TELEPORT;
 				case INVERSE_END:
 					return SoundEvents.ENTITY_ILLUSIONER_MIRROR_MOVE;
+				case BASALT_DELTAS_ADDITIONS:
+					return SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS.value();
+				case ARROW_HIT_PLAYER:
+					return SoundEvents.ENTITY_ARROW_HIT_PLAYER;
+				case BELL_RESONATE:
+					return SoundEvents.BLOCK_BELL_RESONATE;
+				case BLAZE_AMBIENT:
+					return SoundEvents.ENTITY_BLAZE_AMBIENT;
+				case CHEST_LOCKED:
+					return SoundEvents.BLOCK_CHEST_LOCKED;
+				case CREEPER_PRIMED:
+					return SoundEvents.ENTITY_CREEPER_PRIMED;
+				case EVOKER_WOLOLO:
+					return SoundEvents.ENTITY_EVOKER_PREPARE_WOLOLO;
+				case FIREWORK_TWINKLE:
+					return SoundEvents.ENTITY_FIREWORK_ROCKET_TWINKLE;
+				case FOX_AMBIENT:
+					return SoundEvents.ENTITY_FOX_AMBIENT;
+				case GHAST_AMBIENT:
+					return SoundEvents.ENTITY_GHAST_AMBIENT;
+				case DRINK_HONEY:
+					return SoundEvents.ITEM_HONEY_BOTTLE_DRINK;
+				case ITEM_BREAK:
+					return SoundEvents.ENTITY_ITEM_BREAK;
+				case STRAD:
+					return SoundEvents.MUSIC_DISC_STRAD;
+				case STAL:
+					return SoundEvents.MUSIC_DISC_STAL;
+				case WARD:
+					return SoundEvents.MUSIC_DISC_WARD;
+				case PHANTOM_AMBIENT:
+					return SoundEvents.ENTITY_PHANTOM_AMBIENT;
+				case PHANTOM_SWOOP:
+					return SoundEvents.ENTITY_PHANTOM_SWOOP;
+				case SCULK_SENSOR:
+					return SoundEvents.BLOCK_SCULK_SENSOR_CLICKING;
+				case SILVERFISH_AMBIENT:
+					return SoundEvents.ENTITY_SILVERFISH_AMBIENT;
+				case GOAT_HORN:
+					return SoundEvents.GOAT_HORN_SOUNDS.get((int)(Math.random() * SoundEvents.GOAT_HORN_SOUND_COUNT)).value();
+				case LOVABLE_PHANTOM_SPAWN_ID:
+					return SoundEvents.ENTITY_PLAYER_LEVELUP;
 				default:
 					return null;
 			}

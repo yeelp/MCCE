@@ -21,7 +21,7 @@ public abstract class AbstractRainEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().isSkyVisible(player.getBlockPos());
+		return player.getWorld().isSkyVisible(player.getBlockPos()) && Math.random() < 0.75;
 	}
 	
 	protected abstract Entity getEntityToSpawn(PlayerEntity player);
