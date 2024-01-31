@@ -39,7 +39,8 @@ public class InfestationEffect extends AbstractInstantChaosEffect {
 					entity.setCustomName(Text.empty().append("George").formatted(Formatting.RED));
 					entity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).addPersistentModifier(new EntityAttributeModifier(GEORGE_HEALTH_BOOST, GEORGE_HEALTH_BOOST_NAME, GEORGE_HEALTH_BOOST_AMOUNT, Operation.ADDITION));
 					entity.heal(200.0f);
-					entity.equipStack(EquipmentSlot.OFFHAND, new ItemStack(Items.MUSIC_DISC_CHIRP));
+					entity.equipStack(EquipmentSlot.OFFHAND, new ItemStack(Items.MUSIC_DISC_BLOCKS));
+					((SilverfishEntity) entity).updateDropChances(EquipmentSlot.OFFHAND);
 				}
 			}
 			entity.setPos(player.getX() + this.getRNG().nextDouble(-1.3, 1.3), player.getY() + this.getRNG().nextDouble(2, 2.6), player.getZ() + this.getRNG().nextDouble(-1.3, 1.3));
