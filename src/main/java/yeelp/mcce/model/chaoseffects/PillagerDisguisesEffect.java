@@ -1,9 +1,12 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Predicate;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -29,41 +32,173 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
+import yeelp.mcce.util.ChaosLib;
 
 public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 
-	private static final List<EntityType<? extends LivingEntity>> CHOICES = ImmutableList.of(EntityType.PILLAGER, EntityType.VINDICATOR, EntityType.EVOKER, EntityType.ILLUSIONER, EntityType.WITCH);
+	private static final Set<Class<? extends LivingEntity>> TARGETS = ImmutableSet.of(VillagerEntity.class, AllayEntity.class, IronGolemEntity.class);
 	private static final float DIAMOND_EQUIPMENT_THRESHOLD = 2.4f;
-	
-	
-	protected PillagerDisguisesEffect() {
-		super(4000, 8000);
+	private static final float ENCHANT_RAND_THRESHOLD = 4.0f;
+	private static final int ENCHANT_LEVEL_LOWER_BOUND = 10;
+	private static final int ENCHANT_LEVEL_UPPER_BOUND = 40;
+	private static final boolean ENCHANT_ALLOW_TREASURE = true;
+
+	private static enum PillagerChoices {
+		PILLAGER {
+			@Override
+			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+				PillagerEntity entity = new PillagerEntity(EntityType.PILLAGER, world);
+				ItemStack stack = new ItemStack(Items.CROSSBOW);
+				if(shouldEnchant(local, rng)) {
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), ENCHANT_ALLOW_TREASURE);
+				}
+				entity.equipStack(EquipmentSlot.MAINHAND, stack);
+				return entity;
+			}
+
+			@Override
+			protected boolean valid(LivingEntity entity) {
+				return VILLAGER_TEST.test(entity);
+			}
+		},
+		VINDICATOR {
+			@Override
+			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+				VindicatorEntity entity = new VindicatorEntity(EntityType.VINDICATOR, world);
+				ItemStack stack = new ItemStack(local.isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_AXE : Items.IRON_AXE);
+				if(shouldEnchant(local, rng)) {
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), ENCHANT_ALLOW_TREASURE);
+					if(EnchantmentHelper.getLevel(Enchantments.SHARPNESS, stack) == 0 && rng.nextFloat(7) < local.getLocalDifficulty()) {
+						stack.addEnchantment(Enchantments.SHARPNESS, rng.nextInt(MathHelper.clamp((int) local.getLocalDifficulty() - 3, 1, 5)));
+					}
+				}
+				entity.equipStack(EquipmentSlot.MAINHAND, stack);
+				return entity;
+			}
+
+			@Override
+			protected boolean valid(LivingEntity entity) {
+				return VILLAGER_TEST.test(entity);
+			}
+		},
+		EVOKER {
+			@Override
+			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+				return new EvokerEntity(EntityType.EVOKER, world);
+			}
+
+			@Override
+			protected boolean valid(LivingEntity entity) {
+				return VILLAGER_TEST.test(entity);
+			}
+		},
+		ILLUSIONER {
+			@Override
+			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+				IllusionerEntity entity = new IllusionerEntity(EntityType.ILLUSIONER, world);
+				ItemStack stack = new ItemStack(Items.BOW);
+				if(shouldEnchant(local, rng)) {
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), ENCHANT_ALLOW_TREASURE);
+				}
+				entity.equipStack(EquipmentSlot.MAINHAND, stack);
+				return entity;
+			}
+
+			@Override
+			protected boolean valid(LivingEntity entity) {
+				return VILLAGER_TEST.test(entity);
+			}
+		},
+		WITCH {
+			@Override
+			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+				return new WitchEntity(EntityType.WITCH, world);
+			}
+
+			@Override
+			protected boolean valid(LivingEntity entity) {
+				return VILLAGER_TEST.test(entity);
+			}
+		},
+		VEX {
+			@Override
+			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+				VexEntity vex = new VexEntity(EntityType.VEX, world);
+				ItemStack stack = new ItemStack(local.isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
+				if(shouldEnchant(local, rng)) {
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), false);
+				}
+				vex.equipStack(EquipmentSlot.MAINHAND, stack);
+				return vex;
+			}
+
+			@Override
+			protected boolean valid(LivingEntity entity) {
+				return entity instanceof AllayEntity;
+			}
+		},
+		RAVAGER {
+			@Override
+			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+				return new RavagerEntity(EntityType.RAVAGER, world);
+			}
+
+			@Override
+			protected boolean valid(LivingEntity entity) {
+				return entity instanceof IronGolemEntity && !((IronGolemEntity) entity).isPlayerCreated();
+			}
+		};
+
+		private static final PillagerChoices[] VILLAGER_CHOICES = {
+				PILLAGER,
+				VINDICATOR,
+				EVOKER,
+				ILLUSIONER,
+				WITCH};
+		private static final PillagerChoices[] NON_VILLAGER_CHOICES = {
+				VEX,
+				RAVAGER};
+		private static final Predicate<LivingEntity> VILLAGER_TEST = (v) -> v instanceof VillagerEntity && ((VillagerEntity) v).isBaby();
+
+		abstract MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng);
+
+		protected abstract boolean valid(LivingEntity entity);
+
+		private static boolean shouldEnchant(LocalDifficulty local, Random rng) {
+			return local.isHarderThan(rng.nextFloat(ENCHANT_RAND_THRESHOLD));
+		}
+
+		static @Nullable PillagerChoices getPillagerChoice(LivingEntity entity, Random rng) {
+			PillagerChoices choice;
+			if((choice = ChaosLib.getRandomElementFrom(VILLAGER_CHOICES, rng)).valid(entity)) {
+				return choice;
+			}
+			for(PillagerChoices pillagerChoices : NON_VILLAGER_CHOICES) {
+				if(pillagerChoices.valid(entity)) {
+					return pillagerChoices;
+				}
+			}
+			return null;
+		}
 	}
 
+	public PillagerDisguisesEffect() {
+		super(4000, 8000);
+	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		Box range = new Box(player.getBlockPos().north(10).east(10).down(10), player.getBlockPos().south(10).west(10).up(10));
 		World world = player.getWorld();
-		world.getEntitiesByClass(VillagerEntity.class, range, (villager) -> !villager.isBaby()).forEach((villager) -> {
-			MobEntity entity = this.getPillagerEntity(player.getBlockPos(), world);
-			setUpEntity(entity, villager);
-			world.spawnEntity(entity);
-		});
-		world.getEntitiesByClass(AllayEntity.class, range, Predicates.alwaysTrue()).forEach((allay) -> {
-			VexEntity vex = new VexEntity(EntityType.VEX, world);
-			setUpEntity(vex, allay);
-			ItemStack stack = new ItemStack(world.getLocalDifficulty(player.getBlockPos()).isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
-			if(this.getRNG().nextFloat() < 0.3f) {
-				EnchantmentHelper.enchant(world.getRandom(), stack, this.getRNG().nextInt(10, 40), false);
+		world.getEntitiesByClass(MobEntity.class, range, (e) -> TARGETS.contains(e.getClass())).forEach((e) -> {
+			PillagerChoices pc = PillagerChoices.getPillagerChoice(e, this.getRNG());
+			if(pc == null) {
+				return;
 			}
-			vex.equipStack(EquipmentSlot.MAINHAND, stack);
-			world.spawnEntity(vex);
-		});
-		world.getEntitiesByClass(IronGolemEntity.class, range, (golem) -> !golem.isPlayerCreated()).forEach((golem) -> {
-			RavagerEntity ravager = new RavagerEntity(EntityType.RAVAGER, world);
-			setUpEntity(ravager, golem);
-			world.spawnEntity(ravager);
+			BlockPos pos = player.getBlockPos();
+			MobEntity mob;
+			setUpEntity(mob = pc.create(pos, world, world.getLocalDifficulty(pos), this.getRNG()), e);
+			world.spawnEntity(mob);
 		});
 	}
 
@@ -81,50 +216,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
 		return player.getWorld().getRegistryKey() == World.OVERWORLD;
 	}
-	
-	private MobEntity getPillagerEntity(BlockPos ref, World world) {
-		EntityType<? extends LivingEntity> type = CHOICES.get(this.getRNG().nextInt(CHOICES.size()));
-		LocalDifficulty local = world.getLocalDifficulty(ref);
-		boolean enchant = local.isHarderThan(this.getRNG().nextFloat(4));
-		if(type == EntityType.PILLAGER) {
-			PillagerEntity entity = new PillagerEntity(EntityType.PILLAGER, world);
-			ItemStack stack = new ItemStack(Items.CROSSBOW);
-			if(enchant) {
-				EnchantmentHelper.enchant(world.getRandom(), stack, this.getRNG().nextInt(10, 40), true);
-			}
-			entity.equipStack(EquipmentSlot.MAINHAND, stack);
-			return entity;
-		}
-		else if (type == EntityType.VINDICATOR) {
-			VindicatorEntity entity = new VindicatorEntity(EntityType.VINDICATOR, world);
-			ItemStack stack = new ItemStack(local.isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_AXE : Items.IRON_AXE);
-			if(enchant) {
-				EnchantmentHelper.enchant(world.getRandom(), stack, this.getRNG().nextInt(10, 40), true);
-				if(EnchantmentHelper.getLevel(Enchantments.SHARPNESS, stack) == 0 && this.getRNG().nextFloat(7) < local.getLocalDifficulty()) {
-					stack.addEnchantment(Enchantments.SHARPNESS, this.getRNG().nextInt(MathHelper.clamp((int) local.getLocalDifficulty() -3, 0, 5)));
-				}
-			}
-			entity.equipStack(EquipmentSlot.MAINHAND, stack);
-			return entity;
-		}
-		else if (type == EntityType.EVOKER) {
-			return new EvokerEntity(EntityType.EVOKER, world);
-		}
-		else if (type == EntityType.ILLUSIONER) {
-			IllusionerEntity entity = new IllusionerEntity(EntityType.ILLUSIONER, world);
-			ItemStack stack = new ItemStack(Items.BOW);
-			if(enchant) {
-				EnchantmentHelper.enchant(world.getRandom(), stack, this.getRNG().nextInt(10, 40), true);
-			}
-			entity.equipStack(EquipmentSlot.MAINHAND, stack);
-			return entity;
-		}
-		else if (type == EntityType.WITCH) {
-			return new WitchEntity(EntityType.WITCH, world);
-		}
-		return null;
-	}
-	
+
 	private static void setUpEntity(MobEntity pillagerLike, MobEntity villagerLike) {
 		pillagerLike.setPosition(villagerLike.getPos());
 		pillagerLike.setVelocity(villagerLike.getVelocity());
