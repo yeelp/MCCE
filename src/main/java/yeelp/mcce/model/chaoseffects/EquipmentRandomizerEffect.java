@@ -50,7 +50,7 @@ public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 				return EntityAttributes.GENERIC_ARMOR;
 			}
 		},
-		SPEED("speed", "4b9f3e68-c1c9-43ae-b3a6-55f1817c2f16", 1.3, Operation.MULTIPLY_TOTAL) {
+		SPEED("speed", "4b9f3e68-c1c9-43ae-b3a6-55f1817c2f16", 0.3, Operation.MULTIPLY_TOTAL) {
 			@Override
 			EntityAttribute getAttribute() {
 				return EntityAttributes.GENERIC_MOVEMENT_SPEED;

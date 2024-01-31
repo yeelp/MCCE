@@ -21,6 +21,7 @@ import net.minecraft.util.math.Box;
  */
 public final class ChaosLib {
 
+	private static final Random RNG = new Random();
 	private ChaosLib() {
 		throw new UnsupportedOperationException("Class not to be instantiated!");
 	}
@@ -142,5 +143,13 @@ public final class ChaosLib {
 			}
 		}
 		return Optional.empty();
+	}
+	
+	/**
+	 * Get a static instance of {@link Random}.
+	 * @return A static random generator.
+	 */
+	public static Random getStaticRandomInstance() {
+		return RNG;
 	}
 }

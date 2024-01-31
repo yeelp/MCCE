@@ -48,7 +48,7 @@ public class UndeadEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() >= player.getWorld().getSeaLevel() && MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
+		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() >= player.getWorld().getSeaLevel() && !MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
 	}
 
 }

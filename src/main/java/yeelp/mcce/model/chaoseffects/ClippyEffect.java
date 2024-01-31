@@ -13,7 +13,7 @@ public class ClippyEffect extends AbstractTimedChaosEffect {
 	private static final Tracker AFFECTED_PLAYERS = new Tracker();
 
 	public ClippyEffect() {
-		super(20, 200);
+		super(20, 160);
 	}
 	
 	protected ClippyEffect(int duration) {
@@ -39,7 +39,7 @@ public class ClippyEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getY() > player.getWorld().getDimension().minY() + 64 && MCCEAPI.accessor.isChaosEffectActive(player, BouncyEffect.class);
+		return player.getY() > 0 && !MCCEAPI.accessor.isChaosEffectActive(player, BouncyEffect.class);
 	}
 
 	@Override

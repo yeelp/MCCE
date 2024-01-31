@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
+import yeelp.mcce.util.ChaosLib;
 
 public final class ItemEvaporationEffect extends SimpleTimedChaosEffect {
 
@@ -40,7 +41,7 @@ public final class ItemEvaporationEffect extends SimpleTimedChaosEffect {
 	public static final ItemStack getEvaporatedStack(ItemStack evaporatedStack) {
 		ItemStack stack = new ItemStack(Items.STRUCTURE_VOID, evaporatedStack.getCount());
 		stack.setNbt(evaporatedStack.getNbt());
-		stack.setCustomName(Text.empty().append(NAMES.get((int)(NAMES.size() * Math.random()))));
+		stack.setCustomName(Text.empty().append(ChaosLib.getRandomElementFrom(NAMES, ChaosLib.getStaticRandomInstance())));
 		return stack;
 	}
 }

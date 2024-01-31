@@ -90,6 +90,8 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 
 	private static final class AfterBlockBreakListener implements After {
 
+		private static final double V_MIN = -Math.E/10;
+		private static final double V_MAX = -V_MIN;
 		@Override
 		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
 			MCCEAPI.mutator.modifyEffect(player, LotteryEffect.class, (ce) -> {
@@ -112,7 +114,7 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 				ItemStack stack = new ItemStack(item);
 
 				while(num-- > 0) {
-					ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack, ce.getRNG().nextDouble(-Math.E/10, Math.E/10), ce.getRNG().nextDouble(0, Math.E/10), ce.getRNG().nextDouble(-Math.E/10, Math.E/10));
+					ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack, ce.getRNG().nextDouble(V_MIN, V_MAX), ce.getRNG().nextDouble(0, V_MAX), ce.getRNG().nextDouble(V_MIN, V_MAX));
 					world.spawnEntity(entity);
 				}
 				ce.trigger();

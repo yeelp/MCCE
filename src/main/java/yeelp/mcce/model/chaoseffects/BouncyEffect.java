@@ -32,7 +32,7 @@ public final class BouncyEffect extends SimpleTimedChaosEffect {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, PressLToLevitateEffect.class, ToTheMoonEffect.class);
+		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, PressLToLevitateEffect.class, ToTheMoonEffect.class, ClippyEffect.class);
 	}
 
 }
