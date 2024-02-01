@@ -35,7 +35,7 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 		EntityTickCallback.EVENT.invoker().tick((Entity) (Object) this);
 	}
 	
-	@Inject(at = @At("HEAD"), method = "remove(Lnet/minecraft/entity/Entity/RemovalReason;)V")
+	@Inject(at = @At("HEAD"), method = "remove(Lnet/minecraft/entity/Entity$RemovalReason;)V")
 	private void remove(@SuppressWarnings("unused") RemovalReason reason, @SuppressWarnings("unused") CallbackInfo info) {
 		Entity entity = (Entity) (Object) this;
 		if(entity instanceof PlayerEntity) {
