@@ -61,7 +61,7 @@ public abstract class AbstractAttributeChaosEffect extends AbstractTimedChaosEff
 				instance.addPersistentModifier(factory.getInitialModifier());
 				return;
 			}
-			instance.removeModifier(mod);
+			instance.removeModifier(mod.getId());
 			instance.addPersistentModifier(factory.tickAttribute(player, mod));
 		});
 	}

@@ -23,6 +23,8 @@ public final class ServerState extends PersistentState {
 	
 	private static final String TIMERS_KEY = "despawnTimers";
 	
+	private static final Type<ServerState> TYPE = new Type<ServerState>(ServerState::new, ServerState::createFromNbt, null);
+	
 	@Override
 	public NbtCompound writeNbt(NbtCompound var1) {
 		NbtCompound tag = new NbtCompound();
@@ -88,7 +90,7 @@ public final class ServerState extends PersistentState {
 	 * @return the active ServerState.
 	 */
 	public static ServerState getServerState(MinecraftServer server) {
-		return server.getWorld(World.OVERWORLD).getPersistentStateManager().getOrCreate(ServerState::createFromNbt, ServerState::new, MCCE.MODID);
+		return server.getWorld(World.OVERWORLD).getPersistentStateManager().getOrCreate(TYPE, MCCE.MODID);
 	}
 
 }
