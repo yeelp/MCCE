@@ -118,7 +118,7 @@ public class GiantEffect extends AbstractInstantChaosEffect {
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		GiantEntity giant = new GiantEntity(EntityType.GIANT, player.getWorld());
-		giant.setPos(player.getX(), player.getY(), player.getZ());
+		giant.refreshPositionAndAngles(player.getX(), player.getY(), player.getZ(), 0.0f, 0.0f);
 		LocalDifficulty local = player.getWorld().getLocalDifficulty(player.getBlockPos());
 		boolean enchant = local.isHarderThan(this.getRNG().nextFloat(4.0f));
 		if(this.getRNG().nextFloat() < 0.5f) {
