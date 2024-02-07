@@ -28,7 +28,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
@@ -158,7 +157,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		private static final PillagerChoices[] NON_VILLAGER_CHOICES = {
 				VEX,
 				RAVAGER};
-		private static final Predicate<LivingEntity> VILLAGER_TEST = (v) -> v instanceof VillagerEntity && ((VillagerEntity) v).isBaby();
+		private static final Predicate<LivingEntity> VILLAGER_TEST = (v) -> v instanceof VillagerEntity && !((VillagerEntity) v).isBaby();
 
 		abstract MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng);
 
@@ -188,9 +187,8 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		Box range = new Box(player.getBlockPos().north(10).east(10).down(10), player.getBlockPos().south(10).west(10).up(10));
 		World world = player.getWorld();
-		world.getEntitiesByClass(MobEntity.class, range, (e) -> TARGETS.contains(e.getClass())).forEach((e) -> {
+		world.getEntitiesByClass(MobEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 10), (e) -> TARGETS.contains(e.getClass())).forEach((e) -> {
 			PillagerChoices pc = PillagerChoices.getPillagerChoice(e, this.getRNG());
 			if(pc == null) {
 				return;

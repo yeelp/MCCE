@@ -43,7 +43,7 @@ public class InfestationEffect extends AbstractInstantChaosEffect {
 					((SilverfishEntity) entity).updateDropChances(EquipmentSlot.OFFHAND);
 				}
 			}
-			entity.setPos(player.getX() + this.getRNG().nextDouble(-1.3, 1.3), player.getY() + this.getRNG().nextDouble(2, 2.6), player.getZ() + this.getRNG().nextDouble(-1.3, 1.3));
+			entity.refreshPositionAndAngles(player.getX() + this.getRNG().nextDouble(-1.3, 1.3), player.getY() + this.getRNG().nextDouble(2, 2.6), player.getZ() + this.getRNG().nextDouble(-1.3, 1.3), 0.0f, 0.0f);
 			entity.setVelocity(this.getRNG().nextDouble(-1, 1), this.getRNG().nextDouble(), this.getRNG().nextDouble(-1, 1));
 			world.spawnEntity(entity);
 		}while(--amount > 0);

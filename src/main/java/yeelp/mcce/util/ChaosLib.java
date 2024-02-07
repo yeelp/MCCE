@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
@@ -111,7 +112,7 @@ public final class ChaosLib {
 	 *         {@code pos}.
 	 */
 	public static Box getBoxCenteredOnPosWithRadius(BlockPos pos, int radius) {
-		return new Box(pos.east(radius).north(radius).up(radius), pos.west(radius).south(radius).down(radius));
+		return Box.from(BlockBox.create(pos.east(radius).north(radius).up(radius), pos.west(radius).south(radius).down(radius)));
 	}
 
 	/**

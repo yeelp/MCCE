@@ -118,7 +118,7 @@ public final class IOUEffect extends AbstractTimedChaosEffect {
 		}
 		
 		private static final List<NbtString> getTextWithColor(String text, Formatting formatting) {
-			return Text.of(text).getWithStyle(Style.EMPTY.withColor(formatting)).stream().map(Functions.compose(NbtString::of, Text.Serializer::toJson)).collect(Collectors.toList());
+			return Text.of(text).getWithStyle(Style.EMPTY.withColor(formatting)).stream().map(Functions.compose(NbtString::of, Text.Serialization::toJsonString)).collect(Collectors.toList());
 		}
 	}
 
