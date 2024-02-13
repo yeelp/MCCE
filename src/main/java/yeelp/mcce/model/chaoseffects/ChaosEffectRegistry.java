@@ -87,6 +87,7 @@ public final class ChaosEffectRegistry {
 		register(FishLauncherEffect::new);
 		register(LovablePhantomEffect::new);
 		register(HeartyEffect::new);
+		register(BlockRainEffect::new);
 	}
 	
 	public static ChaosEffect register(Supplier<? extends ChaosEffect> effect) {
