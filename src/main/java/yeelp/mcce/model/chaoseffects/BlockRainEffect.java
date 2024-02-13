@@ -1,5 +1,8 @@
 package yeelp.mcce.model.chaoseffects;
 
+import java.util.Optional;
+
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,9 +25,11 @@ public class BlockRainEffect extends AbstractRainEffect implements OptionalEffec
 	@Override
 	protected Entity getEntityToSpawn(PlayerEntity player) {
 		int index = this.getRNG().nextInt(BLOCK_COUNT);
-		return Registries.BLOCK.stream().skip(index).findFirst().map((b) -> {
+		return Registries.BLOCK.stream().skip(index).filter((b) -> b != Blocks.END_PORTAL && b != Blocks.NETHER_PORTAL).findFirst().or(() -> Optional.of(Blocks.BEDROCK)).map((b) -> {
 			int x = player.getBlockX() + this.getRNG().nextInt(-15, 15), z = player.getBlockZ() + this.getRNG().nextInt(-15, 15);
-			return FallingBlockEntity.spawnFromBlock(player.getWorld(), new BlockPos(x, player.getWorld().getTopY(), z), b.getDefaultState());
+			FallingBlockEntity block = FallingBlockEntity.spawnFromBlock(player.getWorld(), new BlockPos(x, player.getWorld().getTopY(), z), b.getDefaultState());
+			block.dropItem = false;
+			return block;
 		}).get();
 	}
 
