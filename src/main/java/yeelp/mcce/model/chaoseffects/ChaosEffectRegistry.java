@@ -88,6 +88,7 @@ public final class ChaosEffectRegistry {
 		register(LovablePhantomEffect::new);
 		register(HeartyEffect::new);
 		register(BlockRainEffect::new);
+		register(XPRandomizerEffect::new);
 	}
 	
 	public static ChaosEffect register(Supplier<? extends ChaosEffect> effect) {

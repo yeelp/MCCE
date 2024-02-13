@@ -23,7 +23,8 @@ public final class ModConfig {
 	
 	public static class GameEffectsOptions {
 		public boolean quiver = false;
-		public boolean blockRain = false;
+		public boolean blockrain = false;
+		public boolean xprandomizer = false;
 	}
 	
 	private ModConfig() {
