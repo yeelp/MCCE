@@ -28,7 +28,7 @@ public final class StutterSoundSoundHandler implements PlayerTickCallback {
 		if(player instanceof ClientPlayerEntity && AFFECTED_PLAYERS.tracked(player)) {
 			SoundData sound = CURRENT_SOUND.get(player.getUuid());
 			if(sound != null) {
-				player.playSound(sound.sound(), sound.volume(), sound.pitch());
+				player.playSound(sound.sound(), sound.volume()/2.0f, sound.pitch());
 			}
 		}
 	}

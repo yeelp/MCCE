@@ -15,7 +15,7 @@ public final class ItemEvaporationEffect extends SimpleTimedChaosEffect {
 	private static final List<String> NAMES = ImmutableList.of("/dev/null/", "Null", "Void");
 	
 	protected ItemEvaporationEffect() {
-		super(2500, 3700);
+		super(750, 2500);
 	}
 
 	@Override
