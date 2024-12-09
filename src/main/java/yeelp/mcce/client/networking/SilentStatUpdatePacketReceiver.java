@@ -1,22 +1,20 @@
 package yeelp.mcce.client.networking;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.util.Identifier;
+import yeelp.mcce.client.event.CycleOfLifeTiltHandler;
 import yeelp.mcce.network.NetworkingConstants;
-import yeelp.mcce.network.SilentStatUpdatePacket;
+import yeelp.mcce.network.SilentStatUpdatePayload;
 
-public class SilentStatUpdatePacketReceiver implements ClientPacketReceiver {
+public class SilentStatUpdatePacketReceiver implements ClientPacketReceiver<SilentStatUpdatePayload> {
 
 	@Override
-	public void handlePacket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		SilentStatUpdatePacket packet = SilentStatUpdatePacket.SilentStatUpdatePacketDecoder.getInstance().decodePacket(buf);
-		client.execute(() -> {
-			client.player.setHealth(packet.getHealth());
-			client.player.getHungerManager().setFoodLevel(packet.getFood());
-			client.player.getHungerManager().setSaturationLevel(packet.getSat());
+	public void handlePayload(SilentStatUpdatePayload silentStatUpdatePayload, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> {
+			context.player().setHealth(silentStatUpdatePayload.health());
+			context.player().getHungerManager().setFoodLevel(silentStatUpdatePayload.hunger());
+			context.player().getHungerManager().setSaturationLevel(silentStatUpdatePayload.sat());
+			CycleOfLifeTiltHandler.addPlayer(context.player());
 		});
 	}
 

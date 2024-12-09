@@ -8,13 +8,16 @@ import yeelp.mcce.util.ChaosLib;
 
 public final class MobVisionEffect extends SimpleTimedChaosEffect {
 
+	private static final int DURATION_MIN = 1200, DURATION_MAX = 1800;
+	private static final int RADIUS = 16;
+	private static final int EFFECT_DURATION = 20;
 	public MobVisionEffect() {
-		super(1200, 1800);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 16), (entity) -> entity != player).forEach((entity) -> entity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 20)));
+		player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (entity) -> entity != player).forEach((entity) -> entity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, EFFECT_DURATION)));
 	}
 
 	@Override

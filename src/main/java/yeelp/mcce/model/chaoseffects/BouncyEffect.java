@@ -5,8 +5,9 @@ import yeelp.mcce.api.MCCEAPI;
 
 public final class BouncyEffect extends SimpleTimedChaosEffect {
 
-	protected BouncyEffect() {
-		super(1500, 2300);
+	private static final int DURATION_MIN = 1500, DURATION_MAX = 2300;
+	public BouncyEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
@@ -29,10 +30,9 @@ public final class BouncyEffect extends SimpleTimedChaosEffect {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, PressLToLevitateEffect.class, ToTheMoonEffect.class, ClippyEffect.class);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.PRESS_L_TO_LEVITATE, ChaosEffects.TO_THE_MOON, ChaosEffects.CLIPPY);
 	}
 
 }

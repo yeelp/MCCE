@@ -3,10 +3,11 @@ package yeelp.mcce.model.chaoseffects;
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.ModConfig;
 
-public class XPRandomizerEffect extends SimpleTimedChaosEffect implements OptionalEffect {
+public final class XPRandomizerEffect extends SimpleTimedChaosEffect implements OptionalEffect {
 
-	protected XPRandomizerEffect() {
-		super(2000, 5000);
+	private static final int DURATION_MIN = 2000, DURATION_MAX = 5000;
+	public XPRandomizerEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import net.minecraft.text.Text;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
+import yeelp.mcce.model.chaoseffects.ChaosEffectRegistryEntry;
 
 public final class ChaosCommand {
 
@@ -44,31 +45,30 @@ public final class ChaosCommand {
 				));
 	}
 
-	private static int applyEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
-		ChaosEffect ce = effect == null ? ChaosEffectRegistry.getRandomEffect() : getChaosEffectOrThrow(effect);
+	@SuppressWarnings("SameReturnValue")
+    private static int applyEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
+		ChaosEffect ce = effect == null ? ChaosEffectRegistry.getRandomEffect() : getChaosEffectEntryOrThrow(effect).createChaosEffect();
 		MCCEAPI.mutator.addNewChaosEffect(src.getPlayer(), ce);
 		src.sendFeedback(() -> Text.literal("Success!"), false);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int checkEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
-		ChaosEffect ce = getChaosEffectOrThrow(effect);
-		boolean active = MCCEAPI.accessor.isChaosEffectActive(src.getPlayer(), ce.getClass());
+		boolean active = MCCEAPI.accessor.isChaosEffectActive(src.getPlayer(), getChaosEffectEntryOrThrow(effect));
 		src.sendFeedback(() -> active ? Text.literal("Yes!") : Text.literal("No"), false);
 		return active ? Command.SINGLE_SUCCESS : 0;
 	}
 	
 	private static int removeEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
-		ChaosEffect ce = effect == null ? null : getChaosEffectOrThrow(effect);
 		PlayerEntity player = src.getPlayer();
 		int result;
 		String msg = "Success!";
-		if(ce == null) {
+		if(effect == null) {
 			int count = Iterators.size(MCCEAPI.accessor.getPlayerChaosEffectState(player).iterator());
 			MCCEAPI.mutator.clear(player);
 			result = count;
 		}
-		else if(MCCEAPI.mutator.removeChaosEffect(player, ce.getClass())) {
+		else if(MCCEAPI.mutator.removeChaosEffect(player, getChaosEffectEntryOrThrow(effect))) {
 			result = Command.SINGLE_SUCCESS;
 		}
 		else {
@@ -84,18 +84,18 @@ public final class ChaosCommand {
 		return StringArgumentType.getString(ctx, EFFECT_ARG_NAME);
 	}
 
-	private static ChaosEffect getChaosEffectOrThrow(String effect) throws CommandSyntaxException {
+	private static ChaosEffectRegistryEntry getChaosEffectEntryOrThrow(String effect) throws CommandSyntaxException {
 		if(ChaosEffectRegistry.isEffectRegistered(effect)) {
-			return ChaosEffectRegistry.getEffect(effect);
+			return ChaosEffectRegistry.getEntry(effect);
 		}
-		throw new DynamicCommandExceptionType((name) -> Text.literal("The effect: " + (String) name + " doesn't exist!")).create(effect);
+		throw new DynamicCommandExceptionType((name) -> Text.literal("The effect: " + name + " doesn't exist!")).create(effect);
 	}
 
 	private static final class EffectSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
 
 		@Override
-		public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-			ChaosEffectRegistry.getAllEffects().map(ChaosEffect::getName).forEach(builder::suggest);
+		public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+			ChaosEffectRegistry.getAllEffects().map(ChaosEffectRegistryEntry::getName).forEach(builder::suggest);
 			return builder.buildFuture();
 		}
 

@@ -2,16 +2,18 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.model.PlayerChaosEffectState;
 
 public final class DoubleTimeEffect extends SimpleTimedChaosEffect {
 
-	protected DoubleTimeEffect() {
-		super(500, 1400);
+	private static final int DURATION_MIN = 500, DURATION_MAX = 1400;
+	public DoubleTimeEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		MCCEAPI.mutator.modifyEffectState(player, (pces) -> pces.tickDurationUntilNextEffect());
+		MCCEAPI.mutator.modifyEffectState(player, PlayerChaosEffectState::tickDurationUntilNextEffect);
 	}
 
 	@Override

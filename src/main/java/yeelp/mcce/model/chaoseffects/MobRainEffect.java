@@ -1,74 +1,10 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Function;
-
+import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.CaveSpiderEntity;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.entity.mob.ElderGuardianEntity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.EndermiteEntity;
-import net.minecraft.entity.mob.EvokerEntity;
-import net.minecraft.entity.mob.GuardianEntity;
-import net.minecraft.entity.mob.HoglinEntity;
-import net.minecraft.entity.mob.HuskEntity;
-import net.minecraft.entity.mob.IllusionerEntity;
-import net.minecraft.entity.mob.MagmaCubeEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PiglinBruteEntity;
-import net.minecraft.entity.mob.PiglinEntity;
-import net.minecraft.entity.mob.RavagerEntity;
-import net.minecraft.entity.mob.SilverfishEntity;
-import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.entity.mob.SkeletonHorseEntity;
-import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.entity.mob.SpiderEntity;
-import net.minecraft.entity.mob.StrayEntity;
-import net.minecraft.entity.mob.VindicatorEntity;
-import net.minecraft.entity.mob.WardenEntity;
-import net.minecraft.entity.mob.WitchEntity;
-import net.minecraft.entity.mob.WitherSkeletonEntity;
-import net.minecraft.entity.mob.ZoglinEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.mob.ZombieHorseEntity;
-import net.minecraft.entity.mob.ZombieVillagerEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
-import net.minecraft.entity.passive.AxolotlEntity;
-import net.minecraft.entity.passive.CamelEntity;
-import net.minecraft.entity.passive.CodEntity;
-import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.entity.passive.DolphinEntity;
-import net.minecraft.entity.passive.DonkeyEntity;
-import net.minecraft.entity.passive.FoxEntity;
-import net.minecraft.entity.passive.FrogEntity;
-import net.minecraft.entity.passive.GlowSquidEntity;
-import net.minecraft.entity.passive.GoatEntity;
-import net.minecraft.entity.passive.HorseEntity;
-import net.minecraft.entity.passive.LlamaEntity;
-import net.minecraft.entity.passive.MooshroomEntity;
-import net.minecraft.entity.passive.MuleEntity;
-import net.minecraft.entity.passive.PandaEntity;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.entity.passive.PolarBearEntity;
-import net.minecraft.entity.passive.PufferfishEntity;
-import net.minecraft.entity.passive.RabbitEntity;
-import net.minecraft.entity.passive.SalmonEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.passive.SnifferEntity;
-import net.minecraft.entity.passive.SnowGolemEntity;
-import net.minecraft.entity.passive.SquidEntity;
-import net.minecraft.entity.passive.StriderEntity;
-import net.minecraft.entity.passive.TadpoleEntity;
-import net.minecraft.entity.passive.TraderLlamaEntity;
-import net.minecraft.entity.passive.TropicalFishEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.mob.*;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.SpectralArrowEntity;
@@ -78,13 +14,17 @@ import net.minecraft.world.World;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
 
-public class MobRainEffect extends AbstractRainEffect {
+import java.util.Set;
+import java.util.function.Function;
 
-	private static final Set<Function<World, ? extends Entity>> VALID_MOBS = new HashSet<Function<World, ? extends Entity>>();
+public final class MobRainEffect extends AbstractRainEffect {
+
+	private static final Set<Function<World, ? extends Entity>> VALID_MOBS = Sets.newHashSet();
 	
 	static {
 		VALID_MOBS.add((world) -> new ArrowEntity(EntityType.ARROW, world));
 		VALID_MOBS.add((world) -> new AxolotlEntity(EntityType.AXOLOTL, world));
+		VALID_MOBS.add((world) -> new BoggedEntity(EntityType.BOGGED, world));
 		VALID_MOBS.add((world) -> new CamelEntity(EntityType.CAMEL, world));
 		VALID_MOBS.add((world) -> new CaveSpiderEntity(EntityType.CAVE_SPIDER, world));
 		VALID_MOBS.add((world) -> new CodEntity(EntityType.COD, world));
@@ -159,9 +99,12 @@ public class MobRainEffect extends AbstractRainEffect {
 		VALID_MOBS.add((world) -> new ZombifiedPiglinEntity(EntityType.ZOMBIFIED_PIGLIN, world));
 		
 	}
-	
+
+	private static final int DURATION_MIN = 1200, DURATION_MAX = 2400;
+	private static final int RADIUS = 20;
+	private static final double INITIAL_Y_VELOCITY = 0.1;
 	public MobRainEffect() {
-		super(1200, 2400);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 	
 	@Override
@@ -172,12 +115,12 @@ public class MobRainEffect extends AbstractRainEffect {
 	@Override
 	protected Entity getEntityToSpawn(PlayerEntity player) {
 		Entity e = ChaosLib.getRandomElementFrom(VALID_MOBS, this.getRNG()).apply(player.getWorld());
-		e.setPos(player.getX() + this.getRNG().nextDouble(-20, 20), player.getWorld().getTopY(), player.getZ() + this.getRNG().nextDouble(-20, 20));
-		e.setVelocity(0.0, 0.1, 0.0);
-		if(e instanceof MobEntity && !(e instanceof SlimeEntity)) {
-			((MobEntity) e).setPersistent();
+		e.setPos(player.getX() + this.getRNG().nextDouble(-RADIUS, RADIUS), player.getWorld().getTopYInclusive(), player.getZ() + this.getRNG().nextDouble(-RADIUS, RADIUS));
+		e.setVelocity(0.0, INITIAL_Y_VELOCITY, 0.0);
+		if(e instanceof MobEntity mob) {
+			mob.setPersistent();
 		}
-		MCCEAPI.mutator.setDespawnTimer(e, this.durationRemaining() + 2400);
+		MCCEAPI.mutator.setDespawnTimer(e, this.durationRemaining() + DURATION_MAX);
 		return e;
 	}
 

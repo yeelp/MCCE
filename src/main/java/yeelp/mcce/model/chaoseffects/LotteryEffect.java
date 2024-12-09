@@ -32,6 +32,12 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 	private static final List<Map.Entry<Item, Float>> WEIGHTED_LIST;
 
 	static {
+		setUpWeights();
+		WEIGHTED_LIST = Lists.newArrayList(WEIGHTED_ITEMS.entrySet());
+	}
+
+	@SuppressWarnings("MagicNumber")
+    private static void setUpWeights() {
 		WEIGHTED_ITEMS.put(Items.DIAMOND, 5f);
 		WEIGHTED_ITEMS.put(Items.HEART_OF_THE_SEA, 11f);
 		WEIGHTED_ITEMS.put(Items.EMERALD, 7f);
@@ -45,12 +51,11 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 		WEIGHTED_ITEMS.put(Items.REINFORCED_DEEPSLATE, 0.5f);
 		WEIGHTED_ITEMS.put(Items.OBSIDIAN, 5f);
 		WEIGHTED_ITEMS.put(Items.FOX_SPAWN_EGG, 1f);
-
-		WEIGHTED_LIST = Lists.newArrayList(WEIGHTED_ITEMS.entrySet());
 	}
 
+	private static final int DURATION_MIN = 3000, DURATION_MAX = 5000;
 	public LotteryEffect() {
-		super(3000, 5000, 1);
+		super(DURATION_MIN, DURATION_MAX, 1);
 	}
 
 	@Override
@@ -75,7 +80,7 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		return;
+		//no effect logic
 	}
 
 	@Override
@@ -92,13 +97,14 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 
 		private static final double V_MIN = -Math.E/10;
 		private static final double V_MAX = -V_MIN;
-		@Override
+		@SuppressWarnings("MagicNumber")
+        @Override
 		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
 			MCCEAPI.mutator.modifyEffect(player, LotteryEffect.class, (ce) -> {
-				if(ce.getTriggersRemaining() <= 0 || !AFFECTED_PLAYERS.tracked(player) || !player.getMainHandStack().getItem().isSuitableFor(state)) {
+				if(ce.getTriggersRemaining() <= 0 || !AFFECTED_PLAYERS.tracked(player) || !player.getMainHandStack().getItem().isCorrectForDrops(player.getMainHandStack(), state)) {
 					return;
 				}
-				if(!state.streamTags().anyMatch((tag) -> tag == BlockTags.PICKAXE_MINEABLE)) {
+				if(state.streamTags().noneMatch((tag) -> tag == BlockTags.PICKAXE_MINEABLE)) {
 					return;
 				}
 				int num = ce.getRNG().nextInt(1, 64);

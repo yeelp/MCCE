@@ -5,10 +5,11 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
 
-public class EquilibriumEffect extends SimpleTimedChaosEffect {
+public final class EquilibriumEffect extends SimpleTimedChaosEffect {
 
+	private static final int DURATION_MIN = 1500, DURATION_MAX = 2000;
 	public EquilibriumEffect() {
-		super(1500, 2000);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
@@ -45,10 +46,9 @@ public class EquilibriumEffect extends SimpleTimedChaosEffect {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, SuddenDeathEffect.class, CycleOfLifeEffect.class);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.SUDDEN_DEATH, ChaosEffects.CYCLE_OF_LIFE);
 	}
 
 }

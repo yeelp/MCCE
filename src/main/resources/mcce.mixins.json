@@ -11,7 +11,6 @@
   "ServerWorldASMMixin",
   "BlockMixin",
   "ItemEntityMixin",
-  "ItemStackMixin",
   "EntityMixin",
   "EntityASMMixin",
   "LivingEntityMixin"

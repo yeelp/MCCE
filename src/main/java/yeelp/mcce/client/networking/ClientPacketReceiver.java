@@ -1,19 +1,20 @@
 package yeelp.mcce.client.networking;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public interface ClientPacketReceiver {
+public interface ClientPacketReceiver<T extends CustomPayload> {
 
-	void handlePacket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
+	void handlePayload(T t, ClientPlayNetworking.Context context);
 	
 	Identifier getID();
+
+	default CustomPayload.Id<T> getPayloadID() {
+		return new CustomPayload.Id<>(this.getID());
+	}
 	
 	default void register() {
-		ClientPlayNetworking.registerGlobalReceiver(this.getID(), this::handlePacket);
+		ClientPlayNetworking.registerGlobalReceiver(this.getPayloadID(), this::handlePayload);
 	}
 }

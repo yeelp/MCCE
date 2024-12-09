@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.model.PlayerChaosEffectState;
 import yeelp.mcce.model.ServerState;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
+import yeelp.mcce.model.chaoseffects.ChaosEffectRegistryEntry;
 
 /**
  * A collection of methods for altering player state
@@ -27,16 +28,16 @@ public interface MCCEAPIMutator {
 
 	/**
 	 * Remove a {@link ChaosEffect} from a player.
-	 * 
+	 *
 	 * @param player the player to remove the effect from. After this method
 	 *               returns, the player will not have any instance of {@code clazz}
 	 *               effect active on them.
-	 * @param clazz  the class of the ChaosEffect to remove.
+	 * @param entry  the registry entry of the chaos effect to remove
 	 * @return true if the effect was removed (i.e. it existed on the target before
 	 *         this method call), false if not (the effect never existed on the
 	 *         target)
 	 */
-	boolean removeChaosEffect(PlayerEntity player, Class<? extends ChaosEffect> clazz);
+	boolean removeChaosEffect(PlayerEntity player, ChaosEffectRegistryEntry entry);
 	
 	/**
 	 * Removes all {@link ChaosEffect}s from a player
@@ -57,7 +58,7 @@ public interface MCCEAPIMutator {
 	/**
 	 * Modifies a player's instance of a {@link ChaosEffect} active on their {@link PlayerChaosEffectState}.
 	 * @param player player's effect state to modify
-	 * @param effect the effect class to alter the instance of
+	 * @param clazz the effect class to alter the instance of
 	 * @param modification the modification to make
 	 */
 	<E extends ChaosEffect> void modifyEffect(PlayerEntity player, Class<E> clazz, Consumer<E> modification);

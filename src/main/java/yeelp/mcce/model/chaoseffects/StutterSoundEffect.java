@@ -1,12 +1,13 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import yeelp.mcce.network.StutterSoundStatusPacket;
+import yeelp.mcce.network.StutterSoundStatusPayload;
 
-public class StutterSoundEffect extends StatusPacketSendingChaosEffect<StutterSoundStatusPacket> {
+public final class StutterSoundEffect extends StatusPayloadSendingChaosEffect<StutterSoundStatusPayload> {
 
-	protected StutterSoundEffect() {
-		super(1200, 2400, StutterSoundStatusPacket::new);
+	private static final int DURATION_MIN = 1200, DURATION_MAX = 2400;
+	public StutterSoundEffect() {
+		super(DURATION_MIN, DURATION_MAX, StutterSoundStatusPayload::new);
 	}
 
 	@Override
@@ -16,7 +17,7 @@ public class StutterSoundEffect extends StatusPacketSendingChaosEffect<StutterSo
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		return;
+		//no effect logic
 	}
 
 	@Override

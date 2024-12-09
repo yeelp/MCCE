@@ -1,10 +1,5 @@
 package yeelp.mcce.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -12,7 +7,13 @@ import net.minecraft.entity.Ownable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.model.chaoseffects.ChaosEffects;
 import yeelp.mcce.model.chaoseffects.ItemEvaporationEffect;
 
 @Mixin(ItemEntity.class)
@@ -33,7 +34,8 @@ public abstract class ItemEntityMixin extends Entity implements Ownable {
 		return stack;
 	}
 
+	@Unique
 	private boolean shouldEvaporate(PlayerEntity player) {
-		return this.pickupDelay == 0 && MCCEAPI.accessor.isChaosEffectActive(player, ItemEvaporationEffect.class);
+		return this.pickupDelay == 0 && MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.ITEM_EVAPORATION);
 	}
 }

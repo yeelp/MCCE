@@ -1,11 +1,13 @@
 package yeelp.mcce.model;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.google.common.collect.Maps;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
@@ -23,10 +25,10 @@ public final class ServerState extends PersistentState {
 	
 	private static final String TIMERS_KEY = "despawnTimers";
 	
-	private static final Type<ServerState> TYPE = new Type<ServerState>(ServerState::new, ServerState::createFromNbt, null);
+	private static final Type<ServerState> TYPE = new Type<>(ServerState::new, ServerState::createFromNbt, null);
 	
 	@Override
-	public NbtCompound writeNbt(NbtCompound var1) {
+	public NbtCompound writeNbt(NbtCompound var1, RegistryWrapper.WrapperLookup lookup) {
 		NbtCompound tag = new NbtCompound();
 		NbtCompound nested = new NbtCompound();
 		
@@ -41,7 +43,7 @@ public final class ServerState extends PersistentState {
 	 * @param tag the stored NBT data
 	 * @return a ServerState reflecting the stored NBT data.
 	 */
-	public static final ServerState createFromNbt(NbtCompound tag) {
+	public static ServerState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup ignoredLookup) {
 		MCCE.LOGGER.info(tag.toString());
 		ServerState state = new ServerState();
 		tag.getKeys().forEach((key) -> {
@@ -60,7 +62,7 @@ public final class ServerState extends PersistentState {
 	
 	/**
 	 * Gets a {@link PlayerChaosEffectState} for a specified UUID.
-	 * @param uuid
+	 * @param uuid UUID of the player to get the state for
 	 * @return The PlayerChaosEffectState for that UUID.
 	 */
 	public PlayerChaosEffectState getEffectState(UUID uuid) {
@@ -69,7 +71,7 @@ public final class ServerState extends PersistentState {
 	
 	/**
 	 * Gets a {@link DespawnTimer} for a specified UUID
-	 * @param uuid
+	 * @param uuid UUID of the entity to get the despawn timer for
 	 * @return The DespawnTimer for that UUID.
 	 */
 	public DespawnTimer getDespawnTimer(UUID uuid) {
@@ -86,11 +88,11 @@ public final class ServerState extends PersistentState {
 	
 	/**
 	 * Get the ServerState active on the server.
-	 * @param server
+	 * @param server The server instance
 	 * @return the active ServerState.
 	 */
 	public static ServerState getServerState(MinecraftServer server) {
-		return server.getWorld(World.OVERWORLD).getPersistentStateManager().getOrCreate(TYPE, MCCE.MODID);
+		return Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager().getOrCreate(TYPE, MCCE.MODID);
 	}
 
 }

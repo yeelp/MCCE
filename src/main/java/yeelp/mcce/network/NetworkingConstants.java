@@ -9,18 +9,18 @@ import yeelp.mcce.MCCE;
 
 public interface NetworkingConstants {
 	
-	static final Identifier SILENT_UPDATE_PACKET_ID = new Identifier(MCCE.MODID, "silentupdate");
-	static final Identifier MEMORY_GAME_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "memorygamestatus");
-	static final Identifier RAINBOW_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "rainbow");
-	static final Identifier QUIVER_UPDATE_PACKET_ID = new Identifier(MCCE.MODID, "quiverupdate");
-	static final Identifier STUTTER_SOUND_STATUS_PACKET_ID = new Identifier(MCCE.MODID, "stuttersoundstatus");
+	Identifier SILENT_UPDATE_PACKET_ID = MCCE.createIdentifier("silentupdate");
+	Identifier MEMORY_GAME_STATUS_PACKET_ID = MCCE.createIdentifier("memorygamestatus");
+	Identifier RAINBOW_STATUS_PACKET_ID = MCCE.createIdentifier("rainbow");
+	Identifier QUIVER_UPDATE_PACKET_ID = MCCE.createIdentifier("quiverupdate");
+	Identifier STUTTER_SOUND_STATUS_PACKET_ID = MCCE.createIdentifier("stuttersoundstatus");
 	
-	public static final class ParticlePacketConstants {
+	final class ParticlePacketConstants {
 		private ParticlePacketConstants() {
 			//not to be instantiated
 		}
 		
-		public static final Identifier PARTICLE_PACKET_ID = new Identifier(MCCE.MODID, "particle");
+		public static final Identifier PARTICLE_PACKET_ID = MCCE.createIdentifier("particle");
 		
 		public static final byte DAMAGE_INDICATOR = 0;
 		public static final byte NAUTILUS = 1;
@@ -39,49 +39,33 @@ public interface NetworkingConstants {
 		public static final byte BUBBLE = 14;
 		
 		public static ParticleEffect getParticle(byte b) {
-			switch(b) {
-				case DAMAGE_INDICATOR:
-					return ParticleTypes.DAMAGE_INDICATOR;
-				case NAUTILUS:
-					return ParticleTypes.NAUTILUS;
-				case EXPLOSION:
-					return ParticleTypes.EXPLOSION;
-				case SONIC_BOOM:
-					return ParticleTypes.SONIC_BOOM;
-				case CHERRY:
-					return ParticleTypes.CHERRY_LEAVES;
-				case SOUL:
-					return ParticleTypes.SOUL;
-				case HEART:
-					return ParticleTypes.HEART;
-				case NOTE:
-					return ParticleTypes.NOTE;
-				case TOTEM:
-					return ParticleTypes.TOTEM_OF_UNDYING;
-				case WITCH:
-					return ParticleTypes.WITCH;
-				case SPORE:
-					return ParticleTypes.SPORE_BLOSSOM_AIR;
-				case CAMPFIRE:
-					return ParticleTypes.CAMPFIRE_SIGNAL_SMOKE;
-				case ASH:
-					return ParticleTypes.ASH;
-				case SPARK:
-					return ParticleTypes.ELECTRIC_SPARK;
-				case BUBBLE:
-					return ParticleTypes.BUBBLE_COLUMN_UP;
-				default:
-					return null;
-			}
+            return switch (b) {
+                case DAMAGE_INDICATOR -> ParticleTypes.DAMAGE_INDICATOR;
+                case NAUTILUS -> ParticleTypes.NAUTILUS;
+                case EXPLOSION -> ParticleTypes.EXPLOSION;
+                case SONIC_BOOM -> ParticleTypes.SONIC_BOOM;
+                case CHERRY -> ParticleTypes.CHERRY_LEAVES;
+                case SOUL -> ParticleTypes.SOUL;
+                case HEART -> ParticleTypes.HEART;
+                case NOTE -> ParticleTypes.NOTE;
+                case TOTEM -> ParticleTypes.TOTEM_OF_UNDYING;
+                case WITCH -> ParticleTypes.WITCH;
+                case SPORE -> ParticleTypes.SPORE_BLOSSOM_AIR;
+                case CAMPFIRE -> ParticleTypes.CAMPFIRE_SIGNAL_SMOKE;
+                case ASH -> ParticleTypes.ASH;
+                case SPARK -> ParticleTypes.ELECTRIC_SPARK;
+                case BUBBLE -> ParticleTypes.BUBBLE_COLUMN_UP;
+                default -> null;
+            };
 		}
 	}
 	
-	public static final class SoundPacketConstants {
+	final class SoundPacketConstants {
 		private SoundPacketConstants() {
 			//not to be initialized
 		}
 		
-		public static final Identifier SOUND_PACKET_ID = new Identifier(MCCE.MODID, "soundevent");
+		public static final Identifier SOUND_PACKET_ID = MCCE.createIdentifier("soundevent");
 		
 		public static final byte UI_BUTTON_CLICK_ID = 0;
 		public static final byte FIREWORK_LAUNCHES_ID = 1;
@@ -117,80 +101,53 @@ public interface NetworkingConstants {
 		public static final byte SILVERFISH_AMBIENT = 31;
 		public static final byte GOAT_HORN = 32;
 		public static final byte LOVABLE_PHANTOM_SPAWN_ID = 33;
+		public static final byte ENDER_DRIVE_THRU_ACTIVATE = 34;
+		public static final byte SHAKE = 35;
 		
-		public static SoundEvent getSound(byte b) {
-			switch(b) {
-				case UI_BUTTON_CLICK_ID:
-					return SoundEvents.UI_BUTTON_CLICK.value();
-				case FIREWORK_LAUNCHES_ID:
-					return SoundEvents.ENTITY_FIREWORK_ROCKET_LAUNCH;
-				case KNOCKBACK_ID:
-					return SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
-				case POWER_UP_ID:
-					return Math.random() < 0.5 ? SoundEvents.BLOCK_CONDUIT_ACTIVATE : SoundEvents.BLOCK_BEACON_ACTIVATE;
-				case POWER_DOWN_ID:
-					return Math.random() < 0.5 ? SoundEvents.BLOCK_CONDUIT_DEACTIVATE : SoundEvents.BLOCK_BEACON_DEACTIVATE;
-				case IRON_HIT_ID:
-					return SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR;
-				case IRON_EQUIP_ID:
-					return SoundEvents.ENTITY_IRON_GOLEM_REPAIR;
-				case IRON_BREAK_ID:
-					return SoundEvents.ENTITY_IRON_GOLEM_DAMAGE;
-				case FIREBALL_ID:
-					return SoundEvents.ENTITY_BLAZE_SHOOT;
-				case EXTINGUISH_ID:
-					return SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE;
-				case ENCHANT_ID:
-					return SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE;
-				case INVERSE_START:
-					return SoundEvents.ENTITY_ENDERMAN_TELEPORT;
-				case INVERSE_END:
-					return SoundEvents.ENTITY_ILLUSIONER_MIRROR_MOVE;
-				case BASALT_DELTAS_ADDITIONS:
-					return SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS.value();
-				case ARROW_HIT_PLAYER:
-					return SoundEvents.ENTITY_ARROW_HIT_PLAYER;
-				case BELL_RESONATE:
-					return SoundEvents.BLOCK_BELL_RESONATE;
-				case BLAZE_AMBIENT:
-					return SoundEvents.ENTITY_BLAZE_AMBIENT;
-				case CHEST_LOCKED:
-					return SoundEvents.BLOCK_CHEST_LOCKED;
-				case CREEPER_PRIMED:
-					return SoundEvents.ENTITY_CREEPER_PRIMED;
-				case EVOKER_WOLOLO:
-					return SoundEvents.ENTITY_EVOKER_PREPARE_WOLOLO;
-				case FIREWORK_TWINKLE:
-					return SoundEvents.ENTITY_FIREWORK_ROCKET_TWINKLE;
-				case FOX_AMBIENT:
-					return SoundEvents.ENTITY_FOX_AMBIENT;
-				case GHAST_AMBIENT:
-					return SoundEvents.ENTITY_GHAST_AMBIENT;
-				case DRINK_HONEY:
-					return SoundEvents.ITEM_HONEY_BOTTLE_DRINK;
-				case ITEM_BREAK:
-					return SoundEvents.ENTITY_ITEM_BREAK;
-				case STRAD:
-					return SoundEvents.MUSIC_DISC_STRAD;
-				case STAL:
-					return SoundEvents.MUSIC_DISC_STAL;
-				case WARD:
-					return SoundEvents.MUSIC_DISC_WARD;
-				case PHANTOM_AMBIENT:
-					return SoundEvents.ENTITY_PHANTOM_AMBIENT;
-				case PHANTOM_SWOOP:
-					return SoundEvents.ENTITY_PHANTOM_SWOOP;
-				case SCULK_SENSOR:
-					return SoundEvents.BLOCK_SCULK_SENSOR_CLICKING;
-				case SILVERFISH_AMBIENT:
-					return SoundEvents.ENTITY_SILVERFISH_AMBIENT;
-				case GOAT_HORN:
-					return SoundEvents.GOAT_HORN_SOUNDS.get((int)(Math.random() * SoundEvents.GOAT_HORN_SOUND_COUNT)).value();
-				case LOVABLE_PHANTOM_SPAWN_ID:
-					return SoundEvents.ENTITY_PLAYER_LEVELUP;
-				default:
-					return null;
-			}
+		@SuppressWarnings("MagicNumber")
+        public static SoundEvent getSound(byte b) {
+            return switch (b) {
+                case UI_BUTTON_CLICK_ID -> SoundEvents.UI_BUTTON_CLICK.value();
+                case FIREWORK_LAUNCHES_ID -> SoundEvents.ENTITY_FIREWORK_ROCKET_LAUNCH;
+                case KNOCKBACK_ID -> SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
+                case POWER_UP_ID ->
+                        Math.random() < 0.5 ? SoundEvents.BLOCK_CONDUIT_ACTIVATE : SoundEvents.BLOCK_BEACON_ACTIVATE;
+                case POWER_DOWN_ID ->
+                        Math.random() < 0.5 ? SoundEvents.BLOCK_CONDUIT_DEACTIVATE : SoundEvents.BLOCK_BEACON_DEACTIVATE;
+                case IRON_HIT_ID -> SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR;
+                case IRON_EQUIP_ID -> SoundEvents.ENTITY_IRON_GOLEM_REPAIR;
+                case IRON_BREAK_ID -> SoundEvents.ENTITY_IRON_GOLEM_DAMAGE;
+                case FIREBALL_ID -> SoundEvents.ENTITY_BLAZE_SHOOT;
+                case EXTINGUISH_ID -> SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE;
+                case ENCHANT_ID -> SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE;
+                case INVERSE_START -> SoundEvents.ENTITY_ENDERMAN_TELEPORT;
+                case INVERSE_END -> SoundEvents.ENTITY_ILLUSIONER_MIRROR_MOVE;
+                case BASALT_DELTAS_ADDITIONS -> SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS.value();
+                case ARROW_HIT_PLAYER -> SoundEvents.ENTITY_ARROW_HIT_PLAYER;
+                case BELL_RESONATE -> SoundEvents.BLOCK_BELL_RESONATE;
+                case BLAZE_AMBIENT -> SoundEvents.ENTITY_BLAZE_AMBIENT;
+                case CHEST_LOCKED -> SoundEvents.BLOCK_CHEST_LOCKED;
+                case CREEPER_PRIMED -> SoundEvents.ENTITY_CREEPER_PRIMED;
+                case EVOKER_WOLOLO -> SoundEvents.ENTITY_EVOKER_PREPARE_WOLOLO;
+                case FIREWORK_TWINKLE -> SoundEvents.ENTITY_FIREWORK_ROCKET_TWINKLE;
+                case FOX_AMBIENT -> SoundEvents.ENTITY_FOX_AMBIENT;
+                case GHAST_AMBIENT -> SoundEvents.ENTITY_GHAST_AMBIENT;
+                case DRINK_HONEY -> SoundEvents.ITEM_HONEY_BOTTLE_DRINK.value();
+                case ITEM_BREAK -> SoundEvents.ENTITY_ITEM_BREAK;
+                case STRAD -> SoundEvents.MUSIC_DISC_STRAD.value();
+                case STAL -> SoundEvents.MUSIC_DISC_STAL.value();
+                case WARD -> SoundEvents.MUSIC_DISC_WARD.value();
+                case PHANTOM_AMBIENT -> SoundEvents.ENTITY_PHANTOM_AMBIENT;
+                case PHANTOM_SWOOP -> SoundEvents.ENTITY_PHANTOM_SWOOP;
+                case SCULK_SENSOR -> SoundEvents.BLOCK_SCULK_SENSOR_CLICKING;
+                case SILVERFISH_AMBIENT -> SoundEvents.ENTITY_SILVERFISH_AMBIENT;
+                case GOAT_HORN ->
+                        SoundEvents.GOAT_HORN_SOUNDS.get((int) (Math.random() * SoundEvents.GOAT_HORN_SOUND_COUNT)).value();
+                case LOVABLE_PHANTOM_SPAWN_ID -> SoundEvents.ENTITY_PLAYER_LEVELUP;
+				case ENDER_DRIVE_THRU_ACTIVATE -> SoundEvents.BLOCK_ENDER_CHEST_OPEN;
+				case SHAKE -> SoundEvents.ENTITY_PLAYER_ATTACK_WEAK;
+                default -> null;
+            };
 		}
 		
 	}

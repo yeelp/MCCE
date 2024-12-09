@@ -1,95 +1,93 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
+import com.google.common.collect.Sets;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.entity.mob.GiantEntity;
-import net.minecraft.entity.mob.HuskEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PiglinBruteEntity;
-import net.minecraft.entity.mob.PiglinEntity;
-import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.entity.mob.StrayEntity;
-import net.minecraft.entity.mob.WitherSkeletonEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.mob.ZombieVillagerEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.trim.ArmorTrim;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.item.equipment.trim.ArmorTrim;
+import net.minecraft.item.equipment.trim.ArmorTrimPattern;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
+import org.apache.commons.compress.utils.Lists;
+import yeelp.mcce.MCCE;
+import yeelp.mcce.util.AttributeUtils;
 import yeelp.mcce.util.ChaosLib;
+import yeelp.mcce.util.PlayerUtils;
 
-public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
+import java.util.*;
+import java.util.stream.Stream;
 
-	private static final UUID SPYGLASS_FOLLOW_RANGE = UUID.fromString("5d3c1939-beb6-41ce-9a1e-7bf36d49f51d");
+public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 
-	private enum BeaconBoost {
-		ARMOR("armor", "8be13a82-e38f-44fb-a438-1fe864d41562", 6.0, Operation.ADDITION) {
-			@Override
-			EntityAttribute getAttribute() {
-				return EntityAttributes.GENERIC_ARMOR;
-			}
-		},
-		SPEED("speed", "4b9f3e68-c1c9-43ae-b3a6-55f1817c2f16", 0.3, Operation.MULTIPLY_TOTAL) {
-			@Override
-			EntityAttribute getAttribute() {
-				return EntityAttributes.GENERIC_MOVEMENT_SPEED;
-			}
-		},
-		KNOCKBACK("attack_knockback", "de935749-ae67-4fbf-838a-fa6feda7d7b2", 3.0, Operation.ADDITION) {
-			@Override
-			EntityAttribute getAttribute() {
-				return EntityAttributes.GENERIC_ATTACK_KNOCKBACK;
-			}
-		},
-		KNOCKBACK_RESIST("knockback_resist", "780173c2-2888-4b2b-a23f-182676791175", 1.0, Operation.ADDITION) {
-			@Override
-			EntityAttribute getAttribute() {
-				return EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE;
-			}
-		};
+    private static final Identifier SPYGLASS_FOLLOW_RANGE = MCCE.createIdentifier("spyglassfollowrange");
+    private static final float ENCHANT_LOCAL_DIFF_THRESHOLD = 5.0f;
+    private static final int DURATION_MIN = 1800;
+    private static final int DURATION_MAX = 2800;
+    private static final int INTERVAL_MIN = 40;
+    private static final int INTERVAL_MAX = 60;
 
-		private final UUID uuid;
-		private final double amount;
-		private final Operation op;
-		private final String name;
+    private enum BeaconBoost {
+        ARMOR("armor", 6.0, Operation.ADD_VALUE) {
+            @Override
+            RegistryEntry<EntityAttribute> getAttribute() {
+                return EntityAttributes.ARMOR;
+            }
+        },
+        SPEED("speed", 0.3, Operation.ADD_MULTIPLIED_TOTAL) {
+            @Override
+            RegistryEntry<EntityAttribute> getAttribute() {
+                return EntityAttributes.MOVEMENT_SPEED;
+            }
+        },
+        KNOCKBACK("attack_knockback", 3.0, Operation.ADD_VALUE) {
+            @Override
+            RegistryEntry<EntityAttribute> getAttribute() {
+                return EntityAttributes.ATTACK_KNOCKBACK;
+            }
+        },
+        KNOCKBACK_RESIST("knockback_resist", 1.0, Operation.ADD_VALUE) {
+            @Override
+            RegistryEntry<EntityAttribute> getAttribute() {
+                return EntityAttributes.KNOCKBACK_RESISTANCE;
+            }
+        };
 
-		BeaconBoost(String name, String uuid, double amount, Operation op) {
-			this.uuid = UUID.fromString(uuid);
-			this.amount = amount;
-			this.op = op;
-			this.name = String.format("Beacon Head Boost %s", name);
-		}
+        private final double amount;
+        private final Operation op;
+        private final Identifier id;
 
-		EntityAttributeModifier createModifier() {
-			return new EntityAttributeModifier(this.uuid, this.name, this.amount, this.op);
-		}
+        BeaconBoost(String name, double amount, Operation op) {
+            this.amount = amount;
+            this.op = op;
+            this.id = MCCE.createIdentifier(String.format("beacon%s", name));
+        }
 
-		abstract EntityAttribute getAttribute();
-	}
+        EntityAttributeModifier createModifier() {
+            return new EntityAttributeModifier(this.id, this.amount, this.op);
+        }
 
-	private enum SlotItems {
-		//@formatter:off
+        abstract RegistryEntry<EntityAttribute> getAttribute();
+    }
+
+    private enum SlotItems {
+        //@formatter:off
 		HELMET(Items.TURTLE_HELMET, 
 				Items.LEATHER_HELMET, 
 				Items.GOLDEN_HELMET,
@@ -100,21 +98,22 @@ public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 				Items.BEACON, 
 				Items.DRAGON_HEAD) {
 			//@formatter:on
-			@Override
-			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
-				SlotItems.applyArmorModifications(stack, rand);
-				if(stack.getItem() == Items.BEACON) {
-					BeaconBoost boost = ChaosLib.getRandomElementFrom(BeaconBoost.values(), rand);
-					stack.addAttributeModifier(boost.getAttribute(), boost.createModifier(), EquipmentSlot.HEAD);
-				}
-			}
+            @SuppressWarnings("FeatureEnvy")
+            @Override
+            protected void applyModifications(World world, ItemStack stack, Random rand) {
+                SlotItems.applyArmorModifications(world, stack, rand);
+                if (stack.getItem() == Items.BEACON) {
+                    BeaconBoost boost = ChaosLib.getRandomElementFrom(BeaconBoost.values(), rand);
+                    AttributeUtils.addAttributeModifier(stack, boost.getAttribute(), boost.createModifier(), AttributeModifierSlot.HEAD);
+                }
+            }
 
-			@Override
-			EquipmentSlot getSlot() {
-				return EquipmentSlot.HEAD;
-			}
-		},
-		//@formatter:off
+            @Override
+            EquipmentSlot getSlot() {
+                return EquipmentSlot.HEAD;
+            }
+        },
+        //@formatter:off
 		CHESTPLATE(Items.ELYTRA, 
 				Items.LEATHER_CHESTPLATE, 
 				Items.GOLDEN_CHESTPLATE, 
@@ -123,17 +122,17 @@ public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 				Items.DIAMOND_CHESTPLATE, 
 				Items.NETHERITE_CHESTPLATE) {
 			//@formatter:on
-			@Override
-			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
-				SlotItems.applyArmorModifications(stack, rand);
-			}
+            @Override
+            protected void applyModifications(World world, ItemStack stack, Random rand) {
+                SlotItems.applyArmorModifications(world, stack, rand);
+            }
 
-			@Override
-			EquipmentSlot getSlot() {
-				return EquipmentSlot.CHEST;
-			}
-		},
-		//@formatter:off
+            @Override
+            EquipmentSlot getSlot() {
+                return EquipmentSlot.CHEST;
+            }
+        },
+        //@formatter:off
 		LEGGINGS(Items.LEATHER_LEGGINGS, 
 				Items.GOLDEN_LEGGINGS, 
 				Items.CHAINMAIL_LEGGINGS, 
@@ -141,17 +140,17 @@ public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 				Items.DIAMOND_LEGGINGS, 
 				Items.NETHERITE_LEGGINGS) {
 			//@formatter:on
-			@Override
-			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
-				SlotItems.applyArmorModifications(stack, rand);
-			}
+            @Override
+            protected void applyModifications(World world, ItemStack stack, Random rand) {
+                SlotItems.applyArmorModifications(world, stack, rand);
+            }
 
-			@Override
-			EquipmentSlot getSlot() {
-				return EquipmentSlot.LEGS;
-			}
-		},
-		//@formatter:off
+            @Override
+            EquipmentSlot getSlot() {
+                return EquipmentSlot.LEGS;
+            }
+        },
+        //@formatter:off
 		BOOTS(Items.LEATHER_BOOTS, 
 				Items.GOLDEN_BOOTS, 
 				Items.CHAINMAIL_BOOTS, 
@@ -159,51 +158,55 @@ public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 				Items.DIAMOND_BOOTS, 
 				Items.NETHERITE_BOOTS) {
 			//@formatter:on
-			@Override
-			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
-				SlotItems.applyArmorModifications(stack, rand);
-			}
+            @Override
+            protected void applyModifications(World world, ItemStack stack, Random rand) {
+                SlotItems.applyArmorModifications(world, stack, rand);
+            }
 
-			@Override
-			EquipmentSlot getSlot() {
-				return EquipmentSlot.FEET;
-			}
-		},
-		//@formatter:off
+            @Override
+            EquipmentSlot getSlot() {
+                return EquipmentSlot.FEET;
+            }
+        },
+        //@formatter:off
 		OFFHAND(Items.SHIELD,
 				Items.TOTEM_OF_UNDYING, 
 				Items.TIPPED_ARROW, 
 				Items.DEBUG_STICK) {
 			//@formatter:on
 
-			private final Potion[] effects = {
-					Registries.POTION.get(new Identifier("minecraft", "strong_harming")),
-					Registries.POTION.get(new Identifier("minecraft", "long_weakness")),
-					Registries.POTION.get(new Identifier("minecraft", "strong_poison")),
-					Registries.POTION.get(new Identifier("minecraft", "strong_slowness")),
-					Registries.POTION.get(new Identifier("minecraft", "turtle_master"))};
+            private final Set<RegistryEntry<Potion>> effects = Sets.newHashSet();
 
-			@Override
-			final ItemStack createRandomStack(World world, LocalDifficulty local, Random rand) {
-				if(rand.nextDouble() < 0.9) {
-					return super.createRandomStack(world, local, rand);
-				}
-				return MAINHAND.createRandomStack(world, local, rand);
-			}
+            {
+                //@formatter:off
+                Stream.of("strong_harming", "long_weakness", "strong_poison", "strong_slowness", "turtle_master")
+                        .map(Identifier::ofVanilla)
+                        .map((id) -> Registries.POTION.getEntry(id).get())
+                        .forEach(effects::add);
+                //@formatter:on
+            }
 
-			@Override
-			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
-				if(stack.getItem() == this.items[2]) {
-					PotionUtil.setPotion(stack, ChaosLib.getRandomElementFrom(this.effects, rand));
-				}
-			}
+            @Override
+            final ItemStack createRandomStack(World world, LocalDifficulty local, Random rand) {
+                if (rand.nextDouble() < 0.9) {
+                    return super.createRandomStack(world, local, rand);
+                }
+                return MAINHAND.createRandomStack(world, local, rand);
+            }
 
-			@Override
-			EquipmentSlot getSlot() {
-				return EquipmentSlot.OFFHAND;
-			}
-		},
-		//@formatter:off
+            @Override
+            protected void applyModifications(World world, ItemStack stack, Random rand) {
+                if (stack.getItem() == this.items[2]) {
+                    stack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(ChaosLib.getRandomElementFrom(this.effects, rand)));
+                }
+            }
+
+            @Override
+            EquipmentSlot getSlot() {
+                return EquipmentSlot.OFFHAND;
+            }
+        },
+        //@formatter:off
 		MAINHAND(Items.WOODEN_AXE,
 				Items.WOODEN_HOE,
 				Items.WOODEN_PICKAXE,
@@ -239,145 +242,123 @@ public class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect {
 				Items.TOTEM_OF_UNDYING,
 				Items.SPYGLASS) {
 			//@formatter:on
-			@Override
-			protected void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand) {
-				if(stack.getItem() == Items.SPYGLASS) {
-					stack.addAttributeModifier(EntityAttributes.GENERIC_FOLLOW_RANGE, new EntityAttributeModifier(SPYGLASS_FOLLOW_RANGE, "Spyglass Follow Boost", 3.5, Operation.MULTIPLY_BASE), EquipmentSlot.MAINHAND);
-				}
-			}
+            @Override
+            protected void applyModifications(World world, ItemStack stack, Random rand) {
+                if (Objects.equals(stack.getItem(), Items.SPYGLASS)) {
+                    AttributeUtils.addAttributeModifier(stack, EntityAttributes.FOLLOW_RANGE, new EntityAttributeModifier(SPYGLASS_FOLLOW_RANGE, 3.5, Operation.ADD_MULTIPLIED_BASE), AttributeModifierSlot.MAINHAND);
+                }
+            }
 
-			@Override
-			EquipmentSlot getSlot() {
-				return EquipmentSlot.MAINHAND;
-			}
-		};
+            @Override
+            EquipmentSlot getSlot() {
+                return EquipmentSlot.MAINHAND;
+            }
+        };
 
-		private static final String MATERIAL_KEY = "material", PATTERN_KEY = "pattern";
-		private static final String[] TRIM_MATERIALS = {
-				"minecraft:amethyst",
-				"minecraft:copper",
-				"minecraft:diamond",
-				"minecraft:emerald",
-				"minecraft:gold",
-				"minecraft:iron",
-				"minecraft:lapis",
-				"minecraft:netherite",
-				"minecraft:quartz",
-				"minecraft:redstone"};
+        protected final Item[] items;
 
-		private static final String[] TRIM_PATTERNS = {
-				"minecraft:coast",
-				"minecraft:dune",
-				"minecraft:eye",
-				"minecraft:rib",
-				"minecraft:sentry",
-				"minecraft:snout",
-				"minecraft:spire",
-				"minecraft:tide",
-				"minecraft:vex",
-				"minecraft:ward",
-				"minecraft:wild"};
-		Item[] items;
+        SlotItems(Item... items) {
+            this.items = items;
+        }
 
-		SlotItems(Item... items) {
-			this.items = items;
-		}
+        @SuppressWarnings("MagicNumber")
+        ItemStack createRandomStack(World world, LocalDifficulty local, Random rand) {
+            ItemStack stack = new ItemStack(ChaosLib.getRandomElementFrom(this.items, rand));
+            this.applyModifications(world, stack, rand);
+            if (local.isHarderThan(rand.nextFloat(ENCHANT_LOCAL_DIFF_THRESHOLD))) {
+                EnchantmentHelper.enchant(world.getRandom(), stack, (int) (rand.nextInt((int) (25 + local.getLocalDifficulty() / 2.0f)) + local.getLocalDifficulty()), world.getRegistryManager(), Optional.empty());
+            }
+            return stack;
+        }
 
-		ItemStack createRandomStack(World world, LocalDifficulty local, Random rand) {
-			ItemStack stack = new ItemStack(ChaosLib.getRandomElementFrom(this.items, rand));
-			this.applyModifications(world, local, stack, rand);
-			if(local.isHarderThan(rand.nextFloat(5.0f))) {
-				EnchantmentHelper.enchant(world.getRandom(), stack, (int) (rand.nextInt((int) (25 + local.getLocalDifficulty() / 2.0f)) + local.getLocalDifficulty()), true);
-			}
-			return stack;
-		}
+        abstract EquipmentSlot getSlot();
 
-		abstract EquipmentSlot getSlot();
+        protected abstract void applyModifications(World world, ItemStack stack, Random rand);
 
-		protected abstract void applyModifications(World world, LocalDifficulty local, ItemStack stack, Random rand);
+        protected static void applyArmorModifications(World world, ItemStack stack, Random rand) {
+            if (stack.isIn(ItemTags.DYEABLE)) {
+                dyeArmor(stack, rand);
+            }
+            if (stack.isIn(ItemTags.TRIMMABLE_ARMOR)) {
+                applyTrims(world, stack, rand);
+            }
 
-		protected static void applyArmorModifications(ItemStack stack, Random rand) {
-			if(stack.getItem() instanceof DyeableArmorItem) {
-				dyeArmor(stack, rand);
-			}
-			if(stack.isIn(ItemTags.TRIMMABLE_ARMOR)) {
-				applyTrims(stack, rand);
-			}
+        }
 
-		}
+        @SuppressWarnings("MagicNumber")
+        private static void dyeArmor(ItemStack stack, Random rand) {
+            stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(Math.abs(rand.nextInt()) & 0x00FFFFFF, true));
+        }
 
-		private static void dyeArmor(ItemStack stack, Random rand) {
-			NbtCompound nbt = stack.getOrCreateNbt();
-			NbtCompound display = nbt.getCompound(ItemStack.DISPLAY_KEY);
-			display.putInt(ItemStack.COLOR_KEY, Math.abs(rand.nextInt()) & 0x00FFFFFF);
-			nbt.put(ItemStack.DISPLAY_KEY, display);
-		}
+        private static void applyTrims(World world, ItemStack stack, Random rand) {
+            Registry<ArmorTrimPattern> patternRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_PATTERN);
+            if (rand.nextInt(patternRegistry.size() + 1) == 0) {
+                return;
+            }
+            //@formatter:off
+            patternRegistry.getRandom(world.getRandom()).ifPresent(
+                    (pattern) -> world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_MATERIAL).getRandom(world.getRandom()).ifPresent(
+                            (material) -> stack.set(DataComponentTypes.TRIM, new ArmorTrim(material, pattern))));
+            //@formatter:on
+        }
+    }
 
-		private static void applyTrims(ItemStack stack, Random rand) {
-			NbtCompound nbt = stack.getOrCreateNbt();
-			NbtCompound trim = new NbtCompound();
-			trim.putString(MATERIAL_KEY, ChaosLib.getRandomElementFrom(TRIM_MATERIALS, rand));
-			trim.putString(PATTERN_KEY, ChaosLib.getRandomElementFrom(TRIM_PATTERNS, rand));
-			nbt.put(ArmorTrim.NBT_KEY, trim);
-		}
-	}
+    private static final List<Class<? extends MobEntity>> TARGETS = Lists.newArrayList();
+    private static final int RADIUS = 20;
+    private static final double PERCENT_CHANCE = 0.1;
 
-	private static final List<Class<? extends MobEntity>> TARGETS = new ArrayList<Class<? extends MobEntity>>();
+    static {
+        TARGETS.add(ZombieEntity.class);
+        TARGETS.add(ZombieVillagerEntity.class);
+        TARGETS.add(DrownedEntity.class);
+        TARGETS.add(HuskEntity.class);
+        TARGETS.add(SkeletonEntity.class);
+        TARGETS.add(StrayEntity.class);
+        TARGETS.add(WitherSkeletonEntity.class);
+        TARGETS.add(PiglinEntity.class);
+        TARGETS.add(PiglinBruteEntity.class);
+        TARGETS.add(ZombifiedPiglinEntity.class);
+        TARGETS.add(GiantEntity.class);
+        TARGETS.add(BoggedEntity.class);
+    }
 
-	static {
-		TARGETS.add(ZombieEntity.class);
-		TARGETS.add(ZombieVillagerEntity.class);
-		TARGETS.add(DrownedEntity.class);
-		TARGETS.add(HuskEntity.class);
-		TARGETS.add(SkeletonEntity.class);
-		TARGETS.add(StrayEntity.class);
-		TARGETS.add(WitherSkeletonEntity.class);
-		TARGETS.add(PiglinEntity.class);
-		TARGETS.add(PiglinBruteEntity.class);
-		TARGETS.add(ZombifiedPiglinEntity.class);
-		TARGETS.add(GiantEntity.class);
-	}
+    public EquipmentRandomizerEffect() {
+        super(DURATION_MIN, DURATION_MAX, INTERVAL_MIN, INTERVAL_MAX);
+    }
 
-	public EquipmentRandomizerEffect() {
-		super(1800, 2800, 40, 60);
-	}
+    @Override
+    public void applyEffect(PlayerEntity player) {
+        World world = player.getWorld();
+        LocalDifficulty local = world.getLocalDifficulty(player.getBlockPos());
+        TARGETS.forEach((clazz) -> world.getEntitiesByClass(clazz, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (entity) -> true).forEach((mob) -> {
+            for (SlotItems slot : SlotItems.values()) {
+                if (this.getRNG().nextDouble() >= PERCENT_CHANCE) {
+                    mob.equipStack(slot.getSlot(), slot.createRandomStack(world, local, this.getRNG()));
+                } else {
+                    mob.equipStack(slot.getSlot(), ItemStack.EMPTY);
+                }
+            }
+        }));
+    }
 
-	@Override
-	public void applyEffect(PlayerEntity player) {
-		World world = player.getWorld();
-		LocalDifficulty local = world.getLocalDifficulty(player.getBlockPos());
-		TARGETS.forEach((clazz) -> {
-			world.getEntitiesByClass(clazz, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 20), (entity) -> true).forEach((mob) -> {
-				for(SlotItems slot : SlotItems.values()) {
-					if(this.getRNG().nextDouble() >= 0.1) {
-						mob.equipStack(slot.getSlot(), slot.createRandomStack(world, local, this.getRNG()));						
-					}
-					else {
-						mob.equipStack(slot.getSlot(), ItemStack.EMPTY);
-					}
-				}
-			});
-		});
-	}
+    @Override
+    public String getName() {
+        return "equipmentrandomizer";
+    }
 
-	@Override
-	public String getName() {
-		return "equipmentrandomizer";
-	}
+    @Override
+    public void registerCallbacks() {
+        //empty
+    }
 
-	@Override
-	public void registerCallbacks() {
-		return;
-	}
+    @Override
+    protected boolean canStack() {
+        return false;
+    }
 
-	@Override
-	protected boolean canStack() {
-		return false;
-	}
-
-	@Override
-	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getDimensionEntry() != World.END;
-	}
+    @Override
+    protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
+        return PlayerUtils.isPlayerInDimension(player, World.END);
+    }
 
 }

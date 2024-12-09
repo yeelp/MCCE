@@ -24,11 +24,11 @@ public final class MemoryGameKeyboardHandler implements KeyPressCallback {
 		return new CallbackResult();
 	}
 
-	public static final void addPlayer(PlayerEntity player) {
+	public static void addPlayer(PlayerEntity player) {
 		AFFECTED_PLAYERS.add(player.getUuid());
 	}
 	
-	public static final void removePlayer(PlayerEntity player) {
+	public static void removePlayer(PlayerEntity player) {
 		AFFECTED_PLAYERS.remove(player.getUuid());
 	}
 

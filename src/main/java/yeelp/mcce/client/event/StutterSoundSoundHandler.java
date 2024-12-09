@@ -16,6 +16,7 @@ public final class StutterSoundSoundHandler implements PlayerTickCallback {
 
 	private static final Tracker AFFECTED_PLAYERS = new Tracker();
 	private static final Map<UUID, SoundData> CURRENT_SOUND = Maps.newHashMap();
+	private static final float DAMPENING_FACTOR = 2.0f;
 	
 	protected record SoundData(SoundEvent sound, float volume, float pitch) {
 		public SoundData {
@@ -28,7 +29,8 @@ public final class StutterSoundSoundHandler implements PlayerTickCallback {
 		if(player instanceof ClientPlayerEntity && AFFECTED_PLAYERS.tracked(player)) {
 			SoundData sound = CURRENT_SOUND.get(player.getUuid());
 			if(sound != null) {
-				player.playSound(sound.sound(), sound.volume()/2.0f, sound.pitch());
+				player.playSound(sound.sound(), sound.volume()/DAMPENING_FACTOR, sound.pitch());
+				CURRENT_SOUND.put(player.getUuid(), sound);
 			}
 		}
 	}

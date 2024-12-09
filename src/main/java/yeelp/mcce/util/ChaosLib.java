@@ -1,19 +1,14 @@
 package yeelp.mcce.util;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Library class for a couple reused methods.
@@ -70,7 +65,8 @@ public final class ChaosLib {
 	 *         in the collection.
 	 * @throws IllegalArgumentException If {@code collection} is empty.
 	 */
-	public static <T> T getRandomElementFrom(Collection<T> collection, Random rand) {
+	@SuppressWarnings("StatementWithEmptyBody")
+    public static <T> T getRandomElementFrom(Collection<T> collection, Random rand) {
 		return ChaosLib.checkConditionsThenOperateOn(collection, "Collection is empty!", Collection::isEmpty, (c) -> {
 			Iterator<T> it = c.iterator();
 			for(int i = rand.nextInt(c.size()); i-- > 0; it.next());
@@ -139,7 +135,7 @@ public final class ChaosLib {
 			if(innerExclude != null && innerExclude.contains(pos.getX(), pos.getY(), pos.getZ())) {
 				continue;
 			}
-			if(satisfactory.test(pos)) {
+			if(satisfactory != null && satisfactory.test(pos)) {
 				return Optional.of(pos);
 			}
 		}
@@ -152,5 +148,10 @@ public final class ChaosLib {
 	 */
 	public static Random getStaticRandomInstance() {
 		return RNG;
+	}
+
+	@SuppressWarnings("MagicNumber")
+	public static float convertToRadians(float degrees) {
+		return (float) (degrees * Math.PI/180);
 	}
 }

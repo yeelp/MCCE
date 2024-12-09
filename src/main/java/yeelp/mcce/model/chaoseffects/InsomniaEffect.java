@@ -12,9 +12,10 @@ public final class InsomniaEffect extends AbstractTimedChaosEffect {
 
 	private static final Tracker AFFECTED_PLAYERS = new Tracker();
 	private static final Predicate<World> IS_APPLICABLE = (w) -> w.getDimension().bedWorks() && w.isNight();
+	private static final int DURATION_MIN = 2000, DURATION_MAX = 3000;
 
-	protected InsomniaEffect() {
-		super(2000, 3000);
+	public InsomniaEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 	
 	@Override
@@ -32,7 +33,7 @@ public final class InsomniaEffect extends AbstractTimedChaosEffect {
 		EntitySleepEvents.START_SLEEPING.register((sleeper, pos) -> {
 			if(sleeper instanceof PlayerEntity && AFFECTED_PLAYERS.tracked(sleeper.getUuid())) {
 				((PlayerEntity) sleeper).wakeUp(false, true);
-				sleeper.sendMessage(Text.literal("No sleeping on the job!"));
+				((PlayerEntity) sleeper).sendMessage(Text.literal("No sleeping on the job!"), true);
 			}
 		});
 	}
@@ -44,7 +45,7 @@ public final class InsomniaEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		return;
+		//no additional effect logic
 	}
 
 	@Override

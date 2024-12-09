@@ -4,19 +4,21 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import yeelp.mcce.network.NetworkingConstants;
-import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.network.SoundPayload;
+import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.PlayerUtils;
 
-public class OofEffect extends AbstractInstantChaosEffect {
+public final class OofEffect extends AbstractInstantChaosEffect {
 
+	private static final double Y_DIRECTION_MIN = 0.15, Y_DIRECTION_MAX = 0.95;
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		Vec3d direction = new Vec3d(MathHelper.sin(player.getYaw() * ((float) Math.PI/180)), 0, -MathHelper.cos(player.getYaw() * ((float) Math.PI/180)));
+		Vec3d direction = new Vec3d(MathHelper.sin(ChaosLib.convertToRadians(player.getYaw())), 0, -MathHelper.cos(ChaosLib.convertToRadians(player.getYaw())));
 		direction = direction.multiply(this.getRNG().nextDouble(4, 9));
-		direction = direction.add(0, this.getRNG().nextDouble(0.15, 0.95), 0);
-		player.addVelocity(direction);
+		direction = direction.add(0, this.getRNG().nextDouble(Y_DIRECTION_MIN, Y_DIRECTION_MAX), 0);
+		player.addVelocityInternal(direction);
 		player.velocityModified = true;
-		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(NetworkingConstants.SoundPacketConstants.KNOCKBACK_ID, 1.0f, 1.0f)::sendPacket);
+		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(NetworkingConstants.SoundPacketConstants.KNOCKBACK_ID, 1.0f, 1.0f)::send);
 	}
 
 	@Override
@@ -28,5 +30,4 @@ public class OofEffect extends AbstractInstantChaosEffect {
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
 		return true;
 	}
-
 }

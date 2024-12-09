@@ -6,6 +6,7 @@ import yeelp.mcce.api.MCCEAPI;
 public abstract class MultiChaosEffect extends AbstractInstantChaosEffect {
 
 	private int times;
+	private static final float RECURSION_CHANCE = 0.5f;
 	
 	protected MultiChaosEffect(int times) {
 		this.times = times;
@@ -28,7 +29,7 @@ public abstract class MultiChaosEffect extends AbstractInstantChaosEffect {
 	
 	private ChaosEffect getEffect(PlayerEntity player, boolean preventRecursion) {
 		ChaosEffect ce = ChaosEffectRegistry.getRandomApplicableEffectForPlayer(player);
-		if(this.getClass().isInstance(ce) && (preventRecursion || this.getRNG().nextFloat() < 0.5f)) {
+		if(this.getClass().isInstance(ce) && (preventRecursion || this.getRNG().nextFloat() < RECURSION_CHANCE)) {
 			while(this.getClass().isInstance(ce = ChaosEffectRegistry.getRandomApplicableEffectForPlayer(player)));
 		}
 		return ce;

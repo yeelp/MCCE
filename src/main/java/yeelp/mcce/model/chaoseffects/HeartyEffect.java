@@ -1,26 +1,26 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
+import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 
-public class HeartyEffect extends AbstractAttributeChaosEffect {
+import java.util.List;
 
-	private static final UUID HEARTY_ID = UUID.fromString("3345697a-c1a8-4889-8342-555d64fc8ba8");
-	private static final String HEARTY_NAME = "Hearty Health";
+public final class HeartyEffect extends AbstractAttributeChaosEffect {
+
+	private static final Identifier HEARTY_NAME = MCCE.createIdentifier("hearty_health");
 	private static final float HEARTY_AMOUNT = 2.0f;
+	private static final int DURATION_MIN = 800, DURATION_MAX = 1200;
+	private static final int TICK_INTERVAL = 40;
 
 	public HeartyEffect() {
-		super(800, 1200);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 	
 	@Override
@@ -30,12 +30,12 @@ public class HeartyEffect extends AbstractAttributeChaosEffect {
 
 	@Override
 	protected List<AttributeModifierFactory> getAttributeModifierFactories() {
-		return ImmutableList.of(new AttributeModifierFactory(EntityAttributes.GENERIC_MAX_HEALTH, new EntityAttributeModifier(HEARTY_ID, HEARTY_NAME, HEARTY_AMOUNT, Operation.ADDITION)) {
+		return ImmutableList.of(new AttributeModifierFactory(EntityAttributes.MAX_HEALTH, new EntityAttributeModifier(HEARTY_NAME, HEARTY_AMOUNT, Operation.ADD_VALUE)) {
 			
 			@Override
 			protected @Nullable EntityAttributeModifier tickAttribute(PlayerEntity player, EntityAttributeModifier attribute) {
-				if(HeartyEffect.this.durationRemaining() % 40 == 0) {
-					return new EntityAttributeModifier(HEARTY_ID, HEARTY_NAME, attribute.getValue() + HEARTY_AMOUNT, Operation.ADDITION);
+				if(HeartyEffect.this.durationRemaining() % TICK_INTERVAL == 0) {
+					return new EntityAttributeModifier(HEARTY_NAME, attribute.value() + HEARTY_AMOUNT, Operation.ADD_VALUE);
 				}
 				return attribute;
 			}
@@ -49,25 +49,25 @@ public class HeartyEffect extends AbstractAttributeChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
 	}
 
 	@Override
-	protected final void tickAdditionalEffectLogic(PlayerEntity player) {
+	protected void tickAdditionalEffectLogic(PlayerEntity player) {
 		super.tickAdditionalEffectLogic(player);
-		if(this.durationRemaining() % 40 == 0) {
+		if(this.durationRemaining() % TICK_INTERVAL == 0) {
 			player.heal(HEARTY_AMOUNT);			
 		}
 	}
 
 	@Override
-	public final void applyEffect(PlayerEntity player) {
+	public void applyEffect(PlayerEntity player) {
 		super.applyEffect(player);
 		player.heal(HEARTY_AMOUNT);
 	}
 
 	@Override
-	public final void onEffectEnd(PlayerEntity player) {
+	public void onEffectEnd(PlayerEntity player) {
 		super.onEffectEnd(player);
 		player.heal(HEARTY_AMOUNT);
 	}

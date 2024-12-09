@@ -1,5 +1,6 @@
 package yeelp.mcce.mixin;
 
+import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,8 +21,8 @@ public abstract class PlayerMixin {
 		PlayerTickCallback.EVENT.invoker().tick((PlayerEntity) (Object) this);
 	}
 	
-	@Inject(at = @At("HEAD"), method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z", cancellable = true)
-	private void applyDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
+	@Inject(at = @At("HEAD"), method = "damage(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/damage/DamageSource;F)Z", cancellable = true)
+	private void applyDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
 		if(PlayerHurtCallback.EVENT.invoker().onHurt((PlayerEntity) (Object) this, source, amount).getCancelState() == CancelState.CANCEL) {
 			info.setReturnValue(false);
 		}

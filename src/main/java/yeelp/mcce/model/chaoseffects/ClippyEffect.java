@@ -8,15 +8,16 @@ import yeelp.mcce.event.PlayerTickCallback;
 import yeelp.mcce.util.PlayerUtils;
 import yeelp.mcce.util.Tracker;
 
-public class ClippyEffect extends AbstractTimedChaosEffect {
+public final class ClippyEffect extends AbstractTimedChaosEffect {
 
 	private static final Tracker AFFECTED_PLAYERS = new Tracker();
+	private static final int DURATION_MIN = 20, DURATION_MAX = 160;
 
 	public ClippyEffect() {
-		super(20, 160);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 	
-	protected ClippyEffect(int duration) {
+	ClippyEffect(int duration) {
 		super(duration, duration);
 	}
 
@@ -39,7 +40,7 @@ public class ClippyEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getY() > 0 && !MCCEAPI.accessor.isChaosEffectActive(player, BouncyEffect.class);
+		return player.getY() > 0 && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.BOUNCY);
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class ClippyEffect extends AbstractTimedChaosEffect {
 
 		@Override
 		public void tick(PlayerEntity player) {
-			if(ClippyEffect.isAffected(player) && PlayerUtils.isPlayerWorldServer(player) && !MCCEAPI.accessor.isChaosEffectActive(player, ClippyEffect.class)) {
+			if(ClippyEffect.isAffected(player) && PlayerUtils.isPlayerWorldServer(player) && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CLIPPY)) {
 				MCCEAPI.mutator.addNewChaosEffect(player, new ClippyEffect(1));
 			}
 		}

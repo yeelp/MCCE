@@ -21,10 +21,12 @@ import yeelp.mcce.event.EntityTickCallback;
 import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.PlayerUtils;
 
-public class FishLauncherEffect extends AbstractIntervalChaosEffect implements EntityTickCallback {
+public final class FishLauncherEffect extends AbstractIntervalChaosEffect implements EntityTickCallback {
 
 	private static final Set<Function<World, ? extends LivingEntity>> FISH_CHOICES = Sets.newHashSet();
 	private static final Set<UUID> FISHES = Sets.newHashSet();
+	private static final int DURATION_MIN = 2000, DURATION_MAX = 3000, INTERVAL_MIN = 1, INTERVAL_MAX = 5;
+	private static final double VELOCITY_MAX = 6.0, VERTICAL_VELOCITY_MIN = 0.5;
 	
 	static {
 		FISH_CHOICES.add((world) -> new CodEntity(EntityType.COD, world));
@@ -33,7 +35,7 @@ public class FishLauncherEffect extends AbstractIntervalChaosEffect implements E
 	}
 	
 	public FishLauncherEffect() {
-		super(2000, 3000, 1, 5);
+		super(DURATION_MIN, DURATION_MAX, INTERVAL_MIN, INTERVAL_MAX);
 	}
 
 	@Override
@@ -42,9 +44,9 @@ public class FishLauncherEffect extends AbstractIntervalChaosEffect implements E
 		LivingEntity entity = ChaosLib.getRandomElementFrom(FISH_CHOICES, this.getRNG()).apply(world);
 		entity.refreshPositionAndAngles(player.getX(), player.getY() + Math.E, player.getZ(), 0.0f, 0.0f);
 		if(entity instanceof TropicalFishEntity && PlayerUtils.isPlayerWorldServer(player)) {
-			((TropicalFishEntity) entity).initialize((ServerWorldAccess) world, world.getLocalDifficulty(entity.getBlockPos()), SpawnReason.MOB_SUMMONED, null, null);
+			((TropicalFishEntity) entity).initialize((ServerWorldAccess) world, world.getLocalDifficulty(entity.getBlockPos()), SpawnReason.MOB_SUMMONED, null);
 		}
-		entity.setVelocity(this.getRNG().nextDouble(-6, 6), this.getRNG().nextDouble(0.5, 6), this.getRNG().nextDouble(-6, 6));
+		entity.setVelocity(this.getRNG().nextDouble(-VELOCITY_MAX, VELOCITY_MAX), this.getRNG().nextDouble(VERTICAL_VELOCITY_MIN, VELOCITY_MAX), this.getRNG().nextDouble(-VELOCITY_MAX, VELOCITY_MAX));
 		FISHES.add(entity.getUuid());
 		world.spawnEntity(entity);
 	}
@@ -76,7 +78,7 @@ public class FishLauncherEffect extends AbstractIntervalChaosEffect implements E
 			FISHES.remove(uuid);
 			Vec3d v = entity.getVelocity();
 			if(entity.getVelocity().length() < 5) {
-				entity.addVelocity(v);
+				entity.addVelocityInternal(v);
 			}
 		}
 	}

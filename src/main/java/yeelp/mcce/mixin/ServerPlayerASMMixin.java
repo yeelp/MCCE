@@ -8,11 +8,11 @@ import net.minecraft.server.network.ServerPlayerEntity;
 @Mixin(ServerPlayerEntity.class)
 public interface ServerPlayerASMMixin {
 	@Accessor("syncedHealth")
-	public void setSyncedHealth(float health);
+    void setSyncedHealth(float health);
 	
 	@Accessor("syncedFoodLevel")
-	public void setSyncedFoodLevel(int foodLevel);
+    void setSyncedFoodLevel(int foodLevel);
 	
 	@Accessor("syncedSaturationIsZero")
-	public void setSyncedSaturationIsZero(boolean syncedSaturationIsZero);
+    void setSyncedSaturationIsZero(boolean syncedSaturationIsZero);
 }

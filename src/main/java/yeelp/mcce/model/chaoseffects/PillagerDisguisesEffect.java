@@ -1,9 +1,13 @@
 package yeelp.mcce.model.chaoseffects;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.entry.RegistryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableSet;
@@ -32,6 +36,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
 import yeelp.mcce.util.ChaosLib;
+import yeelp.mcce.util.EnchantmentUtils;
 
 public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 
@@ -40,16 +45,16 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 	private static final float ENCHANT_RAND_THRESHOLD = 4.0f;
 	private static final int ENCHANT_LEVEL_LOWER_BOUND = 10;
 	private static final int ENCHANT_LEVEL_UPPER_BOUND = 40;
-	private static final boolean ENCHANT_ALLOW_TREASURE = true;
+	private static final int DURATION_MIN = 4000, DURATION_MAX = 8000;
 
-	private static enum PillagerChoices {
+	private enum PillagerChoices {
 		PILLAGER {
 			@Override
-			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+			MobEntity create(World world, LocalDifficulty local, Random rng) {
 				PillagerEntity entity = new PillagerEntity(EntityType.PILLAGER, world);
 				ItemStack stack = new ItemStack(Items.CROSSBOW);
 				if(shouldEnchant(local, rng)) {
-					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), ENCHANT_ALLOW_TREASURE);
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), entity.getRegistryManager(), Optional.empty());
 				}
 				entity.equipStack(EquipmentSlot.MAINHAND, stack);
 				return entity;
@@ -62,13 +67,15 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		},
 		VINDICATOR {
 			@Override
-			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+			MobEntity create(World world, LocalDifficulty local, Random rng) {
 				VindicatorEntity entity = new VindicatorEntity(EntityType.VINDICATOR, world);
 				ItemStack stack = new ItemStack(local.isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_AXE : Items.IRON_AXE);
+				DynamicRegistryManager manager = entity.getRegistryManager();
+				RegistryEntry<Enchantment> sharpness = EnchantmentUtils.getEntry(Enchantments.SHARPNESS, manager);
 				if(shouldEnchant(local, rng)) {
-					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), ENCHANT_ALLOW_TREASURE);
-					if(EnchantmentHelper.getLevel(Enchantments.SHARPNESS, stack) == 0 && rng.nextFloat(7) < local.getLocalDifficulty()) {
-						stack.addEnchantment(Enchantments.SHARPNESS, rng.nextInt(MathHelper.clamp((int) local.getLocalDifficulty() - 3, 1, 5)));
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), manager, Optional.empty());
+					if(EnchantmentHelper.getLevel(sharpness, stack) == 0 && rng.nextFloat(7) < local.getLocalDifficulty()) {
+						stack.addEnchantment(sharpness, rng.nextInt(MathHelper.clamp((int) local.getLocalDifficulty() - 3, 1, 5)));
 					}
 				}
 				entity.equipStack(EquipmentSlot.MAINHAND, stack);
@@ -82,7 +89,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		},
 		EVOKER {
 			@Override
-			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+			MobEntity create(World world, LocalDifficulty local, Random rng) {
 				return new EvokerEntity(EntityType.EVOKER, world);
 			}
 
@@ -93,11 +100,11 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		},
 		ILLUSIONER {
 			@Override
-			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+			MobEntity create(World world, LocalDifficulty local, Random rng) {
 				IllusionerEntity entity = new IllusionerEntity(EntityType.ILLUSIONER, world);
 				ItemStack stack = new ItemStack(Items.BOW);
 				if(shouldEnchant(local, rng)) {
-					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), ENCHANT_ALLOW_TREASURE);
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), entity.getRegistryManager(), Optional.empty());
 				}
 				entity.equipStack(EquipmentSlot.MAINHAND, stack);
 				return entity;
@@ -110,7 +117,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		},
 		WITCH {
 			@Override
-			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+			MobEntity create(World world, LocalDifficulty local, Random rng) {
 				return new WitchEntity(EntityType.WITCH, world);
 			}
 
@@ -121,11 +128,11 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		},
 		VEX {
 			@Override
-			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+			MobEntity create(World world, LocalDifficulty local, Random rng) {
 				VexEntity vex = new VexEntity(EntityType.VEX, world);
 				ItemStack stack = new ItemStack(local.isHarderThan(DIAMOND_EQUIPMENT_THRESHOLD) ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
 				if(shouldEnchant(local, rng)) {
-					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), false);
+					EnchantmentHelper.enchant(world.getRandom(), stack, rng.nextInt(ENCHANT_LEVEL_LOWER_BOUND, ENCHANT_LEVEL_UPPER_BOUND), vex.getRegistryManager(), Optional.empty());
 				}
 				vex.equipStack(EquipmentSlot.MAINHAND, stack);
 				return vex;
@@ -138,7 +145,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		},
 		RAVAGER {
 			@Override
-			MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng) {
+			MobEntity create(World world, LocalDifficulty local, Random rng) {
 				return new RavagerEntity(EntityType.RAVAGER, world);
 			}
 
@@ -157,9 +164,9 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		private static final PillagerChoices[] NON_VILLAGER_CHOICES = {
 				VEX,
 				RAVAGER};
-		private static final Predicate<LivingEntity> VILLAGER_TEST = (v) -> v instanceof VillagerEntity && !((VillagerEntity) v).isBaby();
+		private static final Predicate<LivingEntity> VILLAGER_TEST = (v) -> v instanceof VillagerEntity && !v.isBaby();
 
-		abstract MobEntity create(BlockPos ref, World world, LocalDifficulty local, Random rng);
+		abstract MobEntity create(World world, LocalDifficulty local, Random rng);
 
 		protected abstract boolean valid(LivingEntity entity);
 
@@ -182,7 +189,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 	}
 
 	public PillagerDisguisesEffect() {
-		super(4000, 8000);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
@@ -195,7 +202,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 			}
 			BlockPos pos = player.getBlockPos();
 			MobEntity mob;
-			setUpEntity(mob = pc.create(pos, world, world.getLocalDifficulty(pos), this.getRNG()), e);
+			setUpEntity(mob = pc.create(world, world.getLocalDifficulty(pos), this.getRNG()), e);
 			world.spawnEntity(mob);
 		});
 	}

@@ -6,11 +6,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
-public class ItemRainEffect extends AbstractRainEffect {
+public final class ItemRainEffect extends AbstractRainEffect {
 
 	private static final int ITEM_COUNT = Registries.ITEM.size();
+	private static final int DURATION_MIN = 1200, DURATION_MAX = 2400;
+	private static final int HORIZONTAL_RADIUS = 15;
 	public ItemRainEffect() {
-		super(1200, 2400);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
@@ -22,11 +24,10 @@ public class ItemRainEffect extends AbstractRainEffect {
 	protected Entity getEntityToSpawn(PlayerEntity player) {
 		int index = this.getRNG().nextInt(ITEM_COUNT);
 		return Registries.ITEM.stream().skip(index).findFirst().map((item) -> {
-			final double x = this.getRNG().nextDouble(-15, 15), z = this.getRNG().nextDouble(-15,  15);
+			final double x = this.getRNG().nextDouble(-HORIZONTAL_RADIUS, HORIZONTAL_RADIUS), z = this.getRNG().nextDouble(-HORIZONTAL_RADIUS,  HORIZONTAL_RADIUS);
 			ItemStack stack = new ItemStack(item);
-			ItemEntity entity = new ItemEntity(player.getWorld(), player.getX() + x, player.getWorld().getTopY(), player.getZ() + z, stack);
-			return entity;
-		}).get();
+            return new ItemEntity(player.getWorld(), player.getX() + x, player.getWorld().getTopYInclusive(), player.getZ() + z, stack);
+		}).orElseThrow();
 	}
 
 }

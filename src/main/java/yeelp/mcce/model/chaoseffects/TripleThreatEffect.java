@@ -1,6 +1,6 @@
 package yeelp.mcce.model.chaoseffects;
 
-public class TripleThreatEffect extends MultiChaosEffect {
+public final class TripleThreatEffect extends MultiChaosEffect {
 
 	public TripleThreatEffect() {
 		super(3);

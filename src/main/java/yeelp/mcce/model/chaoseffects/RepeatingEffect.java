@@ -4,14 +4,26 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import yeelp.mcce.api.MCCEAPI;
 
-public class RepeatingEffect extends AbstractIntervalTriggeredChaosEffect {
+public final class RepeatingEffect extends AbstractIntervalTriggeredChaosEffect {
 
 	private String effect;
 	private static final String EFFECT_KEY = "effect";
 
+	private static final int DURATION = 1000, INTERVAL_MIN = 10, INTERVAL_MAX = 60;
+
+	private static final ChaosEffect DUMMY = new RepeatingEffect(true);
+
+	public static ChaosEffect getDummyInstance() {
+		return DUMMY;
+	}
+
 	public RepeatingEffect() {
-		super(1000, 1000, 10, 60, AbstractLastingChaosEffect.getIntInRange(3, 5));
+		super(DURATION, DURATION, INTERVAL_MIN, INTERVAL_MAX, AbstractLastingChaosEffect.getIntInRange(3, 5));
 		this.effect = ChaosEffectRegistry.getEffectValidForRepeating();
+	}
+
+	private RepeatingEffect(boolean ignored) {
+		super(DURATION, DURATION, INTERVAL_MIN, INTERVAL_MAX, 2);
 	}
 
 	@Override
@@ -42,7 +54,7 @@ public class RepeatingEffect extends AbstractIntervalTriggeredChaosEffect {
 
 	@Override
 	public void registerCallbacks() {
-		return;
+		//no callbacks
 	}
 
 	@Override

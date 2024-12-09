@@ -1,25 +1,21 @@
 package yeelp.mcce.client.networking;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.util.Identifier;
 import yeelp.mcce.client.event.StutterSoundSoundHandler;
 import yeelp.mcce.network.NetworkingConstants;
-import yeelp.mcce.network.StatusPacket;
+import yeelp.mcce.network.StutterSoundStatusPayload;
 
-public final class StutterSoundStatusPacketReceiver implements ClientPacketReceiver {
+public final class StutterSoundStatusPacketReceiver implements ClientPacketReceiver<StutterSoundStatusPayload> {
 
 	@Override
-	public void handlePacket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		boolean status = StatusPacket.StatusPacketDecoder.getInstance().decodePacket(buf).getStatus();
-		client.execute(() -> {
-			if(status) {
-				StutterSoundSoundHandler.addPlayer(client.player);
+	public void handlePayload(StutterSoundStatusPayload stutterSoundStatusPayload, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> {
+			if (stutterSoundStatusPayload.status()) {
+				StutterSoundSoundHandler.addPlayer(context.player());
 			}
 			else {
-				StutterSoundSoundHandler.removePlayer(client.player);
+				StutterSoundSoundHandler.removePlayer(context.player());
 			}
 		});
 	}

@@ -12,15 +12,16 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import yeelp.mcce.api.MCCEAPI;
 
-public class ChunkyEffect extends AbstractTimedChaosEffect {
+public final class ChunkyEffect extends AbstractTimedChaosEffect {
 
-	protected ChunkyEffect() {
-		super(1600, 2400);
+	private static final int DURATION_MIN = 1600, DURATION_MAX = 2400;
+	public ChunkyEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		return;
+		//No apply effect;
 	}
 
 	@Override
@@ -35,12 +36,12 @@ public class ChunkyEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
-		return;
+		//No on end effect
 	}
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		return;
+		//no effect logic
 	}
 
 	@Override
@@ -50,14 +51,14 @@ public class ChunkyEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, CrumbleEffect.class);
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CRUMBLE);
 	}
 	
 	private static final class BlockBreakHandler implements After {
 
 		@Override
 		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-			if(world.isClient || !MCCEAPI.accessor.isChaosEffectActive(player, ChunkyEffect.class)) {
+			if(world.isClient || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CHUNKY)) {
 				return;
 			}
 			ChunkPos cPos = world.getChunk(pos).getPos();

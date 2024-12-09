@@ -1,8 +1,8 @@
 package yeelp.mcce.event;
 
-import java.util.LinkedList;
 import java.util.Queue;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
@@ -10,7 +10,6 @@ import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
 
 public final class ChaosEffectTracker implements PlayerTickCallback {
 
-	@SuppressWarnings("resource")
 	@Override
 	public void tick(PlayerEntity player) {
 		if(player.getWorld().isClient || player.isDead() || player.isSpectator()) {
@@ -23,8 +22,8 @@ public final class ChaosEffectTracker implements PlayerTickCallback {
 				pces.addNewEffect(player, ce);
 				pces.resetDurationUntilNextEffect();
 			}
-			Queue<ChaosEffect> effectsToRemove = new LinkedList<ChaosEffect>();
-			Queue<ChaosEffect> processSeparately = new LinkedList<ChaosEffect>();
+			Queue<ChaosEffect> effectsToRemove = Lists.newLinkedList();
+			Queue<ChaosEffect> processSeparately = Lists.newLinkedList();
 			for(ChaosEffect ce : pces) {
 				if(ce.canModifyEffectState()) {
 					processSeparately.add(ce);

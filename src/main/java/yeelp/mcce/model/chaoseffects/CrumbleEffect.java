@@ -14,13 +14,14 @@ import yeelp.mcce.util.PlayerUtils;
 
 public final class CrumbleEffect extends AbstractTimedChaosEffect {
 
-	protected CrumbleEffect() {
-		super(2000, 2500);
+	private static final int DURATION_MIN = 2000, DURATION_MAX = 2500;
+	public CrumbleEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		return;
+		//no apply effect
 	}
 
 	@Override
@@ -35,12 +36,12 @@ public final class CrumbleEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
-		return;
+		//no on end effect
 	}
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		return;
+		//no effect logic
 	}
 
 	@Override
@@ -48,10 +49,9 @@ public final class CrumbleEffect extends AbstractTimedChaosEffect {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.areAnyChaosEffectsActive(player, MidasTouchEffect.class, ColumnLikeYouSeeEmEffect.class, ChunkyEffect.class);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.MIDAS_TOUCH, ChaosEffects.COLUMN_LIKE_YOU_SEE_EM, ChaosEffects.CHUNKY);
 	}
 	
 	private static final class OnBlockAttack implements AttackBlockCallback {
@@ -71,7 +71,7 @@ public final class CrumbleEffect extends AbstractTimedChaosEffect {
 		}
 		
 		private static boolean isEffectActiveAndContextApplicable(PlayerEntity player) {
-			return PlayerUtils.getServerPlayerIfServerWorld(player).filter((p) -> !p.interactionManager.getGameMode().equals(GameMode.SPECTATOR) && MCCEAPI.accessor.isChaosEffectActive(p, CrumbleEffect.class)).isPresent();
+			return PlayerUtils.getServerPlayerIfServerWorld(player).filter((p) -> !p.interactionManager.getGameMode().equals(GameMode.SPECTATOR) && MCCEAPI.accessor.isChaosEffectActive(p, ChaosEffects.CRUMBLE)).isPresent();
 		}
 	}
 

@@ -6,7 +6,7 @@ public final class NullEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		return;
+		//this does nothing
 	}
 
 	@Override

@@ -7,13 +7,13 @@ import yeelp.mcce.api.MCCEAPI;
 
 public abstract class AbstractChaosEffect implements ChaosEffect {
 	
-	protected Random rand;
+	protected final Random rand;
 	
 	protected AbstractChaosEffect() {
 		this.rand = new Random(System.currentTimeMillis());
 	}
 	
-	protected Random getRNG() {
+	protected final Random getRNG() {
 		return this.rand;
 	}
 	
@@ -23,6 +23,6 @@ public abstract class AbstractChaosEffect implements ChaosEffect {
 
 	@Override
 	public final boolean applicable(PlayerEntity player) {
-		return (!MCCEAPI.accessor.isChaosEffectActive(player, this.getClass()) || this.canStack()) && this.isApplicableIgnoringStackability(player);
+		return (!MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffectRegistry.getEntry(this)) || this.canStack()) && this.isApplicableIgnoringStackability(player);
 	}
 }

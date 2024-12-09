@@ -5,42 +5,44 @@ import java.util.Optional;
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.model.PlayerChaosEffectState;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
+import yeelp.mcce.model.chaoseffects.ChaosEffectRegistryEntry;
 
 /**
  * A collection of methods for reading player state
  * @author Yeelp
  *
  */
+@SuppressWarnings("UseOfConcreteClass")
 public interface MCCEAPIAccessor {
 	
 	/**
 	 * Get a player's effect state. Modifications made here are NOT synced to the server directly.
-	 * @param player
+	 * @param player player to target
 	 * @return This player's {@link PlayerChaosEffectState}.
 	 */
 	PlayerChaosEffectState getPlayerChaosEffectState(PlayerEntity player);
 	
 	/**
 	 * Get the active {@link ChaosEffect} instance on this player
-	 * @param player
+	 * @param player player to target
 	 * @param clazz the class of the ChaosEffect to get
 	 * @return An {@link Optional} wrapping the result if it exists, otherwise and empty Optional.
 	 */
 	<E extends ChaosEffect> Optional<E> getChaosEffect(PlayerEntity player, Class<E> clazz);
-	
+
 	/**
 	 * Check if a player has a certain chaos effect active.
-	 * @param clazz The class of the Chaos effect to check
+	 * @param entry The registry entry of the chaos effect to check
 	 * @param player The player to check
 	 * @return true if the chaos effect is active, false if not
 	 */
-	boolean isChaosEffectActive(PlayerEntity player, Class<? extends ChaosEffect> clazz);
-	
+	boolean isChaosEffectActive(PlayerEntity player, ChaosEffectRegistryEntry entry);
+
 	/**
-	 * Check if any of the passed Chaos effect classes are active on a player.
-	 * @param player Player to check
-	 * @param clazzes The classes to check
-	 * @return true if at least one of the passed Chaos Effect classes is active.
+	 * Check if any of the passed chaos effects are active on a player
+	 * @param player the Player to check
+	 * @param entries an array of ChaosEffectRegistryEntry to check
+	 * @return false if at least one of the entries are active on the player
 	 */
-	boolean areAnyChaosEffectsActive(PlayerEntity player, @SuppressWarnings("unchecked") Class<? extends ChaosEffect>... clazzes);
+	boolean areChaosEffectsNotActive(PlayerEntity player, ChaosEffectRegistryEntry... entries);
 }

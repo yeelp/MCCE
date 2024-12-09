@@ -9,5 +9,5 @@ import net.minecraft.server.world.ServerWorld;
 @Mixin(ServerWorld.class)
 public interface ServerWorldASMMixin {
 	@Accessor("server")
-	public MinecraftServer getServer();
+    MinecraftServer getServer();
 }

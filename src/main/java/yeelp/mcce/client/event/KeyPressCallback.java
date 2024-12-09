@@ -20,5 +20,5 @@ public interface KeyPressCallback {
 		return result;
 	});
 	
-	public CallbackResult onKeyPressBefore(Keyboard keyboard, long window, int key, int scancode, int action, int modifiers);
+	CallbackResult onKeyPressBefore(Keyboard keyboard, long window, int key, int scancode, int action, int modifiers);
 }

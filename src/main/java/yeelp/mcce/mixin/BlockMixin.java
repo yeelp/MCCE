@@ -1,16 +1,6 @@
 package yeelp.mcce.mixin;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.google.common.base.Predicates;
-
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,17 +12,29 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.ModifyBlockDrops;
-import yeelp.mcce.model.chaoseffects.BouncyEffect;
+import yeelp.mcce.model.chaoseffects.ChaosEffects;
+
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @Mixin(Block.class)
 public abstract class BlockMixin extends AbstractBlock {
-	
-	private static final Predicate<PlayerEntity> BOUNCY_ACTIVE = (p) -> MCCEAPI.accessor.isChaosEffectActive(p, BouncyEffect.class);
+
+	@Unique
+	private static final Predicate<PlayerEntity> BOUNCY_ACTIVE = (p) -> MCCEAPI.accessor.isChaosEffectActive(p, ChaosEffects.BOUNCY);
+	@Unique
 	private static final Predicate<PlayerEntity> BOUNCY_CHECK = BOUNCY_ACTIVE.and((p) -> p.fallDistance > 0.125f).and(Predicates.not(PlayerEntity::isSneaking));
 	
-	public BlockMixin(Settings settings) {
+	@SuppressWarnings("unused")
+    public BlockMixin(Settings settings) {
 		super(settings);
 	}
 
@@ -62,6 +64,7 @@ public abstract class BlockMixin extends AbstractBlock {
 		}
 	}
 	
+	@Unique
 	private static Optional<PlayerEntity> getPlayerIfBouncy(Entity entity) {
 		return Optional.of(entity).filter(ServerPlayerEntity.class::isInstance).map(PlayerEntity.class::cast).filter(BOUNCY_CHECK);
 	}

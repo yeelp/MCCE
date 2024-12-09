@@ -1,29 +1,26 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import yeelp.mcce.util.ChaosLib;
 
-public class GrummboneEffect extends SimpleTimedChaosEffect {
+import java.util.Set;
 
-	private static final Set<String> NAMES = new HashSet<String>();
-	
-	static {
-		NAMES.add("Dinnerbone");
-		NAMES.add("Grumm");
-		NAMES.add("Yeelp");
-	}
+public final class GrummboneEffect extends SimpleTimedChaosEffect {
+
+	private static final Set<String> NAMES = Sets.newHashSet("Dinnerbone", "Grumm", "Yeelp");
+	private static final int DURATION_MIN = 2000, DURATION_MAX = 3200;
+	private static final int EFFECT_RADIUS = 15;
+
 	public GrummboneEffect() {
-		super(2000, 3200);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 15), (entity) -> !(entity instanceof PlayerEntity)).forEach((entity) -> {
+		player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, EFFECT_RADIUS), (entity) -> !(entity instanceof PlayerEntity)).forEach((entity) -> {
 			if(NAMES.contains(entity.getName().getString())) {
 				entity.setCustomName(null);
 			}

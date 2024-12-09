@@ -39,7 +39,7 @@ public abstract class AbstractIntervalChaosEffect extends AbstractLastingChaosEf
 
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
-		return;
+		//no on end effect
 	}
 
 	@Override

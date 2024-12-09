@@ -14,9 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 @FunctionalInterface
 public interface PlayerTickCallback extends Comparable<PlayerTickCallback> {
 	
-	Event<PlayerTickCallback> EVENT = EventFactory.createArrayBacked(PlayerTickCallback.class, (listeners) -> (player) -> {
-		Arrays.stream(listeners).sorted().forEach((ptc) -> ptc.tick(player));
-	});
+	Event<PlayerTickCallback> EVENT = EventFactory.createArrayBacked(PlayerTickCallback.class, (listeners) -> (player) -> Arrays.stream(listeners).sorted().forEach((ptc) -> ptc.tick(player)));
 
 	void tick(PlayerEntity player);
 	

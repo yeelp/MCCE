@@ -10,12 +10,12 @@ public abstract class SimpleTimedChaosEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	public void registerCallbacks() {
-		return;
+		//no callbacks
 	}
 
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
-		return;
+		//no on effect end
 	}
 
 	@Override

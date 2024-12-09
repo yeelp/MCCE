@@ -14,7 +14,8 @@ public abstract class MCCEAPI {
 	/**
 	 * Initialize the API.
 	 */
-	public static final void init() {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void init() {
 		MCCEAPIImpl.values();
 	}
 }

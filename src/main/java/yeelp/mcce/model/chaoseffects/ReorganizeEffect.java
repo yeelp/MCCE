@@ -14,9 +14,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
-public class ReorganizeEffect extends AbstractInstantChaosEffect {
+public final class ReorganizeEffect extends AbstractInstantChaosEffect {
 
-	private static final int INVENTORY_SIZE_TOTAL = PlayerInventory.MAIN_SIZE + PlayerInventory.ARMOR_SLOTS.length + 1;
+	//Main inventory (includes hotbar) plus armor slots plus offhand
+	private static final int INVENTORY_SIZE_TOTAL = PlayerInventory.MAIN_SIZE + 5;
 	private static final List<Integer> ORDER = Lists.newArrayList(IntStream.range(0, INVENTORY_SIZE_TOTAL).iterator());
 	
 	@Override
@@ -24,12 +25,12 @@ public class ReorganizeEffect extends AbstractInstantChaosEffect {
 		PlayerInventory inv = player.getInventory();
 		Collections.shuffle(ORDER, this.getRNG());
 		Iterator<ItemStack> invIt = Iterators.concat(inv.main.iterator(), inv.armor.iterator(), inv.offHand.iterator());
-		Iterators.filter(invIt, (stack) -> !stack.isEmpty());
+		invIt = Iterators.filter(invIt, (stack) -> !stack.isEmpty());
 		Queue<ItemStack> temp = Lists.newLinkedList();
 		invIt.forEachRemaining((stack) -> temp.add(stack.copy()));
 		inv.clear();
 		OfInt order = ORDER.stream().mapToInt((i) -> i).iterator();
-		for(; temp.size() > 0; inv.setStack(order.nextInt(), temp.poll()));	
+		for(; !temp.isEmpty(); inv.setStack(order.nextInt(), temp.poll()));
 	}
 
 	@Override

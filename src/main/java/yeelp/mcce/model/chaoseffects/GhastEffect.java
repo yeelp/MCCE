@@ -1,37 +1,44 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.UUID;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.GhastEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.util.AttributeUtils;
 import yeelp.mcce.util.ChaosLib;
 
-public class GhastEffect extends AbstractInstantChaosEffect {
+public final class GhastEffect extends AbstractInstantChaosEffect {
 	
-	private static final UUID FOLLOW_RANGE_BOOST = UUID.fromString("664ba2a0-41cb-4090-8916-6873039cb5f8");
+	private static final Identifier FOLLOW_RANGE_BOOST = MCCE.createIdentifier("ghastfollowrange");
+	private static final int FOLLOW_RANGE_BOOST_AMOUNT = 500;
+	private static final int DESPAWN_TIMER_AMOUNT = 1200;
+	private static final int INVULNERABLE_CHANCE = 30;
+	private static final int OUTER_SPAWN_RADIUS = 20, INNER_SPAWN_RADIUS = 8;
+	private static final int SPAWN_TRIES = 50;
+	private static final float ROTATION_ANGLE_BOUND = 180.0f;
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		Box outer = ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 20);
-		Box inner = ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 8);
+		Box outer = ChaosLib.getBoxCenteredOnPlayerWithRadius(player, OUTER_SPAWN_RADIUS);
+		Box inner = ChaosLib.getBoxCenteredOnPlayerWithRadius(player, INNER_SPAWN_RADIUS);
 		World world = player.getWorld();
-		ChaosLib.getPosWithin(outer, inner, (pos) -> world.isAir(pos) && world.isAir(pos.up()) && world.isAir(pos.up(2)), 50, this.getRNG()).ifPresent((pos) -> {
+		ChaosLib.getPosWithin(outer, inner, (pos) -> world.isAir(pos) && world.isAir(pos.up()) && world.isAir(pos.up(2)), SPAWN_TRIES, this.getRNG()).ifPresent((pos) -> {
 			GhastEntity ghast = new GhastEntity(EntityType.GHAST, world);
-			ghast.refreshPositionAndAngles(pos, this.getRNG().nextFloat(180f), this.getRNG().nextFloat(180f));
+			ghast.refreshPositionAndAngles(pos, this.getRNG().nextFloat(ROTATION_ANGLE_BOUND), this.getRNG().nextFloat(ROTATION_ANGLE_BOUND));
 			ghast.setTarget(player);
-			ghast.getAttributeInstance(EntityAttributes.GENERIC_FOLLOW_RANGE).addPersistentModifier(new EntityAttributeModifier(FOLLOW_RANGE_BOOST, "Ghast Follow Range Boost", 500, Operation.ADDITION));
-			if(this.getRNG().nextInt(100) < 30) {
+			AttributeUtils.addAttributeModifier(ghast, EntityAttributes.FOLLOW_RANGE, new EntityAttributeModifier(FOLLOW_RANGE_BOOST, FOLLOW_RANGE_BOOST_AMOUNT, Operation.ADD_VALUE));
+			if(this.getRNG().nextInt(100) < INVULNERABLE_CHANCE) {
 				ghast.setInvulnerable(true);
 			}
 			ghast.setPersistent();
-			MCCEAPI.mutator.setDespawnTimer(ghast, 1200);
+			MCCEAPI.mutator.setDespawnTimer(ghast, DESPAWN_TIMER_AMOUNT);
 			world.spawnEntity(ghast);
 		});
 	}

@@ -9,5 +9,5 @@ import net.minecraft.entity.Entity;
 public interface EntityASMMixin {
 	
 	@Accessor("onGround")
-	public void setOnGround(boolean onGround);
+    void setOnGround(boolean onGround);
 }

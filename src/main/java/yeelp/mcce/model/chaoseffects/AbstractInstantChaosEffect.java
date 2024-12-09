@@ -22,7 +22,7 @@ public abstract class AbstractInstantChaosEffect extends AbstractChaosEffect {
 
 	@Override
 	public final void readNbt(NbtCompound nbt) {
-		return;
+		//no NBT to read
 	}
 
 	@Override
@@ -37,12 +37,12 @@ public abstract class AbstractInstantChaosEffect extends AbstractChaosEffect {
 
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
-		return;
+		//No on end effects
 	}
 
 	@Override
 	public void tickEffect(PlayerEntity player) {
-		return;
+		//Effect can't be ticked
 	}
 
 	@Override

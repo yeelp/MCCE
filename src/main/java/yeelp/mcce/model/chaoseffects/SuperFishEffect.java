@@ -1,24 +1,39 @@
 package yeelp.mcce.model.chaoseffects;
 
+import com.google.common.collect.Maps;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import yeelp.mcce.util.EnchantmentUtils;
 
-public class SuperFishEffect extends AbstractInstantChaosEffect {
+import java.util.Map;
+
+public final class SuperFishEffect extends AbstractInstantChaosEffect {
+
+	private static final Map<RegistryKey<Enchantment>, Integer> ENCHANTS = Maps.newHashMap();
+
+	static {
+		ENCHANTS.put(Enchantments.SHARPNESS, 10);
+		ENCHANTS.put(Enchantments.IMPALING, 10);
+		ENCHANTS.put(Enchantments.LUCK_OF_THE_SEA, 10);
+		ENCHANTS.put(Enchantments.DEPTH_STRIDER, 3);
+		ENCHANTS.put(Enchantments.AQUA_AFFINITY, 1);
+		ENCHANTS.put(Enchantments.VANISHING_CURSE, 1);
+	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		ItemStack stack = new ItemStack(Items.COD);
-		stack.addEnchantment(Enchantments.SHARPNESS, 10);
-		stack.addEnchantment(Enchantments.IMPALING, 10);
-		stack.addEnchantment(Enchantments.LUCK_OF_THE_SEA, 10);
-		stack.addEnchantment(Enchantments.DEPTH_STRIDER, 3);
-		stack.addEnchantment(Enchantments.AQUA_AFFINITY, 1);
-		stack.addEnchantment(Enchantments.VANISHING_CURSE, 1);
-		stack.setCustomName(Text.empty().formatted(Formatting.RESET).append("SuperFish!").formatted(Formatting.BLUE));
+		DynamicRegistryManager manager = player.getRegistryManager();
+		ENCHANTS.forEach((enchant, level) -> stack.addEnchantment(EnchantmentUtils.getEntry(enchant, manager), level));
+		stack.set(DataComponentTypes.CUSTOM_NAME, Text.empty().formatted(Formatting.RESET).append("SuperFish!").formatted(Formatting.BLUE));
 		player.giveItemStack(stack);
 	}
 

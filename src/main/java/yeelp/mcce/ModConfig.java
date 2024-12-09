@@ -22,9 +22,9 @@ public final class ModConfig {
 	public final GameEffectsOptions game = new GameEffectsOptions();
 	
 	public static class GameEffectsOptions {
-		public boolean quiver = false;
-		public boolean blockrain = false;
-		public boolean xprandomizer = false;
+		public final boolean quiver = false;
+		public final boolean blockrain = true;
+		public final boolean xprandomizer = true;
 	}
 	
 	private ModConfig() {
@@ -38,7 +38,7 @@ public final class ModConfig {
 				instance = GSON.fromJson(reader, ModConfig.class);
 			}
 			catch(IOException e) {
-				e.printStackTrace();
+				MCCE.LOGGER.error("Could not read from config", e);
 				throw new RuntimeException("Could not read from config", e);
 			}
 		}
@@ -52,12 +52,12 @@ public final class ModConfig {
 				Files.createDirectories(parent);
 			}
 			else if(!Files.isDirectory(parent)) {
-				throw new RuntimeException(String.format("Parent path %s not a directory", parent.toString()));
+				throw new RuntimeException(String.format("Parent path %s not a directory", parent));
 			}
 			writer.write(GSON.toJson(instance));
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			MCCE.LOGGER.error("Could not read from config", e);
 			throw new RuntimeException("Could not write to config", e);
 		}
 			

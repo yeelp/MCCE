@@ -1,34 +1,28 @@
 package yeelp.mcce.client.networking;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.util.Identifier;
 import yeelp.mcce.client.event.MemoryGameKeyboardHandler;
+import yeelp.mcce.network.MemoryGamePayload;
 import yeelp.mcce.network.NetworkingConstants;
-import yeelp.mcce.network.StatusPacket;
 
-public class MemoryGameStatusPacketReceiver implements ClientPacketReceiver {
-
-	@Override
-	public void handlePacket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		boolean status = StatusPacket.StatusPacketDecoder.getInstance().decodePacket(buf).getStatus();
-		
-		client.execute(() -> {
-			client.options.hudHidden = status;
-			if(status) {
-				MemoryGameKeyboardHandler.addPlayer(client.player);
-			}
-			else {
-				MemoryGameKeyboardHandler.removePlayer(client.player);
-			}
-		});
-	}
+public class MemoryGameStatusPacketReceiver implements ClientPacketReceiver<MemoryGamePayload> {
 
 	@Override
 	public Identifier getID() {
 		return NetworkingConstants.MEMORY_GAME_STATUS_PACKET_ID;
 	}
 
+	@Override
+	public void handlePayload(MemoryGamePayload memoryGamePayload, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> {
+			context.client().options.hudHidden = memoryGamePayload.status();
+			if (memoryGamePayload.status()) {
+				MemoryGameKeyboardHandler.addPlayer(context.player());
+			}
+			else {
+				MemoryGameKeyboardHandler.removePlayer(context.player());
+			}
+		});
+	}
 }

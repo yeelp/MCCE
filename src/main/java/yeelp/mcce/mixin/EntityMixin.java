@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -28,6 +29,7 @@ import yeelp.mcce.model.chaoseffects.InverseEffect;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput {
 	
+	@Unique
 	private static final Map<UUID, Vec3d> MOVEMENT_TRACKER = Maps.newHashMap();
 	
 	@Inject(at = @At("HEAD"), method = "tick()V")
@@ -49,15 +51,13 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 		}
 	}
 	
-	@SuppressWarnings("resource")
-	@ModifyVariable(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), ordinal = 0)
+	@ModifyVariable(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private Vec3d alterMovement(Vec3d input, MovementType type, @SuppressWarnings("unused") Vec3d moveInput) {
 		Entity entity = (Entity) (Object) this;
-		if(!(entity instanceof PlayerEntity)) {
+		if(!(entity instanceof PlayerEntity player)) {
 			return input;
 		}
-		PlayerEntity player = (PlayerEntity) entity;
-		if(ClippyEffect.isAffected(player)) {
+        if(ClippyEffect.isAffected(player)) {
 			((EntityASMMixin) entity).setOnGround(false);				
 			player.noClip = true;
 		}

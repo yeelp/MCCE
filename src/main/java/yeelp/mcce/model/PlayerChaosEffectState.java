@@ -8,9 +8,11 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.NotNull;
 import yeelp.mcce.model.chaoseffects.AbstractLastingChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
+import yeelp.mcce.model.chaoseffects.ChaosEffectRegistryEntry;
 
 /**
  * Our player state for tracking which effects they have active.
@@ -18,6 +20,7 @@ import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
  * @author Yeelp
  *
  */
+@SuppressWarnings("UseOfConcreteClass")
 public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 
 	private final Map<String, ChaosEffect> activeEffects = Maps.newHashMap();
@@ -25,12 +28,15 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	private final Random rand = new Random(System.currentTimeMillis());
 	private static final String EFFECT_KEY = "effects";
 	private static final String TIME_KEY = "durationUntilNextEffect";
+	private static final int INITIAL_DURATION = 500;
+	private static final int DURATION_MIN = 200;
+	private static final int DURATION_MAX = 1000;
 
 	/**
 	 * Create an empty PlayerChaosEffectState.
 	 */
 	public PlayerChaosEffectState() {
-		this.durationUntilNextEffect = 500;
+		this.durationUntilNextEffect = INITIAL_DURATION;
 	}
 
 	/**
@@ -43,9 +49,7 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	public PlayerChaosEffectState(NbtCompound nbt) {
 		super();
 		NbtCompound effects = nbt.getCompound(EFFECT_KEY);
-		effects.getKeys().forEach((s) -> {
-			this.activeEffects.put(s, ChaosEffectRegistry.createEffectFromNbt(s, effects.getCompound(s)));
-		});
+		effects.getKeys().forEach((s) -> this.activeEffects.put(s, ChaosEffectRegistry.createEffectFromNbt(s, effects.getCompound(s))));
 		this.durationUntilNextEffect = nbt.getInt(TIME_KEY);
 	}
 
@@ -56,11 +60,16 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	 * @param player player that gets affected by this effect.
 	 * @param effect The effect to add.
 	 */
-	public void addNewEffect(PlayerEntity player, ChaosEffect effect) {
+	@SuppressWarnings("FeatureEnvy")
+    public void addNewEffect(PlayerEntity player, ChaosEffect effect) {
 		effect.applyEffect(player);
 		if(!effect.isInstant()) {
 			this.activeEffects.put(effect.getName(), effect);
 		}
+	}
+
+	public boolean isEffectActive(ChaosEffectRegistryEntry entry) {
+		return this.activeEffects.containsKey(entry.getName());
 	}
 	
 	/**
@@ -77,9 +86,7 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	 */
 	public NbtCompound writeToNbt() {
 		NbtCompound tag = new NbtCompound(), root = new NbtCompound();
-		this.activeEffects.forEach((s, e) -> {
-			tag.put(s, e.writeToNbt());
-		});
+		this.activeEffects.forEach((s, e) -> tag.put(s, e.writeToNbt()));
 		root.put(EFFECT_KEY, tag);
 		root.putInt(TIME_KEY, this.durationUntilNextEffect);
 		return root;
@@ -92,32 +99,30 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	public void tickDurationUntilNextEffect() {
 		this.durationUntilNextEffect--;
 	}
-	
-	public int getDurationUntilNextEffect() {
+
+	@SuppressWarnings("unused")
+    public int getDurationUntilNextEffect() {
 		return this.durationUntilNextEffect;
 	}
 	
 	public void resetDurationUntilNextEffect() {
-		this.durationUntilNextEffect = this.rand.nextInt(200, 1000);
+		this.durationUntilNextEffect = this.rand.nextInt(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
-	public Iterator<ChaosEffect> iterator() {
+	public @NotNull Iterator<ChaosEffect> iterator() {
 		return this.activeEffects.values().iterator();
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder effects = new StringBuilder();
-		Iterator<ChaosEffect> it = this.iterator();
-		while(it.hasNext()) {
-			ChaosEffect ce = it.next();
-			if(ce instanceof AbstractLastingChaosEffect) {
-				AbstractLastingChaosEffect alce = (AbstractLastingChaosEffect) ce;
-				effects.append(String.format("(%s, %d)", ce.getName(), alce.durationRemaining()));				
-			}
-		}
-		return String.format("Time: %d, [%s]", this.durationUntilNextEffect, effects.toString());
+        for (ChaosEffect ce : this) {
+            if (ce instanceof AbstractLastingChaosEffect alce) {
+                effects.append(String.format("(%s, %d)", ce.getName(), alce.durationRemaining()));
+            }
+        }
+		return String.format("Time: %d, [%s]", this.durationUntilNextEffect, effects);
 	}
 
 }

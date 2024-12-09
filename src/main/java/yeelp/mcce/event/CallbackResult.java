@@ -4,15 +4,15 @@ public class CallbackResult {
 
 	private final CancelState cancel;
 	private final ProcessState process;
-	public static enum CancelState {
+	public enum CancelState {
 		CANCEL,
-		PASS;
-	}
+		PASS
+    }
 	
-	public static enum ProcessState {
+	public enum ProcessState {
 		CANCEL,
-		PASS;
-	}
+		PASS
+    }
 	
 	public CallbackResult(ProcessState process, CancelState cancel) {
 		this.cancel = cancel;

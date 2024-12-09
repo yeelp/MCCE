@@ -13,13 +13,14 @@ import yeelp.mcce.api.MCCEAPI;
 
 public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 
-	protected ColumnLikeYouSeeEmEffect() {
-		super(1600, 2400);
+	private static final int DURATION_MIN = 1600, DURATION_MAX = 2400;
+	public ColumnLikeYouSeeEmEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		return;
+		//no apply effect
 	}
 
 	@Override
@@ -34,12 +35,12 @@ public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
-		return;
+		//no on end effect
 	}
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		return;
+		//no effect logic
 	}
 
 	@Override
@@ -49,18 +50,18 @@ public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, CrumbleEffect.class);
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CRUMBLE);
 	}
 	
 	private static final class BlockBreakHandler implements After {
 
 		@Override
 		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-			if(world.isClient || !MCCEAPI.accessor.isChaosEffectActive(player, ColumnLikeYouSeeEmEffect.class)) {
+			if(world.isClient || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.COLUMN_LIKE_YOU_SEE_EM)) {
 				return;
 			}
 			BlockPos colPos = new BlockPos(pos.getX(), world.getDimension().minY(), pos.getZ());
-			for(int y = world.getDimension().minY(); y < world.getTopY(); y++) {
+			for(int y = world.getDimension().minY(); y < world.getTopYInclusive(); y++) {
 				if(!world.getBlockState(colPos).isAir() && world.isInBuildLimit(colPos)) {
 					world.removeBlock(colPos, false);
 				}

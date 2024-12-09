@@ -1,26 +1,25 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
+import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 
-public class GottaBlastEffect extends AbstractAttributeChaosEffect {
+import java.util.List;
 
-	protected GottaBlastEffect() {
-		super(1000, 2000);
+public final class GottaBlastEffect extends AbstractAttributeChaosEffect {
+
+	private static final int DURATION_MIN = 1000, DURATION_MAX = 2000;
+	private static final double SPEED_INCREASE_MIN = 0.000001, SPEED_INCREASE_MAX = 0.001;
+	public GottaBlastEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
-	private static final UUID SPEED_UUID = UUID.fromString("c3b5f61c-b243-4d9c-afee-960cd5c72465");
-	private static final String MODIFIER_NAME = "gotta_blast_speed";
+	private static final Identifier MODIFIER_NAME = MCCE.createIdentifier("gotta_blast_speed");
 	
 	@Override
 	public String getName() {
@@ -29,11 +28,11 @@ public class GottaBlastEffect extends AbstractAttributeChaosEffect {
 
 	@Override
 	protected List<AttributeModifierFactory> getAttributeModifierFactories() {
-		return ImmutableList.of(new AttributeModifierFactory(EntityAttributes.GENERIC_MOVEMENT_SPEED, new EntityAttributeModifier(SPEED_UUID, MODIFIER_NAME, 0, Operation.ADDITION)) {
+		return ImmutableList.of(new AttributeModifierFactory(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(MODIFIER_NAME, 0, Operation.ADD_VALUE)) {
 			
 			@Override
-			protected @Nullable EntityAttributeModifier tickAttribute(PlayerEntity player, EntityAttributeModifier attribute) {
-				return new EntityAttributeModifier(SPEED_UUID, MODIFIER_NAME, attribute.getValue() + GottaBlastEffect.this.getRNG().nextDouble(0.000001, 0.001), Operation.ADDITION);
+			protected EntityAttributeModifier tickAttribute(PlayerEntity player, EntityAttributeModifier attribute) {
+				return new EntityAttributeModifier(MODIFIER_NAME, attribute.value() + GottaBlastEffect.this.getRNG().nextDouble(SPEED_INCREASE_MIN, SPEED_INCREASE_MAX), Operation.ADD_VALUE);
 			}
 			
 			@Override
@@ -45,7 +44,7 @@ public class GottaBlastEffect extends AbstractAttributeChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, SluggishEffect.class);
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SLUGGISH);
 	}
 
 }

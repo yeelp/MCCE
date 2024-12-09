@@ -1,10 +1,6 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -15,96 +11,78 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.world.LocalDifficulty;
 
-public class GiantEffect extends AbstractInstantChaosEffect {
-	
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+public final class GiantEffect extends AbstractInstantChaosEffect {
+
+	private static final float EQUIPMENT_CHANCE = 0.5f, ENCHANT_THRESHOLD_MAX = 0.4f;
+	private static final double WEAPON_CHANCE = 0.3, SWORD_CHANCE = 0.2;
+	private static final int ENCHANT_LEVEL_MIN = 10, ENCHANT_LEVEL_MAX = 40;
 	private enum EquipmentStrength {
 		LEATHER(45) {
 			@Override
 			Item getItemForSlot(EquipmentSlot slot) {
-				switch(slot) {
-					case HEAD:
-						return Items.LEATHER_HELMET;
-					case CHEST:
-						return Items.LEATHER_CHESTPLATE;
-					case LEGS:
-						return Items.LEATHER_LEGGINGS;
-					case FEET:
-						return Items.LEATHER_BOOTS;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + slot);
-				}
+                return switch (slot) {
+                    case HEAD -> Items.LEATHER_HELMET;
+                    case CHEST -> Items.LEATHER_CHESTPLATE;
+                    case LEGS -> Items.LEATHER_LEGGINGS;
+                    case FEET -> Items.LEATHER_BOOTS;
+                    default -> throw new IllegalArgumentException("Unexpected value: " + slot);
+                };
 			}
 		},
 		GOLD(25) {
 			@Override
 			Item getItemForSlot(EquipmentSlot slot) {
-				switch(slot) {
-					case HEAD:
-						return Items.GOLDEN_HELMET;
-					case CHEST:
-						return Items.GOLDEN_CHESTPLATE;
-					case LEGS:
-						return Items.GOLDEN_LEGGINGS;
-					case FEET:
-						return Items.GOLDEN_BOOTS;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + slot);
-				}
+                return switch (slot) {
+                    case HEAD -> Items.GOLDEN_HELMET;
+                    case CHEST -> Items.GOLDEN_CHESTPLATE;
+                    case LEGS -> Items.GOLDEN_LEGGINGS;
+                    case FEET -> Items.GOLDEN_BOOTS;
+                    default -> throw new IllegalArgumentException("Unexpected value: " + slot);
+                };
 			}
 		},
 		IRON(15) {
 			@Override
 			Item getItemForSlot(EquipmentSlot slot) {
-				switch(slot) {
-					case HEAD:
-						return Items.IRON_HELMET;
-					case CHEST:
-						return Items.IRON_CHESTPLATE;
-					case LEGS:
-						return Items.IRON_LEGGINGS;
-					case FEET:
-						return Items.IRON_BOOTS;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + slot);
-				}
+                return switch (slot) {
+                    case HEAD -> Items.IRON_HELMET;
+                    case CHEST -> Items.IRON_CHESTPLATE;
+                    case LEGS -> Items.IRON_LEGGINGS;
+                    case FEET -> Items.IRON_BOOTS;
+                    default -> throw new IllegalArgumentException("Unexpected value: " + slot);
+                };
 			}
 		},
 		DIAMOND(10) {
 			@Override
 			Item getItemForSlot(EquipmentSlot slot) {
-				switch(slot) {
-					case HEAD:
-						return Items.DIAMOND_HELMET;
-					case CHEST:
-						return Items.DIAMOND_CHESTPLATE;
-					case LEGS:
-						return Items.DIAMOND_LEGGINGS;
-					case FEET:
-						return Items.DIAMOND_BOOTS;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + slot);
-				}
+                return switch (slot) {
+                    case HEAD -> Items.DIAMOND_HELMET;
+                    case CHEST -> Items.DIAMOND_CHESTPLATE;
+                    case LEGS -> Items.DIAMOND_LEGGINGS;
+                    case FEET -> Items.DIAMOND_BOOTS;
+                    default -> throw new IllegalArgumentException("Unexpected value: " + slot);
+                };
 			}
 		},
 		NETHERITE(5) {
 			@Override
 			Item getItemForSlot(EquipmentSlot slot) {
-				switch(slot) {
-					case HEAD:
-						return Items.NETHERITE_HELMET;
-					case CHEST:
-						return Items.NETHERITE_CHESTPLATE;
-					case LEGS:
-						return Items.NETHERITE_LEGGINGS;
-					case FEET:
-						return Items.NETHERITE_BOOTS;
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + slot);
-				}
+                return switch (slot) {
+                    case HEAD -> Items.NETHERITE_HELMET;
+                    case CHEST -> Items.NETHERITE_CHESTPLATE;
+                    case LEGS -> Items.NETHERITE_LEGGINGS;
+                    case FEET -> Items.NETHERITE_BOOTS;
+                    default -> throw new IllegalArgumentException("Unexpected value: " + slot);
+                };
 			}
 		};
 		
-		private int weight;
+		private final int weight;
 		
 		EquipmentStrength(int weight) {
 			this.weight = weight;
@@ -120,8 +98,8 @@ public class GiantEffect extends AbstractInstantChaosEffect {
 		GiantEntity giant = new GiantEntity(EntityType.GIANT, player.getWorld());
 		giant.refreshPositionAndAngles(player.getX(), player.getY(), player.getZ(), 0.0f, 0.0f);
 		LocalDifficulty local = player.getWorld().getLocalDifficulty(player.getBlockPos());
-		boolean enchant = local.isHarderThan(this.getRNG().nextFloat(4.0f));
-		if(this.getRNG().nextFloat() < 0.5f) {
+		boolean enchant = local.isHarderThan(this.getRNG().nextFloat(ENCHANT_THRESHOLD_MAX));
+		if(this.getRNG().nextFloat() < EQUIPMENT_CHANCE) {
 			Collections.shuffle(STRENGTHS, this.getRNG());
 			int chance = this.getRNG().nextInt(100);
 			for(EquipmentStrength equipmentStrength : STRENGTHS) {
@@ -132,7 +110,7 @@ public class GiantEffect extends AbstractInstantChaosEffect {
 						pieces--;
 						ItemStack stack = new ItemStack(equipmentStrength.getItemForSlot(slot));
 						if(enchant) {
-							EnchantmentHelper.enchant(player.getWorld().getRandom(), stack, this.getRNG().nextInt(10, 40), true);
+							EnchantmentHelper.enchant(player.getWorld().getRandom(), stack, this.getRNG().nextInt(ENCHANT_LEVEL_MIN, ENCHANT_LEVEL_MAX), player.getRegistryManager(), Optional.empty());
 						}
 						giant.equipStack(slot, stack);
 						if(pieces == 0) {
@@ -142,10 +120,10 @@ public class GiantEffect extends AbstractInstantChaosEffect {
 					break;
 				}
 			}
-			if(this.getRNG().nextDouble() < 0.3) {
-				ItemStack weapon = new ItemStack(this.getRNG().nextDouble() < 0.2 ? Items.IRON_SWORD : Items.IRON_SHOVEL);
+			if(this.getRNG().nextDouble() < WEAPON_CHANCE) {
+				ItemStack weapon = new ItemStack(this.getRNG().nextDouble() < SWORD_CHANCE ? Items.IRON_SWORD : Items.IRON_SHOVEL);
 				if(enchant) {
-					EnchantmentHelper.enchant(player.getWorld().getRandom(), weapon, this.getRNG().nextInt(10, 40), true);
+					EnchantmentHelper.enchant(player.getWorld().getRandom(), weapon, this.getRNG().nextInt(ENCHANT_LEVEL_MIN, ENCHANT_LEVEL_MAX), player.getRegistryManager(), Optional.empty());
 				}
 				giant.equipStack(EquipmentSlot.MAINHAND, weapon);
 			}

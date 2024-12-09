@@ -1,14 +1,17 @@
 package yeelp.mcce.client.event;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
-import yeelp.mcce.client.event.ClientRenderCallbacks.AfterShaderSetCallback;
+import net.minecraft.util.math.ColorHelper;
+import yeelp.mcce.client.event.ClientRenderCallbacks.ChangeTextureColour;
 import yeelp.mcce.client.event.ClientRenderCallbacks.RenderHealthCallback;
 import yeelp.mcce.util.Tracker;
+
+import java.util.function.Function;
 
 public class RainbowGuiHandler implements RenderHealthCallback {
 
@@ -38,24 +41,29 @@ public class RainbowGuiHandler implements RenderHealthCallback {
 		drawingHearts = false;
 	}
 
-	public static final class RainbowShaderHandler implements AfterShaderSetCallback {
+	public static final class RainbowShaderHandler implements ChangeTextureColour {
 
 		private float h = 0;
+
+		@SuppressWarnings("MagicNumber")
 		@Override
-		public void afterShaderSet(Identifier texture, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1) {
-			if(RainbowGuiHandler.drawingHearts) {
-				this.h += 0.5;
-				RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-				float[] rgb = HSLToRGB((this.h) % 360, 1, 0.5f);
-				RenderSystem.setShaderColor(rgb[0], rgb[1], rgb[2], 1);
+		public int changeColor(Function<Identifier, RenderLayer> renderLayers, Identifier texture, int x0, int x1, int y0, int y1, float u0, float u1, float v0, float v1, int color) {
+			if (RainbowGuiHandler.drawingHearts) {
+				this.h += 0.5f;
+				RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+				short[] rgb = HSLToRGB((this.h) % 360);
+				RenderSystem.setShaderColor(rgb[0], rgb[1], rgb[2], 0.5f);
 				RainbowGuiHandler.drawingHearts = false;
+				return ColorHelper.getArgb(rgb[0] << 16,rgb[1]  << 8, rgb[2]);
 			}
+			return color;
 		}
-		
-		private static float[] HSLToRGB(float h, float s, float l) {
-			float c = s * (1 - Math.abs(2 * l - 1));
+
+		@SuppressWarnings("MagicNumber")
+        private static short[] HSLToRGB(float h) {
+			float c = (1 - Math.abs(2 * (float) 0.5 - 1));
 			float x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-			float m = l - c / 2;
+			float m = (float) 0.5 - c / 2;
 			float rPrime, gPrime, bPrime;
 			switch((int) h / 60) {
 				case 0:
@@ -94,10 +102,10 @@ public class RainbowGuiHandler implements RenderHealthCallback {
 					bPrime = 0;
 					break;
 			}
-			return new float[] {
-					(rPrime + m),
-					(gPrime + m),
-					(bPrime + m)};
+			return new short[] {
+                    (short) ((rPrime + m) * 255),
+                    (short) ((gPrime + m) * 255),
+                    (short) ((bPrime + m) * 255)};
 		}
 	}
 }

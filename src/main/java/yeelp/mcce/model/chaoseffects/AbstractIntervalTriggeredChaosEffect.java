@@ -28,7 +28,12 @@ public abstract class AbstractIntervalTriggeredChaosEffect extends AbstractInter
 		return this.triggers;
 	}
 
-	protected final int trigger() {
+	/**
+	 * Trigger this effect
+	 * @return the number of triggers this effect has left.
+	 */
+	@SuppressWarnings("UnusedReturnValue")
+    protected final int trigger() {
 		return --this.triggers;
 	}
 

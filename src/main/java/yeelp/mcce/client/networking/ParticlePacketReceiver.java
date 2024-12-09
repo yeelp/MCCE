@@ -1,19 +1,17 @@
 package yeelp.mcce.client.networking;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.util.Identifier;
 import yeelp.mcce.network.NetworkingConstants;
-import yeelp.mcce.network.ParticlePacket;
+import yeelp.mcce.network.ParticlePayload;
 
-public class ParticlePacketReceiver implements ClientPacketReceiver {
+import java.util.Objects;
+
+public class ParticlePacketReceiver implements ClientPacketReceiver<ParticlePayload> {
 
 	@Override
-	public void handlePacket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		ParticlePacket packet = ParticlePacket.ParticlePacketDecoder.getInstance().decodePacket(buf);
-		client.execute(() -> client.world.addParticle(NetworkingConstants.ParticlePacketConstants.getParticle(packet.getId()), packet.getX(), packet.getY(), packet.getZ(), packet.getDx(), packet.getDy(), packet.getDz()));
+	public void handlePayload(ParticlePayload particlePayload, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> Objects.requireNonNull(context.client().world).addParticle(NetworkingConstants.ParticlePacketConstants.getParticle(particlePayload.id()), particlePayload.x(), particlePayload.y(), particlePayload.z(), particlePayload.dx(), particlePayload.dy(), particlePayload.dz()));
 	}
 
 	@Override

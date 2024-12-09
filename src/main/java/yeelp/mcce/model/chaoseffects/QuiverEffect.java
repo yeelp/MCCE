@@ -2,19 +2,20 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.ModConfig;
-import yeelp.mcce.network.QuiverUpdatePacket;
+import yeelp.mcce.network.QuiverPayload;
 import yeelp.mcce.util.PlayerUtils;
 
 public final class QuiverEffect extends SimpleTimedChaosEffect implements OptionalEffect {
 
 	private static final float AMOUNT = 1f;
-	protected QuiverEffect() {
-		super(1000, 1500);
+	private static final int DURATION_MIN = 1000, DURATION_MAX = 1500;
+	public QuiverEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		PlayerUtils.getServerPlayer(player).ifPresent(new QuiverUpdatePacket(this.getRNG().nextFloat(-AMOUNT, AMOUNT), this.getRNG().nextFloat(-AMOUNT, AMOUNT))::sendPacket);
+		PlayerUtils.getServerPlayer(player).ifPresent(new QuiverPayload(this.getRNG().nextFloat(-AMOUNT, AMOUNT), this.getRNG().nextFloat(-AMOUNT, AMOUNT))::send);
 	}
 
 	@Override

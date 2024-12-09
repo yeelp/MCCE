@@ -2,10 +2,11 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
 
-public class PressLToLevitateEffect extends AbstractTimedChaosEffect {
+public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 
+	private static final int DURATION_MIN = 800, DURATION_MAX = 1800;
 	public PressLToLevitateEffect() {
-		super(800, 1800);
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
@@ -20,7 +21,7 @@ public class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	public void registerCallbacks() {
-		return;
+		//no callbacks
 	}
 
 	@Override
@@ -30,7 +31,7 @@ public class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		return;
+		//no effect logic
 	}
 
 	@Override

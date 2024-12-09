@@ -7,9 +7,10 @@ import yeelp.mcce.api.MCCEAPI;
 
 public final class WitherEffect extends AbstractInstantChaosEffect {
 
+	private static final int DURATION = 900;
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 900));
+		player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, DURATION));
 	}
 
 	@Override
@@ -19,7 +20,7 @@ public final class WitherEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	public boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !player.getActiveStatusEffects().containsKey(StatusEffects.WITHER) && !MCCEAPI.accessor.isChaosEffectActive(player, SuddenDeathEffect.class);
+		return !player.getActiveStatusEffects().containsKey(StatusEffects.WITHER) && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
 	}
 
 }

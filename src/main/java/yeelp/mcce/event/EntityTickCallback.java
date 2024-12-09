@@ -9,13 +9,12 @@ import net.minecraft.entity.Entity;
 @FunctionalInterface
 public interface EntityTickCallback extends Comparable<EntityTickCallback> {
 
-	Event<EntityTickCallback> EVENT = EventFactory.createArrayBacked(EntityTickCallback.class, (listeners) -> (entity) -> {
-		Arrays.stream(listeners).sorted().forEach((etc) -> etc.tick(entity));
-	});
+	Event<EntityTickCallback> EVENT = EventFactory.createArrayBacked(EntityTickCallback.class, (listeners) -> (entity) -> Arrays.stream(listeners).sorted().forEach((etc) -> etc.tick(entity)));
 	
 	void tick(Entity entity);
 	
-	default int priority() {
+	@SuppressWarnings("SameReturnValue")
+    default int priority() {
 		return 0;
 	}
 	

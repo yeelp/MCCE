@@ -2,10 +2,10 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.network.NetworkingConstants;
-import yeelp.mcce.network.SoundPacket;
+import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.PlayerUtils;
 
-public class SoundEffect extends AbstractInstantChaosEffect {
+public final class SoundEffect extends AbstractInstantChaosEffect {
 
 	private static final byte[] VALID_SOUNDS = {
 			NetworkingConstants.SoundPacketConstants.BASALT_DELTAS_ADDITIONS,
@@ -32,7 +32,7 @@ public class SoundEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPacket(VALID_SOUNDS[this.getRNG().nextInt(VALID_SOUNDS.length)], 1.0f, 1.0f)::sendPacket);
+		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(VALID_SOUNDS[this.getRNG().nextInt(VALID_SOUNDS.length)], 1.0f, 1.0f)::send);
 	}
 
 	@Override

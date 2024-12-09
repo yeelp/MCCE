@@ -3,13 +3,16 @@ package yeelp.mcce.client.event;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+
+import java.util.function.Function;
 
 public interface ClientRenderCallbacks {
 	
 	@FunctionalInterface
-	public interface RenderHealthCallback {
+    interface RenderHealthCallback {
 		enum Phase {
 			BEFORE,
 			AFTER;
@@ -33,14 +36,16 @@ public interface ClientRenderCallbacks {
 	}
 	
 	@FunctionalInterface
-	public interface AfterShaderSetCallback {
+    interface ChangeTextureColour {
 		
-		Event<AfterShaderSetCallback> EVENT = EventFactory.createArrayBacked(AfterShaderSetCallback.class, (listeners) -> (matrix, x0, x1, y0, y1, z, u0, u1, v0, v1) -> {
-			for(AfterShaderSetCallback assc : listeners) {
-				assc.afterShaderSet(matrix, x0, x1, y0, y1, z, u0, u1, v0, v1);
+		Event<ChangeTextureColour> EVENT = EventFactory.createArrayBacked(ChangeTextureColour.class, (listeners) -> (renderLayers, texture, x0, x1, y0, y1, u0, u1, v0, v1, color) -> {
+			int c = color;
+			for(ChangeTextureColour assc : listeners) {
+				c = assc.changeColor(renderLayers, texture, x0, x1, y0, y1, u0, u1, v0, v1, c);
 			}
+			return c;
 		});
 		
-		void afterShaderSet(Identifier texture, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1);
+		int changeColor(Function<Identifier, RenderLayer> renderLayers, Identifier texture, int x0, int x1, int y0, int y1, float u0, float u1, float v0, float v1, int color);
 	}
 }

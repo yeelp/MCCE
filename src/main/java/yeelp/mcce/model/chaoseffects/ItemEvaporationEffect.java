@@ -1,26 +1,27 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import yeelp.mcce.util.ChaosLib;
 
+import java.util.List;
+
 public final class ItemEvaporationEffect extends SimpleTimedChaosEffect {
 
 	private static final List<String> NAMES = ImmutableList.of("/dev/null/", "Null", "Void");
-	
-	protected ItemEvaporationEffect() {
-		super(750, 2500);
+
+	private static final int DURATION_MIN = 750, DURATION_MAX = 2500;
+	public ItemEvaporationEffect() {
+		super(DURATION_MIN, DURATION_MAX);
 	}
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		return;
+		//no apply effect
 	}
 
 	@Override
@@ -38,10 +39,9 @@ public final class ItemEvaporationEffect extends SimpleTimedChaosEffect {
 		return true;
 	}
 
-	public static final ItemStack getEvaporatedStack(ItemStack evaporatedStack) {
-		ItemStack stack = new ItemStack(Items.STRUCTURE_VOID, evaporatedStack.getCount());
-		stack.setNbt(evaporatedStack.getNbt());
-		stack.setCustomName(Text.empty().append(ChaosLib.getRandomElementFrom(NAMES, ChaosLib.getStaticRandomInstance())));
+	public static ItemStack getEvaporatedStack(ItemStack evaporatedStack) {
+		ItemStack stack = evaporatedStack.copyComponentsToNewStack(Items.STRUCTURE_VOID, evaporatedStack.getCount());
+		stack.set(DataComponentTypes.CUSTOM_NAME, Text.empty().append(ChaosLib.getRandomElementFrom(NAMES, ChaosLib.getStaticRandomInstance())));
 		return stack;
 	}
 }
