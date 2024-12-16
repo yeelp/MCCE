@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.util.ChaosLib;
 
 public final class ChunkyEffect extends AbstractTimedChaosEffect {
 
@@ -64,10 +65,7 @@ public final class ChunkyEffect extends AbstractTimedChaosEffect {
 			ChunkPos cPos = world.getChunk(pos).getPos();
 			for(int x = cPos.getStartX(); x <= cPos.getEndX(); x++) {
 				for(int z = cPos.getStartZ(); z <= cPos.getEndZ(); z++) {
-					BlockPos bPos = new BlockPos(x, pos.getY(), z);
-					if(!world.getBlockState(bPos).isAir()) {
-						world.removeBlock(bPos, false);
-					}
+					ChaosLib.setToAir(world, new BlockPos(x, pos.getY(), z));
 				}
 			}
 		}

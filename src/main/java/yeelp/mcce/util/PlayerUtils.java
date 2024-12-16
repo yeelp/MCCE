@@ -6,6 +6,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 import java.util.Optional;
+import java.util.stream.DoubleStream;
 
 public abstract class PlayerUtils {
 
@@ -34,5 +35,9 @@ public abstract class PlayerUtils {
 
 	public static boolean isPlayerInDimension(PlayerEntity player, RegistryKey<World> world) {
 		return player.getWorld().getRegistryKey().equals(world);
+	}
+
+	public static boolean doesPlayerHaveValidPosition(PlayerEntity player) {
+		return DoubleStream.of(player.getX(), player.getY(), player.getZ()).anyMatch(Double::isNaN);
 	}
 }

@@ -77,6 +77,15 @@ public final class ServerState extends PersistentState {
 	public DespawnTimer getDespawnTimer(UUID uuid) {
 		return this.timers.computeIfAbsent(uuid, (u) -> new DespawnTimer());
 	}
+
+	/**
+	 * Checks if a UUID has a {@link DespawnTimer}.
+	 * @param uuid UUID to check
+	 * @return true if it has a timer.
+	 */
+	public boolean hasDespawnTimer(UUID uuid) {
+		return this.timers.containsKey(uuid);
+	}
 	
 	/**
 	 * Remove a {@link DespawnTimer} for a specified UUID

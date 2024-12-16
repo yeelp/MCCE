@@ -28,5 +28,6 @@ public interface NetworkingPayloads {
         PayloadTypeRegistry.playS2C().register(SilentStatUpdatePayload.ID, SilentStatUpdatePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SoundPayload.ID, SoundPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(StutterSoundStatusPayload.ID, StutterSoundStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(LookInversionStatusPayload.ID, LookInversionStatusPayload.CODEC);
     }
 }

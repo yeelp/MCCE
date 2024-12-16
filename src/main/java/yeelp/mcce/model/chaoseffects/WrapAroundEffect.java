@@ -3,6 +3,7 @@ package yeelp.mcce.model.chaoseffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.world.World;
+import yeelp.mcce.util.PlayerUtils;
 import yeelp.mcce.util.SimpleUtil;
 
 import java.util.EnumSet;
@@ -34,7 +35,7 @@ public final class WrapAroundEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.END;
+		return player.getWorld().getRegistryKey() == World.END && PlayerUtils.doesPlayerHaveValidPosition(player);
 	}
 
 }

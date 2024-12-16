@@ -25,12 +25,15 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 
 	private final Map<String, ChaosEffect> activeEffects = Maps.newHashMap();
 	private int durationUntilNextEffect;
+	private boolean hasHadEffects = false;
 	private final Random rand = new Random(System.currentTimeMillis());
 	private static final String EFFECT_KEY = "effects";
 	private static final String TIME_KEY = "durationUntilNextEffect";
+	private static final String HAS_HAD_EFFECTS_KEY = "hasHadEffects";
 	private static final int INITIAL_DURATION = 500;
 	private static final int DURATION_MIN = 200;
 	private static final int DURATION_MAX = 1000;
+
 
 	/**
 	 * Create an empty PlayerChaosEffectState.
@@ -51,6 +54,7 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 		NbtCompound effects = nbt.getCompound(EFFECT_KEY);
 		effects.getKeys().forEach((s) -> this.activeEffects.put(s, ChaosEffectRegistry.createEffectFromNbt(s, effects.getCompound(s))));
 		this.durationUntilNextEffect = nbt.getInt(TIME_KEY);
+		this.hasHadEffects = nbt.getBoolean(HAS_HAD_EFFECTS_KEY);
 	}
 
 	/**
@@ -62,6 +66,7 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	 */
 	@SuppressWarnings("FeatureEnvy")
     public void addNewEffect(PlayerEntity player, ChaosEffect effect) {
+		this.hasHadEffects = true;
 		effect.applyEffect(player);
 		if(!effect.isInstant()) {
 			this.activeEffects.put(effect.getName(), effect);
@@ -89,6 +94,7 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 		this.activeEffects.forEach((s, e) -> tag.put(s, e.writeToNbt()));
 		root.put(EFFECT_KEY, tag);
 		root.putInt(TIME_KEY, this.durationUntilNextEffect);
+		root.putBoolean(HAS_HAD_EFFECTS_KEY, this.hasHadEffects);
 		return root;
 	}
 	
@@ -100,13 +106,20 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 		this.durationUntilNextEffect--;
 	}
 
-	@SuppressWarnings("unused")
+	public void setDurationUntilNextEffect(int duration) {
+		this.durationUntilNextEffect = duration;
+	}
+
     public int getDurationUntilNextEffect() {
 		return this.durationUntilNextEffect;
 	}
 	
 	public void resetDurationUntilNextEffect() {
 		this.durationUntilNextEffect = this.rand.nextInt(DURATION_MIN, DURATION_MAX);
+	}
+
+	public boolean hasHadEffectsBefore() {
+		return this.hasHadEffects;
 	}
 
 	@Override

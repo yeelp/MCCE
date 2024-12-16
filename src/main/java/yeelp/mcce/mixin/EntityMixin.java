@@ -1,17 +1,6 @@
 package yeelp.mcce.mixin;
 
-import java.util.Map;
-import java.util.UUID;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.google.common.collect.Maps;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.entity.MovementType;
@@ -21,10 +10,19 @@ import net.minecraft.server.command.CommandOutput;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.entity.EntityLike;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yeelp.mcce.event.EntityTickCallback;
 import yeelp.mcce.model.ServerState;
 import yeelp.mcce.model.chaoseffects.ClippyEffect;
 import yeelp.mcce.model.chaoseffects.InverseEffect;
+
+import java.util.Map;
+import java.util.UUID;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput {

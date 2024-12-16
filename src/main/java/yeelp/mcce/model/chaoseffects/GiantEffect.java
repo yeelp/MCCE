@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.world.LocalDifficulty;
+import yeelp.mcce.util.PlayerUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -141,7 +142,7 @@ public final class GiantEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return PlayerUtils.doesPlayerHaveValidPosition(player);
 	}
 
 }

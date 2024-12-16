@@ -6,7 +6,7 @@ import yeelp.mcce.client.event.CycleOfLifeTiltHandler;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SilentStatUpdatePayload;
 
-public class SilentStatUpdatePacketReceiver implements ClientPacketReceiver<SilentStatUpdatePayload> {
+public final class SilentStatUpdatePacketReceiver implements ClientPacketReceiver<SilentStatUpdatePayload> {
 
 	@Override
 	public void handlePayload(SilentStatUpdatePayload silentStatUpdatePayload, ClientPlayNetworking.Context context) {

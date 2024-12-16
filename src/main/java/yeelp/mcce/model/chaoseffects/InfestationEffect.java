@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.AttributeUtils;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class InfestationEffect extends AbstractInstantChaosEffect {
 
@@ -60,7 +61,7 @@ public final class InfestationEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH) && PlayerUtils.doesPlayerHaveValidPosition(player);
 	}
 
 }

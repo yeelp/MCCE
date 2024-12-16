@@ -83,4 +83,12 @@ public final class DespawnTimer {
 		nbt.putBoolean(SET_KEY, this.set);
 		return nbt;
 	}
+
+	/**
+	 * Was this timer set?
+	 * @return True if set.
+	 */
+	public boolean isSet() {
+		return this.set;
+	}
 }

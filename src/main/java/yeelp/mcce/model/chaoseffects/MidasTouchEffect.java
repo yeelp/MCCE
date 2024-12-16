@@ -125,7 +125,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CRUMBLE);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.CRUMBLE, ChaosEffects.NETHERITE_TRANSMUTATION);
 	}
 
 	@Override

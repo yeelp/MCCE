@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,7 +20,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.event.CallbackResult.CancelState;
 import yeelp.mcce.event.ModifyBlockDrops;
+import yeelp.mcce.event.OnBlockPlaceCallback;
 import yeelp.mcce.model.chaoseffects.ChaosEffects;
 
 import java.util.Optional;
@@ -60,6 +63,13 @@ public abstract class BlockMixin extends AbstractBlock {
 	@Inject(method = "onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V", at = @At("HEAD"), cancellable = true)
 	private void preventFallDamage(@SuppressWarnings("unused") World world, @SuppressWarnings("unused") BlockState state, @SuppressWarnings("unused") BlockPos pos, Entity entity, @SuppressWarnings("unused") float fallDistance, CallbackInfo info) {
 		if(getPlayerIfBouncy(entity).isPresent()) {
+			info.cancel();
+		}
+	}
+
+	@Inject(method = "onPlaced(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;)V", at = @At("HEAD"), cancellable = true)
+	private void onPlace(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, CallbackInfo info) {
+		if(OnBlockPlaceCallback.EVENT.invoker().onBlockPlace(world, pos, state, placer, stack).getCancelState() == CancelState.CANCEL) {
 			info.cancel();
 		}
 	}

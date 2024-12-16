@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.util.ChaosLib;
 
 public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 
@@ -62,8 +63,8 @@ public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 			}
 			BlockPos colPos = new BlockPos(pos.getX(), world.getDimension().minY(), pos.getZ());
 			for(int y = world.getDimension().minY(); y < world.getTopYInclusive(); y++) {
-				if(!world.getBlockState(colPos).isAir() && world.isInBuildLimit(colPos)) {
-					world.removeBlock(colPos, false);
+				if(world.isInBuildLimit(colPos)) {
+					ChaosLib.setToAir(world, colPos);
 				}
 				colPos = colPos.up();
 			}

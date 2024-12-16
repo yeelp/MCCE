@@ -1,21 +1,19 @@
 package yeelp.mcce.model.chaoseffects;
 
 import com.google.common.collect.Maps;
-import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import yeelp.mcce.util.EnchantmentUtils;
 
 import java.util.Map;
+import java.util.Optional;
 
-public final class SuperFishEffect extends AbstractInstantChaosEffect {
+public final class SuperFishEffect extends AbstractEnchantedItemChaosEffect {
 
 	private static final Map<RegistryKey<Enchantment>, Integer> ENCHANTS = Maps.newHashMap();
 
@@ -29,22 +27,27 @@ public final class SuperFishEffect extends AbstractInstantChaosEffect {
 	}
 
 	@Override
-	public void applyEffect(PlayerEntity player) {
-		ItemStack stack = new ItemStack(Items.COD);
-		DynamicRegistryManager manager = player.getRegistryManager();
-		ENCHANTS.forEach((enchant, level) -> stack.addEnchantment(EnchantmentUtils.getEntry(enchant, manager), level));
-		stack.set(DataComponentTypes.CUSTOM_NAME, Text.empty().formatted(Formatting.RESET).append("SuperFish!").formatted(Formatting.BLUE));
-		player.giveItemStack(stack);
-	}
-
-	@Override
 	public String getName() {
 		return "superfish";
 	}
 
 	@Override
-	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getInventory().getEmptySlot() >= 0;
+	protected Map<RegistryKey<Enchantment>, Integer> getEnchantments() {
+		return ENCHANTS;
 	}
 
+	@Override
+	protected Optional<Text> getCustomName() {
+		return Optional.of(Text.empty().formatted(Formatting.RESET).append("SuperFish!").formatted(Formatting.BLUE));
+	}
+
+	@Override
+	protected Item getItem() {
+		return Items.COD;
+	}
+
+	@Override
+	protected Optional<LoreComponent> getLore() {
+		return Optional.empty();
+	}
 }

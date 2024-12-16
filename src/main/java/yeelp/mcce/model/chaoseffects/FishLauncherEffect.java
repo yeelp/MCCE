@@ -63,7 +63,7 @@ public final class FishLauncherEffect extends AbstractIntervalChaosEffect implem
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return PlayerUtils.doesPlayerHaveValidPosition(player);
 	}
 
 	@Override

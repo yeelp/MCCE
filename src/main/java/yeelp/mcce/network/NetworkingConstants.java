@@ -14,6 +14,7 @@ public interface NetworkingConstants {
 	Identifier RAINBOW_STATUS_PACKET_ID = MCCE.createIdentifier("rainbow");
 	Identifier QUIVER_UPDATE_PACKET_ID = MCCE.createIdentifier("quiverupdate");
 	Identifier STUTTER_SOUND_STATUS_PACKET_ID = MCCE.createIdentifier("stuttersoundstatus");
+	Identifier LOOK_INVERSION_STATUS_PACKET_ID = MCCE.createIdentifier("lookinversion");
 	
 	final class ParticlePacketConstants {
 		private ParticlePacketConstants() {
@@ -103,6 +104,11 @@ public interface NetworkingConstants {
 		public static final byte LOVABLE_PHANTOM_SPAWN_ID = 33;
 		public static final byte ENDER_DRIVE_THRU_ACTIVATE = 34;
 		public static final byte SHAKE = 35;
+		public static final byte VAULT_ACTIVATE = 36;
+		public static final byte OMINOUS_SPAWNER = 37;
+		public static final byte OMINOUS_PREPARE = 38;
+		public static final byte AMBIENT_CAVE = 39;
+		public static final byte PLING = 40;
 		
 		@SuppressWarnings("MagicNumber")
         public static SoundEvent getSound(byte b) {
@@ -146,6 +152,11 @@ public interface NetworkingConstants {
                 case LOVABLE_PHANTOM_SPAWN_ID -> SoundEvents.ENTITY_PLAYER_LEVELUP;
 				case ENDER_DRIVE_THRU_ACTIVATE -> SoundEvents.BLOCK_ENDER_CHEST_OPEN;
 				case SHAKE -> SoundEvents.ENTITY_PLAYER_ATTACK_WEAK;
+				case VAULT_ACTIVATE -> SoundEvents.BLOCK_VAULT_ACTIVATE;
+				case OMINOUS_SPAWNER -> SoundEvents.BLOCK_TRIAL_SPAWNER_OMINOUS_ACTIVATE;
+				case OMINOUS_PREPARE -> SoundEvents.BLOCK_TRIAL_SPAWNER_ABOUT_TO_SPAWN_ITEM;
+				case AMBIENT_CAVE -> SoundEvents.AMBIENT_CAVE.value();
+				case PLING -> SoundEvents.BLOCK_NOTE_BLOCK_PLING.value();
                 default -> null;
             };
 		}

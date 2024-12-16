@@ -23,6 +23,6 @@ public abstract class AbstractChaosEffect implements ChaosEffect {
 
 	@Override
 	public final boolean applicable(PlayerEntity player) {
-		return (!MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffectRegistry.getEntry(this)) || this.canStack()) && this.isApplicableIgnoringStackability(player);
+		return (MCCEAPI.accessor.hasHadEffectsBefore(player) || this.canBeFirstEffect()) && (!MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffectRegistry.getEntry(this)) || this.canStack()) && this.isApplicableIgnoringStackability(player);
 	}
 }

@@ -2,13 +2,7 @@ package yeelp.mcce.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import yeelp.mcce.client.event.ClientCallbacks;
-import yeelp.mcce.client.networking.MemoryGameStatusPacketReceiver;
-import yeelp.mcce.client.networking.ParticlePacketReceiver;
-import yeelp.mcce.client.networking.QuiverUpdatePacketReceiver;
-import yeelp.mcce.client.networking.RainbowStatusPacketReceiver;
-import yeelp.mcce.client.networking.SilentStatUpdatePacketReceiver;
-import yeelp.mcce.client.networking.SoundPacketReceiver;
-import yeelp.mcce.client.networking.StutterSoundStatusPacketReceiver;
+import yeelp.mcce.client.networking.*;
 
 public final class MCCEClient implements ClientModInitializer {
 
@@ -21,6 +15,7 @@ public final class MCCEClient implements ClientModInitializer {
 		new QuiverUpdatePacketReceiver().register();
 		new ParticlePacketReceiver().register();
 		new StutterSoundStatusPacketReceiver().register();
+		new LookInversionStatusPacketReceiver().register();
 		ClientCallbacks.registerCallbacks();
 	}
 }

@@ -3,10 +3,14 @@ package yeelp.mcce.util;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -140,6 +144,45 @@ public final class ChaosLib {
 			}
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * Do an action for eack BlockPos in the box
+	 * @param box the Box to perform actions in
+	 * @param action the action to perform. Must not be null.
+	 */
+	public static void forEachPos(@NotNull Box box, @NotNull Consumer<BlockPos> action) {
+		Objects.requireNonNull(action);
+		Objects.requireNonNull(box);
+		Mutable mutable = new BlockPos(0, 0, 0).mutableCopy();
+		for(double x = box.minX; x <= box.maxX; x++) {
+			for(double y = box.minY; y <= box.maxY; y++) {
+				for(double z = box.minZ; z <= box.maxZ; z++) {
+					if(box.contains(x, y, z)) {
+						action.accept(mutable.set((int) x, (int) y, (int) z));
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Do an action for each BlockPos contained in a box from {@code posMin} to {@code posMax}.
+	 * @param posMin one corner of the box
+	 * @param posMax second corner of the box
+	 * @param action action to perform. Must not be null.
+	 */
+	public static void forEachPos(@NotNull BlockPos posMin, @NotNull BlockPos posMax, @NotNull Consumer<BlockPos> action) {
+		Objects.requireNonNull(action);
+		Objects.requireNonNull(posMin);
+		Objects.requireNonNull(posMax);
+		forEachPos(Box.from(BlockBox.create(posMin, posMax)), action);
+	}
+
+	public static void setToAir(World world, BlockPos pos) {
+		if(!world.isAir(pos)) {
+			world.removeBlock(pos, false);
+		}
 	}
 	
 	/**

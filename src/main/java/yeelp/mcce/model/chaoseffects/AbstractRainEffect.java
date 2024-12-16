@@ -27,4 +27,8 @@ public abstract class AbstractRainEffect extends SimpleTimedChaosEffect {
 	
 	protected abstract Entity getEntityToSpawn(PlayerEntity player);
 
+	@Override
+	public boolean canBeFirstEffect() {
+		return false;
+	}
 }

@@ -1,15 +1,7 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.After;
 import net.minecraft.block.BlockState;
@@ -22,110 +14,118 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.Tracker;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 
-	private static final Tracker AFFECTED_PLAYERS = new Tracker();
-	private static final Map<Item, Float> WEIGHTED_ITEMS = Maps.newHashMap();
-	private static final List<Map.Entry<Item, Float>> WEIGHTED_LIST;
+    private static final Tracker AFFECTED_PLAYERS = new Tracker();
+    private static final Map<Item, Float> WEIGHTED_ITEMS = Maps.newHashMap();
+    private static final List<Map.Entry<Item, Float>> WEIGHTED_LIST;
 
-	static {
-		setUpWeights();
-		WEIGHTED_LIST = Lists.newArrayList(WEIGHTED_ITEMS.entrySet());
-	}
+    static {
+        setUpWeights();
+        WEIGHTED_LIST = Lists.newArrayList(WEIGHTED_ITEMS.entrySet());
+    }
 
-	@SuppressWarnings("MagicNumber")
+    @SuppressWarnings("MagicNumber")
     private static void setUpWeights() {
-		WEIGHTED_ITEMS.put(Items.DIAMOND, 5f);
-		WEIGHTED_ITEMS.put(Items.HEART_OF_THE_SEA, 11f);
-		WEIGHTED_ITEMS.put(Items.EMERALD, 7f);
-		WEIGHTED_ITEMS.put(Items.NETHERITE_BLOCK, 6.5f);
-		WEIGHTED_ITEMS.put(Items.QUARTZ, 15.5f);
-		WEIGHTED_ITEMS.put(Items.ENDER_PEARL, 10f);
-		WEIGHTED_ITEMS.put(Items.BLAZE_POWDER, 1f);
-		WEIGHTED_ITEMS.put(Items.POLISHED_GRANITE, 12f);
-		WEIGHTED_ITEMS.put(Items.DRIED_KELP_BLOCK, 25f);
-		WEIGHTED_ITEMS.put(Items.BEDROCK, 0.5f);
-		WEIGHTED_ITEMS.put(Items.REINFORCED_DEEPSLATE, 0.5f);
-		WEIGHTED_ITEMS.put(Items.OBSIDIAN, 5f);
-		WEIGHTED_ITEMS.put(Items.FOX_SPAWN_EGG, 1f);
-	}
+        WEIGHTED_ITEMS.put(Items.DIAMOND, 5f);
+        WEIGHTED_ITEMS.put(Items.HEART_OF_THE_SEA, 11f);
+        WEIGHTED_ITEMS.put(Items.EMERALD, 7f);
+        WEIGHTED_ITEMS.put(Items.NETHERITE_BLOCK, 6.5f);
+        WEIGHTED_ITEMS.put(Items.QUARTZ, 15.5f);
+        WEIGHTED_ITEMS.put(Items.ENDER_PEARL, 10f);
+        WEIGHTED_ITEMS.put(Items.BLAZE_POWDER, 1f);
+        WEIGHTED_ITEMS.put(Items.POLISHED_GRANITE, 12f);
+        WEIGHTED_ITEMS.put(Items.DRIED_KELP_BLOCK, 25f);
+        WEIGHTED_ITEMS.put(Items.BEDROCK, 0.5f);
+        WEIGHTED_ITEMS.put(Items.REINFORCED_DEEPSLATE, 0.5f);
+        WEIGHTED_ITEMS.put(Items.OBSIDIAN, 5f);
+        WEIGHTED_ITEMS.put(Items.FOX_SPAWN_EGG, 1f);
+    }
 
-	private static final int DURATION_MIN = 3000, DURATION_MAX = 5000;
-	public LotteryEffect() {
-		super(DURATION_MIN, DURATION_MAX, 1);
-	}
+    private static final int DURATION_MIN = 3000, DURATION_MAX = 5000;
 
-	@Override
-	public void applyEffect(PlayerEntity player) {
-		AFFECTED_PLAYERS.add(player);
-	}
+    public LotteryEffect() {
+        super(DURATION_MIN, DURATION_MAX, 1);
+    }
 
-	@Override
-	public String getName() {
-		return "lottery";
-	}
+    @Override
+    public void applyEffect(PlayerEntity player) {
+        AFFECTED_PLAYERS.add(player);
+    }
 
-	@Override
-	public void registerCallbacks() {
-		PlayerBlockBreakEvents.AFTER.register(new AfterBlockBreakListener());
-	}
+    @Override
+    public String getName() {
+        return "lottery";
+    }
 
-	@Override
-	public void onEffectEnd(PlayerEntity player) {
-		AFFECTED_PLAYERS.remove(player);
-	}
+    @Override
+    public void registerCallbacks() {
+        PlayerBlockBreakEvents.AFTER.register(new AfterBlockBreakListener());
+    }
 
-	@Override
-	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		//no effect logic
-	}
+    @Override
+    public void onEffectEnd(PlayerEntity player) {
+        AFFECTED_PLAYERS.remove(player);
+    }
 
-	@Override
-	protected boolean canStack() {
-		return false;
-	}
+    @Override
+    protected void tickAdditionalEffectLogic(PlayerEntity player) {
+        //no effect logic
+    }
 
-	@Override
-	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
-	}
+    @Override
+    protected boolean canStack() {
+        return false;
+    }
 
-	private static final class AfterBlockBreakListener implements After {
+    @Override
+    protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
+        return MCCEAPI.accessor.getChaosEffect(player, UnbreakableEffect.class).filter((e) -> e.getTriggersRemaining() > 0).isEmpty();
+    }
 
-		private static final double V_MIN = -Math.E/10;
-		private static final double V_MAX = -V_MIN;
-		@SuppressWarnings("MagicNumber")
+    private static final class AfterBlockBreakListener implements After {
+
+        private static final double V_MIN = -Math.E / 10;
+        private static final double V_MAX = -V_MIN;
+
+        @SuppressWarnings("MagicNumber")
         @Override
-		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-			MCCEAPI.mutator.modifyEffect(player, LotteryEffect.class, (ce) -> {
-				if(ce.getTriggersRemaining() <= 0 || !AFFECTED_PLAYERS.tracked(player) || !player.getMainHandStack().getItem().isCorrectForDrops(player.getMainHandStack(), state)) {
-					return;
-				}
-				if(state.streamTags().noneMatch((tag) -> tag == BlockTags.PICKAXE_MINEABLE)) {
-					return;
-				}
-				int num = ce.getRNG().nextInt(1, 64);
-				float weight = ce.getRNG().nextFloat(100.0f);
-				Collections.shuffle(WEIGHTED_LIST);
-				Iterator<Map.Entry<Item, Float>> it = WEIGHTED_LIST.iterator();
-				Item item;
-				do {
-					Map.Entry<Item, Float> entry = it.next();
-					weight -= entry.getValue();
-					item = entry.getKey();
-				} while(weight > 0);
-				ItemStack stack = new ItemStack(item);
+        public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+            MCCEAPI.mutator.modifyEffect(player, LotteryEffect.class, (ce) -> {
+                if(ce.getTriggersRemaining() <= 0 || !AFFECTED_PLAYERS.tracked(player) || !player.getMainHandStack().getItem().isCorrectForDrops(player.getMainHandStack(), state)) {
+                    return;
+                }
+                if(state.streamTags().noneMatch((tag) -> tag == BlockTags.PICKAXE_MINEABLE)) {
+                    return;
+                }
+                int num = ce.getRNG().nextInt(1, 64);
+                float weight = ce.getRNG().nextFloat(100.0f);
+                Collections.shuffle(WEIGHTED_LIST);
+                Iterator<Map.Entry<Item, Float>> it = WEIGHTED_LIST.iterator();
+                Item item;
+                do {
+                    Map.Entry<Item, Float> entry = it.next();
+                    weight -= entry.getValue();
+                    item = entry.getKey();
+                } while(weight > 0);
+                ItemStack stack = new ItemStack(item);
 
-				while(num-- > 0) {
-					ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack, ce.getRNG().nextDouble(V_MIN, V_MAX), ce.getRNG().nextDouble(0, V_MAX), ce.getRNG().nextDouble(V_MIN, V_MAX));
-					world.spawnEntity(entity);
-				}
-				ce.trigger();
-			});
-		}
-	}
+                while(num-- > 0) {
+                    ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack, ce.getRNG().nextDouble(V_MIN, V_MAX), ce.getRNG().nextDouble(0, V_MAX), ce.getRNG().nextDouble(V_MIN, V_MAX));
+                    world.spawnEntity(entity);
+                }
+                ce.trigger();
+            });
+        }
+    }
 
 }

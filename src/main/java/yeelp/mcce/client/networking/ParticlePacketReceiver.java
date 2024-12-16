@@ -7,7 +7,7 @@ import yeelp.mcce.network.ParticlePayload;
 
 import java.util.Objects;
 
-public class ParticlePacketReceiver implements ClientPacketReceiver<ParticlePayload> {
+public final class ParticlePacketReceiver implements ClientPacketReceiver<ParticlePayload> {
 
 	@Override
 	public void handlePayload(ParticlePayload particlePayload, ClientPlayNetworking.Context context) {

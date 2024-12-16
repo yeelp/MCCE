@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.network.NetworkingConstants.SoundPacketConstants;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.ChaosLib;
@@ -12,7 +13,7 @@ import yeelp.mcce.util.PlayerUtils;
 
 public final class ShakeweightEffect extends AbstractIntervalTriggeredChaosEffect {
 
-    private static final int DURATION = 200, INTERVAL_MIN = 3, INTERVAL_MAX = 6;
+    private static final int DURATION = 200, INTERVAL_MIN = 3, INTERVAL_MAX = 6, TRIGGERS_MIN = 6, TRIGGERS_MAX = 10;
     private static final double SHAKE_STRENGTH = 6.0;
     private static final int THROW_UP_WHEN_ON_GROUND_GRACE_PERIOD = 20;
     private static final float THROW_PITCH = 0.5f, SHAKE_PITCH = 0.8f;
@@ -21,7 +22,7 @@ public final class ShakeweightEffect extends AbstractIntervalTriggeredChaosEffec
     private static final Vec3d UP = new Vec3d(0, SHAKE_STRENGTH, 0), DOWN = UP.negate();
 
     public ShakeweightEffect() {
-        super(DURATION, DURATION, INTERVAL_MIN, INTERVAL_MAX, AbstractLastingChaosEffect.getIntInRange(6, 10));
+        super(DURATION, DURATION, INTERVAL_MIN, INTERVAL_MAX, AbstractLastingChaosEffect.getIntInRange(TRIGGERS_MIN, TRIGGERS_MAX));
     }
 
     @Override
@@ -31,6 +32,9 @@ public final class ShakeweightEffect extends AbstractIntervalTriggeredChaosEffec
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
+        if(MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.TO_THE_MOON)) {
+            return false;
+        }
         if(!player.isOnGround()) {
             return true;
         }

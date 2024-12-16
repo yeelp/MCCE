@@ -1,11 +1,11 @@
 package yeelp.mcce.api;
 
-import java.util.Optional;
-
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.model.PlayerChaosEffectState;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistryEntry;
+
+import java.util.Optional;
 
 /**
  * A collection of methods for reading player state
@@ -45,4 +45,30 @@ public interface MCCEAPIAccessor {
 	 * @return false if at least one of the entries are active on the player
 	 */
 	boolean areChaosEffectsNotActive(PlayerEntity player, ChaosEffectRegistryEntry... entries);
+
+	/**
+	 * Check if at least one of the passed chaos effects are active on a player
+	 * @param player the Player to check
+	 * @param entries an array of ChaosEffectRegistryEntry to check
+	 * @return true if at least one of the effects is active
+	 */
+	default boolean areAnyChaosEffectsActive(PlayerEntity player, ChaosEffectRegistryEntry... entries) {
+		for(ChaosEffect effect : this.getPlayerChaosEffectState(player)) {
+			for(ChaosEffectRegistryEntry entry : entries) {
+				if(entry.is(effect)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Has this player had chaos effects applied before. Some effects can't be the very first effect applied.
+	 * @param player player to check
+	 * @return True if this player has had chaos effect applied before.
+	 */
+	default boolean hasHadEffectsBefore(PlayerEntity player) {
+		return this.getPlayerChaosEffectState(player).hasHadEffectsBefore();
+	}
 }

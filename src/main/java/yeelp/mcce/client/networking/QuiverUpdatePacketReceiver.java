@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.QuiverPayload;
 
-public class QuiverUpdatePacketReceiver implements ClientPacketReceiver<QuiverPayload> {
+public final class QuiverUpdatePacketReceiver implements ClientPacketReceiver<QuiverPayload> {
 
 	@Override
 	public void handlePayload(QuiverPayload quiverPayload, ClientPlayNetworking.Context context) {

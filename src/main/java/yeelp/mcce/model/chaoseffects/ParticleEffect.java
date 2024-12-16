@@ -39,7 +39,7 @@ public final class ParticleEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return PlayerUtils.doesPlayerHaveValidPosition(player);
 	}
 
 	@Override
@@ -57,6 +57,9 @@ public final class ParticleEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
+		if(!PlayerUtils.doesPlayerHaveValidPosition(player)) {
+			return;
+		}
 		if(this.getRNG().nextInt(3) != 0) {
 			return;
 		}

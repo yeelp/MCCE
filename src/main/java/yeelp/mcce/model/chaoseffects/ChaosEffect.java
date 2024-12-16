@@ -86,6 +86,14 @@ public interface ChaosEffect {
 	void onEffectEnd(PlayerEntity player);
 
 	/**
+	 * A cleanup method that gets called when this ChaosEffect is removed. This is to end the effect on the player if needed. By default, this just calls {@link #onEffectEnd(PlayerEntity)}
+	 * @param player Player that this effect was removed from.
+	 */
+	default void onEffectRemoved(PlayerEntity player) {
+		this.onEffectEnd(player);
+	}
+
+	/**
 	 * Tick this effect.
 	 * 
 	 * @param player The player this ChaosEffect is currently affecting.
@@ -114,5 +122,13 @@ public interface ChaosEffect {
 	 */
 	default boolean canModifyEffectState() {
 		return false;
+	}
+
+	/**
+	 * Can this ChaosEffect be the first effect applied to a player?
+	 * @return true if yes, false if not.
+	 */
+	default boolean canBeFirstEffect() {
+		return true;
 	}
 }

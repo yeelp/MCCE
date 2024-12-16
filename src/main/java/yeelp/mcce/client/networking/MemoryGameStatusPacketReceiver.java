@@ -6,7 +6,7 @@ import yeelp.mcce.client.event.MemoryGameKeyboardHandler;
 import yeelp.mcce.network.MemoryGamePayload;
 import yeelp.mcce.network.NetworkingConstants;
 
-public class MemoryGameStatusPacketReceiver implements ClientPacketReceiver<MemoryGamePayload> {
+public final class MemoryGameStatusPacketReceiver implements ClientPacketReceiver<MemoryGamePayload> {
 
 	@Override
 	public Identifier getID() {

@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EnderDriveThruEffect extends AbstractInstantChaosEffect {
+public final class EnderDriveThruEffect extends AbstractInstantChaosEffect {
 
-    private static final List<Text> NAMES = Arrays.stream(new String[] {"Ender Drive Thru", "I Heard You Wanted Your Ender Chest", "Ender on Demand", "Efficient Ender Entrypoint", "Return to Ender", "Ender Storage.co"}).map(Text::of).collect(Collectors.toList());
+    private static final List<Text> NAMES = Arrays.stream(new String[] {"Ender Drive Thru", "Did You Want Your Ender Chest?", "Ender on Demand", "Efficient Ender Entrypoint", "Return to Ender", "Ender Storage.co"}).map(Text::of).collect(Collectors.toList());
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
         return true;

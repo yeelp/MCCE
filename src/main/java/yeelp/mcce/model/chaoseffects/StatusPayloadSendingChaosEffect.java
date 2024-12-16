@@ -46,7 +46,7 @@ public abstract class StatusPayloadSendingChaosEffect<P extends StatusPayload> e
         }
     }
 
-    private Tracker getTracker() {
+    protected Tracker getTracker() {
         return getTracker(ChaosEffectRegistry.getEntry(this));
     }
 

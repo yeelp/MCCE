@@ -19,4 +19,9 @@ public final class NullEffect extends AbstractInstantChaosEffect {
 		return true;
 	}
 
+	@Override
+	public boolean canBeFirstEffect() {
+		//can't be first since that defeats the whole point of having some effects that can't be applied first
+		return false;
+	}
 }

@@ -93,7 +93,9 @@ public final class LovablePhantomEffect extends AbstractIntervalTriggeredChaosEf
 		super.readNbt(nbt);
 		this.phantoms = nbt.getInt(PHANTOMS_KEY);
 	}
-	
-	
 
+	@Override
+	public boolean canBeFirstEffect() {
+		return false;
+	}
 }

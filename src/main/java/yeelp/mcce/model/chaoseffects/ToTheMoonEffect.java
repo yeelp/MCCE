@@ -1,6 +1,7 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
+import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.PlayerUtils;
@@ -31,7 +32,7 @@ public final class ToTheMoonEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SHAKEWEIGHT);
 	}
 
 	@Override

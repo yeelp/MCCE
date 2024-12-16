@@ -67,7 +67,7 @@ public enum MCCEAPIImpl implements MCCEAPIAccessor, MCCEAPIMutator {
             Iterator<ChaosEffect> effects = pces.iterator();
             ChaosEffect ce;
             while (!entry.is(ce = effects.next())) ;
-            ce.onEffectEnd(player);
+            ce.onEffectRemoved(player);
             pces.removeEffect(ce);
         });
         return true;
@@ -79,7 +79,7 @@ public enum MCCEAPIImpl implements MCCEAPIAccessor, MCCEAPIMutator {
         this.getPlayerChaosEffectState(player).forEach(effects::add);
         alterServerState(player, (state) -> {
             PlayerChaosEffectState pces = getEffectStateFromServerState(state, player);
-            effects.forEach((ce) -> ce.onEffectEnd(player));
+            effects.forEach((ce) -> ce.onEffectRemoved(player));
             effects.forEach(pces::removeEffect);
         });
     }

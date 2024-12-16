@@ -4,8 +4,6 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public final class CycleOfLifeEffect extends AbstractStatCycleEffect {
 
-    private static final ChaosEffectRegistryEntry[] MUTUALLY_EXCLUSIVE_EFFECTS = new ChaosEffectRegistryEntry[] {ChaosEffects.SUDDEN_DEATH, ChaosEffects.EQUILIBRIUM};
-
     public CycleOfLifeEffect() {
         super();
     }
@@ -27,6 +25,6 @@ public final class CycleOfLifeEffect extends AbstractStatCycleEffect {
 
     @Override
     protected ChaosEffectRegistryEntry[] getMutualExclusiveEffects() {
-        return MUTUALLY_EXCLUSIVE_EFFECTS;
+        return new ChaosEffectRegistryEntry[] {ChaosEffects.SUDDEN_DEATH, ChaosEffects.EQUILIBRIUM};
     }
 }
