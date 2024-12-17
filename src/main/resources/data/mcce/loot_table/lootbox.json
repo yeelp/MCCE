@@ -1,0 +1,380 @@
+{
+  "type": "minecraft:vault",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 5
+      },
+      "bonus_rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:blaze_rod"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 4,
+          "name": "minecraft:end_portal_frame",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 9,
+          "name": "minecraft:parrot_spawn_egg",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 24,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 7,
+          "name": "minecraft:bedrock",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:diamond",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3,
+                "min": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:orange_bundle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:bundle_contents": [
+                  {
+                    "id": "minecraft:ender_pearl"
+                  },
+                  {
+                    "id": "minecraft:crafting_table"
+                  },
+                  {
+                    "id": "minecraft:tall_grass"
+                  },
+                  {
+                    "id": "minecraft:enchanted_golden_apple"
+                  },
+                  {
+                    "id": "minecraft:dried_kelp_block"
+                  },
+                  {
+                    "id": "minecraft:blaze_powder"
+                  },
+                  {
+                    "id": "minecraft:honey_bottle"
+                  },
+                  {
+                    "id": "minecraft:waxed_exposed_cut_copper_stairs"
+                  },
+                  {
+                    "id": "minecraft:bread"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 3,
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:regeneration"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:nether_star",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 15,
+                "min": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 1,
+          "name": "minecraft:diamond_pickaxe",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "Yeelp's Void Miner",
+                "type": "text",
+                "color": "gold"
+              }
+            },
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": 50
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 8,
+          "name": "minecraft:suspicious_stew",
+          "functions": [
+            {
+              "effects": [
+                {
+                  "type": "minecraft:saturation",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 12,
+                    "min": 6
+                  }
+                },
+                {
+                 "type": "minecraft:instant_damage",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 3,
+                    "min": 1
+                  }
+                },
+                {
+                  "type": "minecraft:resistance",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 30,
+                    "min": 15
+                  }
+                },
+                {
+                  "type": "minecraft:levitation",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 10,
+                    "min": 7
+                  }
+                },
+                {
+                  "type": "minecraft:hunger",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 60,
+                    "min": 40
+                  }
+                },
+                {
+                  "type": "minecraft:bad_omen",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 120,
+                    "min": 100
+                  }
+                },
+                {
+                  "type": "minecraft:conduit_power",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 70,
+                    "min": 20
+                  }
+                },
+                {
+                  "type": "minecraft:hero_of_the_village",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 120,
+                    "min": 100
+                  }
+                },
+                {
+                  "type": "minecraft:strength",
+                  "duration": {
+                    "type": "minecraft:uniform",
+                    "max": 20,
+                    "min": 7
+                  }
+                }
+              ],
+              "function": "minecraft:set_stew_effect"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "minecraft:chorus_fruit",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 45,
+                "min": 13
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:mace",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": 25
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 3,
+          "name": "minecraft:elytra"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 4,
+          "name": "minecraft:golden_apple",
+          "functions":[
+            {
+              "add": false,
+              "count": {
+                "max": 4,
+                "min": 1,
+                "type": "minecraft:uniform"
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 11,
+          "name": "minecraft:coarse_dirt",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "max": 63,
+                "min": 1,
+                "type": "minecraft:uniform"
+              },
+              "function": "minecraft:set_count"
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "Shiny Dirt",
+                "type": "text",
+                "color": "yellow"
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:enchantment_glint_override": true
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cod",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_enchantments",
+              "enchantments": {
+                "minecraft:sharpness": 10,
+                "minecraft:impaling": 10,
+                "minecraft:luck_of_the_sea": 10,
+                "minecraft:depth_strider": 3,
+                "minecraft:aqua_affinity": 1,
+                "minecraft:vanishing_curse": 1
+              }
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "SuperFish!",
+                "type": "text",
+                "color": "blue"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cookie",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_enchantments",
+              "enchantments": {
+                "minecraft:sharpness": 9,
+                "minecraft:vanishing_curse": 1
+              }
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                "It's a real cookie cutter."
+              ],
+              "mode": "append"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

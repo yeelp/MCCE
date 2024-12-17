@@ -8,12 +8,13 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.mixin.ServerPlayerASMMixin;
 
-public record SilentStatUpdatePayload(float health, float sat, int hunger) implements NetworkingPayloads.ChaosPayload {
+public record SilentStatUpdatePayload(float health, float sat, int hunger, int air) implements NetworkingPayloads.ChaosPayload {
     public static final Id<SilentStatUpdatePayload> ID = new Id<>(NetworkingConstants.SILENT_UPDATE_PACKET_ID);
     public static final PacketCodec<RegistryByteBuf, SilentStatUpdatePayload> CODEC = PacketCodec.tuple(
             PacketCodecs.FLOAT, SilentStatUpdatePayload::health,
             PacketCodecs.FLOAT, SilentStatUpdatePayload::sat,
             PacketCodecs.INTEGER, SilentStatUpdatePayload::hunger,
+            PacketCodecs.INTEGER, SilentStatUpdatePayload::air,
             SilentStatUpdatePayload::new);
 
     @Override
@@ -22,7 +23,7 @@ public record SilentStatUpdatePayload(float health, float sat, int hunger) imple
     }
 
     public SilentStatUpdatePayload(PlayerEntity p) {
-        this(p.getHealth(), p.getHungerManager().getSaturationLevel(), p.getHungerManager().getFoodLevel());
+        this(p.getHealth(), p.getHungerManager().getSaturationLevel(), p.getHungerManager().getFoodLevel(), p.getAir());
     }
 
     @Override

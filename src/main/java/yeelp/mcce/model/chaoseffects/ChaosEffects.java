@@ -31,6 +31,7 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry EQUIPMENT_RANDOMIZER;
     public static final ChaosEffectRegistryEntry FISH_LAUNCHER;
     public static final ChaosEffectRegistryEntry FOOD_CHAIN;
+    public static final ChaosEffectRegistryEntry GASP;
     public static final ChaosEffectRegistryEntry GHAST;
     public static final ChaosEffectRegistryEntry GIANT;
     public static final ChaosEffectRegistryEntry GLINT;
@@ -39,6 +40,7 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry HEARTY;
     public static final ChaosEffectRegistryEntry INFESTATION;
     public static final ChaosEffectRegistryEntry INSOMNIA;
+    public static final ChaosEffectRegistryEntry INTERACTION_INTERACTOR;
     public static final ChaosEffectRegistryEntry INVERSE;
     public static final ChaosEffectRegistryEntry IOU;
     public static final ChaosEffectRegistryEntry IRON_MAN;
@@ -46,6 +48,7 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry ITEM_RAIN;
     public static final ChaosEffectRegistryEntry LAVISH_LAVA;
     public static final ChaosEffectRegistryEntry LOOK_INVERSION;
+    public static final ChaosEffectRegistryEntry LOOT_BOX;
     public static final ChaosEffectRegistryEntry LOTTERY;
     public static final ChaosEffectRegistryEntry LOVABLE_PHANTOM;
     public static final ChaosEffectRegistryEntry MAGNET;
@@ -57,7 +60,8 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry NETHERITE_TRANSMUTATION;
     public static final ChaosEffectRegistryEntry NULL;
     public static final ChaosEffectRegistryEntry OOF;
-    public static final ChaosEffectRegistryEntry PARTICLE_EFFECT;
+    public static final ChaosEffectRegistryEntry PARTICLE;
+    public static final ChaosEffectRegistryEntry PARTING_GIFT;
     public static final ChaosEffectRegistryEntry PILLAGER_DISGUISES;
     public static final ChaosEffectRegistryEntry PING_PONG;
     public static final ChaosEffectRegistryEntry PRESS_L_TO_LEVITATE;
@@ -67,6 +71,7 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry REPEATING;
     public static final ChaosEffectRegistryEntry SHAKEWEIGHT;
     public static final ChaosEffectRegistryEntry SIMON_SAYS;
+    public static final ChaosEffectRegistryEntry SIZE_EM_UP;
     public static final ChaosEffectRegistryEntry SLUGGISH;
     public static final ChaosEffectRegistryEntry SOUND;
     public static final ChaosEffectRegistryEntry STICK_IT_TO_THEM;
@@ -109,6 +114,7 @@ public final class ChaosEffects {
         EQUIPMENT_RANDOMIZER = createRegistryEntry(EquipmentRandomizerEffect::new);
         FISH_LAUNCHER = createRegistryEntry(FishLauncherEffect::new);
         FOOD_CHAIN = createRegistryEntry(FoodChainEffect::new);
+        GASP = createRegistryEntry(GaspEffect::new);
         GHAST = createRepeatingRegistryEntry(GhastEffect::new);
         GIANT = createRegistryEntry(GiantEffect::new);
         GLINT = createRepeatingRegistryEntry(GlintEffect::new);
@@ -117,6 +123,7 @@ public final class ChaosEffects {
         HEARTY = createRegistryEntry(HeartyEffect::new);
         INFESTATION = createRepeatingRegistryEntry(InfestationEffect::new);
         INSOMNIA = createRegistryEntry(InsomniaEffect::new);
+        INTERACTION_INTERACTOR = createRegistryEntry(InteractionInteractorEffect::new);
         INVERSE = createRegistryEntry(InverseEffect::new);
         IOU = createRegistryEntry(IOUEffect::new);
         IRON_MAN = createRegistryEntry(IronManEffect::new);
@@ -124,6 +131,7 @@ public final class ChaosEffects {
         ITEM_RAIN = createRegistryEntry(ItemRainEffect::new);
         LAVISH_LAVA = createRegistryEntry(LavishLavaEffect::new);
         LOOK_INVERSION = createRegistryEntry(LookInversionEffect::new);
+        LOOT_BOX = createRepeatingRegistryEntry(LootBoxEffect::new);
         LOTTERY = createRegistryEntry(LotteryEffect::new);
         LOVABLE_PHANTOM = createRegistryEntry(LovablePhantomEffect::new);
         MAGNET = createRegistryEntry(MagnetEffect::new);
@@ -135,7 +143,8 @@ public final class ChaosEffects {
         NULL = createRegistryEntry(NullEffect::new);
         NETHERITE_TRANSMUTATION = createRegistryEntry(NetheriteTransmutation::new);
         OOF = createRepeatingRegistryEntry(OofEffect::new);
-        PARTICLE_EFFECT = createRegistryEntry(ParticleEffect::new);
+        PARTICLE = createRegistryEntry(ParticleEffect::new);
+        PARTING_GIFT = createRegistryEntry(PartingGiftEffect::new);
         PILLAGER_DISGUISES = createRegistryEntry(PillagerDisguisesEffect::new);
         PING_PONG = createRegistryEntry(PingPongEffect::new);
         PRESS_L_TO_LEVITATE = createRegistryEntry(PressLToLevitateEffect::new);
@@ -145,6 +154,7 @@ public final class ChaosEffects {
         REPEATING = new ChaosEffectRegistryEntry(RepeatingEffect::new, RepeatingEffect.getDummyInstance());
         SHAKEWEIGHT = createRegistryEntry(ShakeweightEffect::new);
         SIMON_SAYS = createRegistryEntry(SimonSaysEffect::new);
+        SIZE_EM_UP = createRegistryEntry(SizeEmUpEffect::new);
         SLUGGISH = createRegistryEntry(SluggishEffect::new);
         STICK_IT_TO_THEM = createRegistryEntry(StickItToThemEffect::new);
         STUTTER_SOUND = createRegistryEntry(StutterSoundEffect::new);

@@ -14,6 +14,7 @@ public final class SilentStatUpdatePacketReceiver implements ClientPacketReceive
 			context.player().setHealth(silentStatUpdatePayload.health());
 			context.player().getHungerManager().setFoodLevel(silentStatUpdatePayload.hunger());
 			context.player().getHungerManager().setSaturationLevel(silentStatUpdatePayload.sat());
+			context.player().setAir(silentStatUpdatePayload.air());
 			CycleOfLifeTiltHandler.addPlayer(context.player());
 		});
 	}

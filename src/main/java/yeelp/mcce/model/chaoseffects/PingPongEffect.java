@@ -43,7 +43,7 @@ public final class PingPongEffect extends AbstractIntervalTriggeredChaosEffect {
         direction = direction.multiply(this.getRNG().nextDouble(STRENGTH_MIN, STRENGTH_MAX)).add(0, dy <= Y_DIRECTION_MIN ? this.getRNG().nextDouble(Y_DIRECTION_MIN, Y_DIRECTION_MAX) : 0, 0);
         player.addVelocityInternal(direction);
         player.velocityModified = true;
-        PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.PLING, this.shouldKnockBackwards ? PITCH_PONG : PITCH_PING, 1.0f)::send);
+        PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.BOOP, this.shouldKnockBackwards ? PITCH_PONG : PITCH_PING, 1.0f)::send);
         this.shouldKnockBackwards = !this.shouldKnockBackwards;
     }
 

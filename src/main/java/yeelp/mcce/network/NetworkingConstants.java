@@ -109,6 +109,8 @@ public interface NetworkingConstants {
 		public static final byte OMINOUS_PREPARE = 38;
 		public static final byte AMBIENT_CAVE = 39;
 		public static final byte PLING = 40;
+		public static final byte BOOP = 41;
+		public static final byte POTION_BREW = 42;
 		
 		@SuppressWarnings("MagicNumber")
         public static SoundEvent getSound(byte b) {
@@ -157,6 +159,8 @@ public interface NetworkingConstants {
 				case OMINOUS_PREPARE -> SoundEvents.BLOCK_TRIAL_SPAWNER_ABOUT_TO_SPAWN_ITEM;
 				case AMBIENT_CAVE -> SoundEvents.AMBIENT_CAVE.value();
 				case PLING -> SoundEvents.BLOCK_NOTE_BLOCK_PLING.value();
+				case BOOP -> SoundEvents.BLOCK_NOTE_BLOCK_BIT.value();
+				case POTION_BREW -> SoundEvents.BLOCK_BREWING_STAND_BREW;
                 default -> null;
             };
 		}

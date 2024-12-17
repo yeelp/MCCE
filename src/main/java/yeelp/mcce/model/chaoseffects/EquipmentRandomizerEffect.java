@@ -358,7 +358,7 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return PlayerUtils.isPlayerInDimension(player, World.END);
+        return !PlayerUtils.isPlayerInDimension(player, World.END);
     }
 
 }

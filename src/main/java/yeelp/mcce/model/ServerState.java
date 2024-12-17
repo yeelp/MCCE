@@ -1,17 +1,16 @@
 package yeelp.mcce.model;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-
 import com.google.common.collect.Maps;
-
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 import yeelp.mcce.MCCE;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Server state that stores information about each player's state 
@@ -44,7 +43,6 @@ public final class ServerState extends PersistentState {
 	 * @return a ServerState reflecting the stored NBT data.
 	 */
 	public static ServerState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup ignoredLookup) {
-		MCCE.LOGGER.info(tag.toString());
 		ServerState state = new ServerState();
 		tag.getKeys().forEach((key) -> {
 			if(key.equals(TIMERS_KEY)) {
