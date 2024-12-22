@@ -87,13 +87,13 @@ public final class TrueChaosEffect extends SimpleTimedChaosEffect implements Pla
                 effect.hasDied = true;
                 if(++effect.deaths >= 2) {
                     ServerWorld world = SimpleUtil.getServerWorldFromEntity(player);
-                    world.getEntitiesByClass(Entity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, KILL_RADIUS), (e) -> ! (e instanceof PlayerEntity)).forEach((e) -> e.kill(world));
+                    world.getEntitiesByClass(Entity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, KILL_RADIUS), (e) -> !(e instanceof PlayerEntity)).forEach((e) -> e.kill(world));
                     MCCEAPI.mutator.clear(player);
                 }
             });
         }
         else {
-            MCCEAPI.mutator.modifyEffect(player, TrueChaosEffect.class, (effect) -> effect.hasDied = false);
+            MCCEAPI.mutator.modifyEffect(player, TrueChaosEffect.class, (effect) -> effect.hasDied = player.isDead());
         }
     }
 }

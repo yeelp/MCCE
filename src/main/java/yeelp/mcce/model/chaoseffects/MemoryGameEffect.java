@@ -18,7 +18,7 @@ public final class MemoryGameEffect extends StatusPayloadSendingChaosEffect<Memo
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.RAINBOW);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.RAINBOW, ChaosEffects.SIMON_SAYS);
 	}
 
 	@Override

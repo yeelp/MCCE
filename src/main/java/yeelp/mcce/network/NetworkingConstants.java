@@ -111,6 +111,7 @@ public interface NetworkingConstants {
 		public static final byte PLING = 40;
 		public static final byte BOOP = 41;
 		public static final byte POTION_BREW = 42;
+		public static final byte BREAK = 43;
 		
 		@SuppressWarnings("MagicNumber")
         public static SoundEvent getSound(byte b) {
@@ -161,6 +162,7 @@ public interface NetworkingConstants {
 				case PLING -> SoundEvents.BLOCK_NOTE_BLOCK_PLING.value();
 				case BOOP -> SoundEvents.BLOCK_NOTE_BLOCK_BIT.value();
 				case POTION_BREW -> SoundEvents.BLOCK_BREWING_STAND_BREW;
+				case BREAK -> SoundEvents.ENTITY_WITHER_BREAK_BLOCK;
                 default -> null;
             };
 		}

@@ -51,7 +51,7 @@ public final class CrumbleEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.MIDAS_TOUCH, ChaosEffects.COLUMN_LIKE_YOU_SEE_EM, ChaosEffects.CHUNKY);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.MIDAS_TOUCH, ChaosEffects.COLUMN_LIKE_YOU_SEE_EM, ChaosEffects.CHUNKY, ChaosEffects.UNBREAKABLE);
 	}
 	
 	private static final class OnBlockAttack implements AttackBlockCallback {

@@ -48,7 +48,7 @@ public final class EquilibriumEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.SUDDEN_DEATH, ChaosEffects.CYCLE_OF_LIFE);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.SUDDEN_DEATH, ChaosEffects.CYCLE_OF_LIFE, ChaosEffects.FOOD_CHAIN);
 	}
 
 }

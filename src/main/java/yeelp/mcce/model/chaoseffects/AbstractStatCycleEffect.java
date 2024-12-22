@@ -9,8 +9,8 @@ import yeelp.mcce.util.PlayerUtils;
 
 public abstract class AbstractStatCycleEffect extends SimpleTimedChaosEffect {
 
-    private static final int DURATION_MIN = 500, DURATION_MAX = 1000;
-    private static final float PITCH_MAX = 2.0f, VOLUME = 0.25f;
+    static final int DURATION_MIN = 500, DURATION_MAX = 1000;
+    static final float PITCH_MAX = 2.0f, VOLUME = 0.25f;
 
     protected AbstractStatCycleEffect() {
         super(DURATION_MIN, DURATION_MAX);

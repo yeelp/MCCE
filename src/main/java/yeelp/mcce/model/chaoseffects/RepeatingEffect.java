@@ -29,8 +29,11 @@ public final class RepeatingEffect extends AbstractIntervalTriggeredChaosEffect 
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		if(this.getTriggersRemaining() > 0) {
-			this.trigger();
-			MCCEAPI.mutator.addNewChaosEffect(player, ChaosEffectRegistry.getEffect(this.effect));
+			ChaosEffect ce = ChaosEffectRegistry.getEffect(this.effect);
+			if(ce.applicable(player)) {
+				this.trigger();
+				MCCEAPI.mutator.addNewChaosEffect(player, ce);
+			}
 		}
 	}
 

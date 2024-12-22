@@ -1,42 +1,34 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.entry.RegistryEntry;
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.ImmutableSet;
-
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.EvokerEntity;
-import net.minecraft.entity.mob.IllusionerEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PillagerEntity;
-import net.minecraft.entity.mob.RavagerEntity;
-import net.minecraft.entity.mob.VexEntity;
-import net.minecraft.entity.mob.VindicatorEntity;
-import net.minecraft.entity.mob.WitchEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.EnchantmentUtils;
+
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 
@@ -226,6 +218,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 		pillagerLike.setPosition(villagerLike.getPos());
 		pillagerLike.setVelocity(villagerLike.getVelocity());
 		pillagerLike.setPersistent();
+		MCCEAPI.mutator.copyDespawnTimerTo(villagerLike, pillagerLike);
 		villagerLike.discard();
 	}
 

@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 public final class ChaosEffects {
 
     public static final ChaosEffectRegistryEntry AMBIDEXTROUS;
+    public static final ChaosEffectRegistryEntry ARMORER;
     public static final ChaosEffectRegistryEntry BACK_TO_SQUARE_ONE;
     public static final ChaosEffectRegistryEntry BAT_BOMB;
     public static final ChaosEffectRegistryEntry BLOCK_RAIN;
@@ -69,10 +70,12 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry RAINBOW;
     public static final ChaosEffectRegistryEntry REORGANIZE;
     public static final ChaosEffectRegistryEntry REPEATING;
+    public static final ChaosEffectRegistryEntry SCRAMBLED;
     public static final ChaosEffectRegistryEntry SHAKEWEIGHT;
     public static final ChaosEffectRegistryEntry SIMON_SAYS;
     public static final ChaosEffectRegistryEntry SIZE_EM_UP;
     public static final ChaosEffectRegistryEntry SLUGGISH;
+    public static final ChaosEffectRegistryEntry SMACK_DOWN;
     public static final ChaosEffectRegistryEntry SOUND;
     public static final ChaosEffectRegistryEntry STICK_IT_TO_THEM;
     public static final ChaosEffectRegistryEntry STUTTER_SOUND;
@@ -94,6 +97,7 @@ public final class ChaosEffects {
 
     static {
         AMBIDEXTROUS = createRegistryEntry(AmbidextrousEffect::new);
+        ARMORER = createRegistryEntry(ArmorerEffect::new);
         BACK_TO_SQUARE_ONE = createRegistryEntry(BackToSquareOneEffect::new);
         BAT_BOMB = createRegistryEntry(BatBombEffect::new);
         BLOCK_RAIN = createRegistryEntry(BlockRainEffect::new);
@@ -152,13 +156,15 @@ public final class ChaosEffects {
         RAINBOW = createRegistryEntry(RainbowEffect::new);
         REORGANIZE = createRepeatingRegistryEntry(ReorganizeEffect::new);
         REPEATING = new ChaosEffectRegistryEntry(RepeatingEffect::new, RepeatingEffect.getDummyInstance());
+        SCRAMBLED = createRepeatingRegistryEntry(ComponentCompensationEffect::new);
         SHAKEWEIGHT = createRegistryEntry(ShakeweightEffect::new);
         SIMON_SAYS = createRegistryEntry(SimonSaysEffect::new);
         SIZE_EM_UP = createRegistryEntry(SizeEmUpEffect::new);
         SLUGGISH = createRegistryEntry(SluggishEffect::new);
+        SMACK_DOWN = createRegistryEntry(SmackDownEffect::new);
+        SOUND = createRepeatingRegistryEntry(SoundEffect::new);
         STICK_IT_TO_THEM = createRegistryEntry(StickItToThemEffect::new);
         STUTTER_SOUND = createRegistryEntry(StutterSoundEffect::new);
-        SOUND = createRepeatingRegistryEntry(SoundEffect::new);
         SUDDEN_DEATH = createRegistryEntry(SuddenDeathEffect::new);
         SUPERFISH = createRegistryEntry(SuperFishEffect::new);
         SWITCHEROO = createRegistryEntry(SwitcherooEffect::new);

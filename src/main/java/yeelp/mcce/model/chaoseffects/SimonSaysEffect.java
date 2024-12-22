@@ -79,7 +79,7 @@ public final class SimonSaysEffect extends AbstractTriggeredChaosEffect {
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return !player.isSneaking();
+        return !player.isSneaking() && MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.MEMORY_GAME);
     }
 
     @Override

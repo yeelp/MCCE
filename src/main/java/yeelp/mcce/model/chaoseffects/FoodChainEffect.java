@@ -13,7 +13,7 @@ public final class FoodChainEffect extends AbstractStatCycleEffect {
 
     @Override
     protected void alterStat(PlayerEntity player, float value) {
-        player.getHungerManager().setFoodLevel((int) value);
+        player.getHungerManager().setFoodLevel(Math.round(value));
         player.getHungerManager().setSaturationLevel(value);
     }
 

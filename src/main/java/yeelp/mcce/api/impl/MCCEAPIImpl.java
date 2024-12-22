@@ -3,6 +3,7 @@ package yeelp.mcce.api.impl;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.api.MCCEAPIAccessor;
 import yeelp.mcce.api.MCCEAPIMutator;
@@ -111,6 +112,17 @@ public enum MCCEAPIImpl implements MCCEAPIAccessor, MCCEAPIMutator {
         ServerState state = ServerState.getServerState(Objects.requireNonNull(entity.getServer()));
         state.getDespawnTimer(entity.getUuid()).setTimer(duration);
         state.markDirty();
+    }
+
+    @Override
+    public void copyDespawnTimerTo(Entity from, Entity to) {
+        MinecraftServer server = from.getServer();
+        if(server != null) {
+            ServerState state = ServerState.getServerState(server);
+            if(state.hasDespawnTimer(from.getUuid())) {
+                this.setDespawnTimer(to, state.getDespawnTimer(from.getUuid()).getTimeRemaining());
+            }
+        }
     }
 
     private static PlayerChaosEffectState getEffectStateFromServerState(ServerState state, PlayerEntity player) {

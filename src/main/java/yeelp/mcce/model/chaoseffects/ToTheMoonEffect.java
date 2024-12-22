@@ -32,7 +32,7 @@ public final class ToTheMoonEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SHAKEWEIGHT);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.SHAKEWEIGHT, ChaosEffects.SMACK_DOWN);
 	}
 
 	@Override

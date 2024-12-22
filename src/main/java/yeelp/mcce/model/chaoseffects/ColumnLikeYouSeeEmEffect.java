@@ -51,7 +51,7 @@ public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CRUMBLE);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.CRUMBLE, ChaosEffects.UNBREAKABLE);
 	}
 	
 	private static final class BlockBreakHandler implements After {

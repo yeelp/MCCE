@@ -40,7 +40,7 @@ public final class ClippyEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getY() > 0 && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.BOUNCY);
+		return player.getY() > 0 && MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.BOUNCY, ChaosEffects.SMACK_DOWN);
 	}
 
 	@Override

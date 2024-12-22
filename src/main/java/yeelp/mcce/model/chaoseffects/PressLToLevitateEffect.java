@@ -1,6 +1,7 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
+import yeelp.mcce.api.MCCEAPI;
 
 public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 
@@ -36,7 +37,7 @@ public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SMACK_DOWN);
 	}
 
 	@Override

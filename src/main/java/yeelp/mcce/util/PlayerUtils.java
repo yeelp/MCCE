@@ -1,10 +1,14 @@
 package yeelp.mcce.util;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.DoubleStream;
 
@@ -39,5 +43,35 @@ public abstract class PlayerUtils {
 
 	public static boolean doesPlayerHaveValidPosition(PlayerEntity player) {
 		return DoubleStream.of(player.getX(), player.getY(), player.getZ()).anyMatch(Double::isNaN);
+	}
+
+	public static Iterator<ItemStack> getInventoryIterator(PlayerEntity player) {
+		return new InventoryIterator(player);
+	}
+
+	private static final class InventoryIterator implements Iterator<ItemStack> {
+
+		private final Iterator<Iterator<ItemStack>> its;
+		private Iterator<ItemStack> curr;
+
+		InventoryIterator(PlayerEntity player) {
+			PlayerInventory inv = player.getInventory();
+			this.its = Lists.newArrayList(inv.main.iterator(), inv.armor.iterator(), inv.offHand.iterator()).iterator();
+			this.curr = this.its.next();
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.curr.hasNext() || this.its.hasNext();
+		}
+
+		@Override
+		public ItemStack next() {
+			if(this.curr.hasNext()) {
+				return this.curr.next();
+			}
+			this.curr = this.its.next();
+			return this.next();
+		}
 	}
 }
