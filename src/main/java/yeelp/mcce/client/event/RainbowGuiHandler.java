@@ -1,7 +1,6 @@
 package yeelp.mcce.client.event;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +12,7 @@ import yeelp.mcce.util.Tracker;
 
 import java.util.function.Function;
 
-public class RainbowGuiHandler implements RenderHealthCallback {
+public final class RainbowGuiHandler implements RenderHealthCallback {
 
 	private final boolean reset;
 	private static boolean drawingHearts = false;
@@ -50,11 +49,11 @@ public class RainbowGuiHandler implements RenderHealthCallback {
 		public int changeColor(Function<Identifier, RenderLayer> renderLayers, Identifier texture, int x0, int x1, int y0, int y1, float u0, float u1, float v0, float v1, int color) {
 			if (RainbowGuiHandler.drawingHearts) {
 				this.h += 0.5f;
-				RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
 				short[] rgb = HSLToRGB((this.h) % 360);
-				RenderSystem.setShaderColor(rgb[0], rgb[1], rgb[2], 0.5f);
+				int rainbowColor = ColorHelper.getArgb(128, rgb[0] << 16,rgb[1]  << 8, rgb[2]);
+				RenderSystem.setShaderColor(ColorHelper.getRed(rainbowColor), ColorHelper.getGreen(rainbowColor), ColorHelper.getBlue(rainbowColor), ColorHelper.getAlpha(rainbowColor));
 				RainbowGuiHandler.drawingHearts = false;
-				return ColorHelper.getArgb(rgb[0] << 16,rgb[1]  << 8, rgb[2]);
+				return rainbowColor;
 			}
 			return color;
 		}

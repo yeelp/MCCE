@@ -151,7 +151,7 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
     private static final float NO_COMP_CHANCE = 0.1f;
     private static final int MAX_ENCHANTS_EXCLUSIVE = 8;
     private static final int FOOD_MAX_EXCLUSIVE = 21;
-    private static final float SAT_MOD_MAX = 4.0f;
+    private static final float SAT_MOD_MAX = 3.0f;
     private static final int RANDOM_LORE_MIN = 2, RANDOM_LORE_MAX_EXCLUSIVE = 31, RANDOM_LORE_LENGTH = 50;
     private static final int COLOR_MASK = 0x00FFFFFF;
     private static final int STACK_MAX_EXCLUSIVE = 100;
@@ -252,7 +252,7 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
         }));
         COMPONENT_OPTIONS.add(new BasicComponentModification<Text>(DataComponentTypes.CUSTOM_NAME, "name", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE ? null : Text.of(randomString(rand.nextInt(1, CUSTOM_NAME_MAX_LENGTH_EXCLUSIVE))), Predicates.alwaysTrue()));
         COMPONENT_OPTIONS.add(new BasicComponentModification<Integer>(DataComponentTypes.DAMAGE, "damage", (stack, rand, world) -> rand.nextInt(0, stack.getMaxDamage()), ItemStack::isDamageable));
-        COMPONENT_OPTIONS.add(new BasicComponentModification<DeathProtectionComponent>(DataComponentTypes.DEATH_PROTECTION, "death protection", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE? null : new DeathProtectionComponent(List.of(new TeleportRandomlyConsumeEffect(), new ClearAllEffectsConsumeEffect(), new ApplyEffectsConsumeEffect(List.of(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.SATURATION, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.RESISTANCE, DEATH_PROTECTION_RESISTANCE_DURATION, EFFECT_STRENGTH))))), Predicates.alwaysTrue(), (comp) -> List.of(Text.of("Will protect from death"))));
+        COMPONENT_OPTIONS.add(new BasicComponentModification<DeathProtectionComponent>(DataComponentTypes.DEATH_PROTECTION, "death protection", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE? null : new DeathProtectionComponent(List.of(new ClearAllEffectsConsumeEffect(), new ApplyEffectsConsumeEffect(List.of(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.SATURATION, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.RESISTANCE, DEATH_PROTECTION_RESISTANCE_DURATION, EFFECT_STRENGTH))))), Predicates.alwaysTrue(), (comp) -> List.of(Text.of("Will protect from death"))));
         COMPONENT_OPTIONS.add(new BasicComponentModification<DyedColorComponent>(DataComponentTypes.DYED_COLOR, "dyed", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE ? null : new DyedColorComponent(Math.abs(rand.nextInt()) & COLOR_MASK, true), (stack) -> stack.isIn(ItemTags.DYEABLE)));
         COMPONENT_OPTIONS.add(new BasicComponentModification<ItemEnchantmentsComponent>(DataComponentTypes.ENCHANTMENTS, "enchantments", (stack, rand, world) -> {
             ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);

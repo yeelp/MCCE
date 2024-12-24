@@ -79,7 +79,7 @@ public final class SimonSaysEffect extends AbstractTriggeredChaosEffect {
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return !player.isSneaking() && MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.MEMORY_GAME);
+        return !player.isSneaking() && !player.isSubmergedInWater() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.MEMORY_GAME) && player.currentScreenHandler == player.playerScreenHandler;
     }
 
     @Override
@@ -120,6 +120,7 @@ public final class SimonSaysEffect extends AbstractTriggeredChaosEffect {
             this.type = ChaosLib.getRandomElementFrom(InstructionType.values(), this.getRNG());
         }
         player.sendMessage(Text.literal("%s or perish!".formatted(this.type)), true);
+        player.sendMessage(Text.literal("%s or perish!".formatted(this.type)), false);
     }
 
     @Override

@@ -15,7 +15,7 @@ public interface NetworkingConstants {
 	Identifier QUIVER_UPDATE_PACKET_ID = MCCE.createIdentifier("quiverupdate");
 	Identifier STUTTER_SOUND_STATUS_PACKET_ID = MCCE.createIdentifier("stuttersoundstatus");
 	Identifier LOOK_INVERSION_STATUS_PACKET_ID = MCCE.createIdentifier("lookinversion");
-	
+
 	final class ParticlePacketConstants {
 		private ParticlePacketConstants() {
 			//not to be instantiated
@@ -111,7 +111,7 @@ public interface NetworkingConstants {
 		public static final byte PLING = 40;
 		public static final byte BOOP = 41;
 		public static final byte POTION_BREW = 42;
-		public static final byte BREAK = 43;
+		public static final byte WIND_BLAST = 43;
 		
 		@SuppressWarnings("MagicNumber")
         public static SoundEvent getSound(byte b) {
@@ -162,7 +162,7 @@ public interface NetworkingConstants {
 				case PLING -> SoundEvents.BLOCK_NOTE_BLOCK_PLING.value();
 				case BOOP -> SoundEvents.BLOCK_NOTE_BLOCK_BIT.value();
 				case POTION_BREW -> SoundEvents.BLOCK_BREWING_STAND_BREW;
-				case BREAK -> SoundEvents.ENTITY_WITHER_BREAK_BLOCK;
+				case WIND_BLAST -> SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST.value();
                 default -> null;
             };
 		}

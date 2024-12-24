@@ -20,7 +20,7 @@ public final class SmackDownEffect extends AbstractAttributeChaosEffect {
     private static final int DURATION_MIN = 1000, DURATION_MAX = 1500;
     private static final double FALL_DAMAGE_MULTIPLIER = 4.0, SAFE_FALL_DISTANCE_CHANGE = -3;
     private static final int TICK_INTERVAL = 60;
-    private static final float PITCH = 0.5f, VOLUME = 1.0f;
+    private static final float PITCH = 0.8f, VOLUME = 1.0f;
     private static final Identifier GRAVITY_ID = MCCE.createIdentifier("smackdowngravity"), FALL_DAMAGE_MULT_ID = MCCE.createIdentifier("smackdownfalldamage"), SAFE_FALL_DISTANCE_MULT_ID = MCCE.createIdentifier("smackdownsafedistance");
     private boolean activated = false;
     private boolean soundPlayed = false;
@@ -38,7 +38,7 @@ public final class SmackDownEffect extends AbstractAttributeChaosEffect {
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.TO_THE_MOON, ChaosEffects.CLIPPY, ChaosEffects.PRESS_L_TO_LEVITATE);
+        return !player.isSubmergedInWater() && MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.TO_THE_MOON, ChaosEffects.CLIPPY, ChaosEffects.PRESS_L_TO_LEVITATE);
     }
 
     @Override
@@ -50,7 +50,7 @@ public final class SmackDownEffect extends AbstractAttributeChaosEffect {
     protected void tickAdditionalEffectLogic(PlayerEntity player) {
         super.tickAdditionalEffectLogic(player);
         if(this.activated && !this.soundPlayed) {
-            PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.BREAK, PITCH, VOLUME)::send);
+            PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.WIND_BLAST, PITCH, VOLUME)::send);
             this.soundPlayed = true;
         }
     }
@@ -70,7 +70,7 @@ public final class SmackDownEffect extends AbstractAttributeChaosEffect {
 
         @Override
         protected EntityAttributeModifier tickAttribute(PlayerEntity player, EntityAttributeModifier attribute) {
-            if(!player.isOnGround() && SmackDownEffect.this.durationRemaining() % TICK_INTERVAL == 0) {
+            if(!player.isOnGround() && !player.isSubmergedInWater() && SmackDownEffect.this.durationRemaining() % TICK_INTERVAL == 0) {
                 SmackDownEffect.this.activated = true;
                 return mod;
             }

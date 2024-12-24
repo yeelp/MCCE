@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 public final class ChaosEffects {
 
     public static final ChaosEffectRegistryEntry AMBIDEXTROUS;
+    public static final ChaosEffectRegistryEntry ANTE_UP;
     public static final ChaosEffectRegistryEntry ARMORER;
     public static final ChaosEffectRegistryEntry BACK_TO_SQUARE_ONE;
     public static final ChaosEffectRegistryEntry BAT_BOMB;
@@ -27,6 +28,7 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry DOUBLE_TIME;
     public static final ChaosEffectRegistryEntry DOUBLE_TROUBLE;
     public static final ChaosEffectRegistryEntry ENCHANTMENT;
+    public static final ChaosEffectRegistryEntry ENDER_ANGER;
     public static final ChaosEffectRegistryEntry ENDER_DRIVE_THRU;
     public static final ChaosEffectRegistryEntry EQUILIBRIUM;
     public static final ChaosEffectRegistryEntry EQUIPMENT_RANDOMIZER;
@@ -83,7 +85,6 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry SUPERFISH;
     public static final ChaosEffectRegistryEntry SWITCHEROO;
     public static final ChaosEffectRegistryEntry TO_THE_MOON;
-    public static final ChaosEffectRegistryEntry TRUE_CHAOS;
     public static final ChaosEffectRegistryEntry TRIPLE_THREAT;
     public static final ChaosEffectRegistryEntry TWITCH;
     public static final ChaosEffectRegistryEntry UNBREAKABLE;
@@ -97,6 +98,7 @@ public final class ChaosEffects {
 
     static {
         AMBIDEXTROUS = createRegistryEntry(AmbidextrousEffect::new);
+        ANTE_UP = createRegistryEntry(AnteUpEffect::new);
         ARMORER = createRegistryEntry(ArmorerEffect::new);
         BACK_TO_SQUARE_ONE = createRegistryEntry(BackToSquareOneEffect::new);
         BAT_BOMB = createRegistryEntry(BatBombEffect::new);
@@ -113,6 +115,7 @@ public final class ChaosEffects {
         DOUBLE_TIME = createRegistryEntry(DoubleTimeEffect::new);
         DOUBLE_TROUBLE = createRepeatingRegistryEntry(DoubleTroubleEffect::new);
         ENCHANTMENT = createRegistryEntry(EnchantmentEffect::new);
+        ENDER_ANGER = createRegistryEntry(EnderAngerEffect::new);
         ENDER_DRIVE_THRU = createRegistryEntry(EnderDriveThruEffect::new);
         EQUILIBRIUM = createRegistryEntry(EquilibriumEffect::new);
         EQUIPMENT_RANDOMIZER = createRegistryEntry(EquipmentRandomizerEffect::new);
@@ -169,7 +172,6 @@ public final class ChaosEffects {
         SUPERFISH = createRegistryEntry(SuperFishEffect::new);
         SWITCHEROO = createRegistryEntry(SwitcherooEffect::new);
         TO_THE_MOON = createRegistryEntry(ToTheMoonEffect::new);
-        TRUE_CHAOS = createRegistryEntry(TrueChaosEffect::new);
         TRIPLE_THREAT = createRegistryEntry(TripleThreatEffect::new);
         TWITCH = createRepeatingRegistryEntry(TwitchEffect::new);
         UNBREAKABLE = createRegistryEntry(UnbreakableEffect::new);

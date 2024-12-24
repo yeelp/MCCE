@@ -20,6 +20,7 @@ import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureKeys;
+import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.PlayerUtils;
 
@@ -74,14 +75,14 @@ public final class BuilderEffect extends AbstractInstantChaosEffect {
         }));
         FEATURES.put(Feature.TREE, new FeatureRecord<>(Feature.TREE, (world, pos) -> {
             world.setBlockState(pos.down(), Blocks.DIRT.getDefaultState());
-            ChaosLib.forEachPos(pos.west(3).north(3), pos.east(3).south(3).up(6), (bPos) -> ChaosLib.setToAir(world, bPos));
+            ChaosLib.forEachPos(pos.west(3).north(3), pos.east(3).south(3).up(10), (bPos) -> ChaosLib.setToAir(world, bPos));
             return (TreeFeatureConfig) Objects.requireNonNull(world.getRegistryManager().getOrThrow(RegistryKeys.CONFIGURED_FEATURE).get(TreeConfiguredFeatures.SUPER_BIRCH_BEES)).config();
         }));
     }
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return player.isOnGround() && !player.getWorld().getDimension().hasCeiling();
+        return player.isOnGround() && !player.getWorld().getDimension().hasCeiling() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
     }
 
     @Override

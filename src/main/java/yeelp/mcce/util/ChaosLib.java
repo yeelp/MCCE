@@ -1,5 +1,6 @@
 package yeelp.mcce.util;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -182,6 +183,7 @@ public final class ChaosLib {
 	public static void setToAir(World world, BlockPos pos) {
 		if(!world.isAir(pos)) {
 			world.removeBlock(pos, false);
+			world.setBlockState(pos, Blocks.AIR.getDefaultState());
 		}
 	}
 	
