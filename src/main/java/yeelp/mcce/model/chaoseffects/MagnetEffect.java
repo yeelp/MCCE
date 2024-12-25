@@ -15,6 +15,7 @@ public final class MagnetEffect extends SimpleTimedChaosEffect {
 	private static final int DURATION_MIN = 1200, DURATION_MAX = 1500;
 	private static final double SPEED = 0.3;
 	private static final int RADIUS = 40;
+	private static final float APPLY_CHANCE = 0.75f;
 
 
 	public MagnetEffect() {
@@ -45,7 +46,7 @@ public final class MagnetEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return Math.random() < APPLY_CHANCE;
 	}
 	
 }

@@ -24,6 +24,7 @@ public final class ChaosEffects {
     public static final ChaosEffectRegistryEntry COLUMN_LIKE_YOU_SEE_EM;
     public static final ChaosEffectRegistryEntry COOKIE_CUTTER;
     public static final ChaosEffectRegistryEntry CRUMBLE;
+    public static final ChaosEffectRegistryEntry CULL;
     public static final ChaosEffectRegistryEntry CYCLE_OF_LIFE;
     public static final ChaosEffectRegistryEntry DOUBLE_TIME;
     public static final ChaosEffectRegistryEntry DOUBLE_TROUBLE;
@@ -111,6 +112,7 @@ public final class ChaosEffects {
         COLUMN_LIKE_YOU_SEE_EM = createRegistryEntry(ColumnLikeYouSeeEmEffect::new);
         COOKIE_CUTTER = createRepeatingRegistryEntry(CookieCutterEffect::new);
         CRUMBLE = createRegistryEntry(CrumbleEffect::new);
+        CULL = createRegistryEntry(CullEffect::new);
         CYCLE_OF_LIFE = createRegistryEntry(CycleOfLifeEffect::new);
         DOUBLE_TIME = createRegistryEntry(DoubleTimeEffect::new);
         DOUBLE_TROUBLE = createRepeatingRegistryEntry(DoubleTroubleEffect::new);

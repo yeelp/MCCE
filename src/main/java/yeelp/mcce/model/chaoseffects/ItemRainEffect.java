@@ -5,6 +5,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import yeelp.mcce.api.MCCEAPI;
 
 public final class ItemRainEffect extends AbstractRainEffect {
 
@@ -26,7 +27,9 @@ public final class ItemRainEffect extends AbstractRainEffect {
 		return Registries.ITEM.stream().skip(index).findFirst().map((item) -> {
 			final double x = this.getRNG().nextDouble(-HORIZONTAL_RADIUS, HORIZONTAL_RADIUS), z = this.getRNG().nextDouble(-HORIZONTAL_RADIUS,  HORIZONTAL_RADIUS);
 			ItemStack stack = new ItemStack(item);
-            return new ItemEntity(player.getWorld(), player.getX() + x, player.getWorld().getTopYInclusive(), player.getZ() + z, stack);
+            Entity itemEntity = new ItemEntity(player.getWorld(), player.getX() + x, player.getWorld().getTopYInclusive(), player.getZ() + z, stack);
+			MCCEAPI.mutator.setDespawnTimer(itemEntity, this.durationRemaining() + DURATION_MAX/2);
+			return itemEntity;
 		}).orElseThrow();
 	}
 

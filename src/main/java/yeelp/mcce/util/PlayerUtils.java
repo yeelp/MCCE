@@ -42,7 +42,7 @@ public abstract class PlayerUtils {
 	}
 
 	public static boolean doesPlayerHaveValidPosition(PlayerEntity player) {
-		return DoubleStream.of(player.getX(), player.getY(), player.getZ()).anyMatch(Double::isNaN);
+		return DoubleStream.of(player.getX(), player.getY(), player.getZ()).noneMatch(Double::isNaN);
 	}
 
 	public static Iterator<ItemStack> getInventoryIterator(PlayerEntity player) {

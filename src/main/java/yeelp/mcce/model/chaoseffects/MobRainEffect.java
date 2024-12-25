@@ -48,11 +48,6 @@ public final class MobRainEffect extends AbstractRainEffect {
 		VALID_MOBS.add((world) -> new HuskEntity(EntityType.HUSK, world));
 		VALID_MOBS.add((world) -> new IllusionerEntity(EntityType.ILLUSIONER, world));
 		VALID_MOBS.add((world) -> new LlamaEntity(EntityType.LLAMA, world));
-		VALID_MOBS.add((world) -> {
-			MagmaCubeEntity entity = new MagmaCubeEntity(EntityType.MAGMA_CUBE, world);
-			entity.setSize((int) (10*Math.random() + 1), true);
-			return entity;
-		});
 		VALID_MOBS.add((world) -> new MooshroomEntity(EntityType.MOOSHROOM, world));
 		VALID_MOBS.add((world) -> new MuleEntity(EntityType.MULE, world));
 		VALID_MOBS.add((world) -> new PandaEntity(EntityType.PANDA, world));
@@ -68,11 +63,6 @@ public final class MobRainEffect extends AbstractRainEffect {
 		VALID_MOBS.add((world) -> new SilverfishEntity(EntityType.SILVERFISH, world));
 		VALID_MOBS.add((world) -> new SkeletonEntity(EntityType.SKELETON, world));
 		VALID_MOBS.add((world) -> new SkeletonHorseEntity(EntityType.SKELETON_HORSE, world));
-		VALID_MOBS.add((world) -> {
-			SlimeEntity entity = new SlimeEntity(EntityType.SLIME, world);
-			entity.setSize((int) (10*Math.random() + 1), true);
-			return entity;
-		});
 		VALID_MOBS.add((world) -> new SnifferEntity(EntityType.SNIFFER, world));
 		VALID_MOBS.add((world) -> new SnowGolemEntity(EntityType.SNOW_GOLEM, world));
 		VALID_MOBS.add((world) -> new SpectralArrowEntity(EntityType.SPECTRAL_ARROW, world));
@@ -120,7 +110,7 @@ public final class MobRainEffect extends AbstractRainEffect {
 		if(e instanceof MobEntity mob) {
 			mob.setPersistent();
 		}
-		MCCEAPI.mutator.setDespawnTimer(e, this.durationRemaining() + DURATION_MAX);
+		MCCEAPI.mutator.setDespawnTimer(e, this.durationRemaining() + DURATION_MAX/2);
 		return e;
 	}
 
