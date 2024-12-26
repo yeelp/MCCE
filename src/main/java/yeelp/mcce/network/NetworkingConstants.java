@@ -113,6 +113,7 @@ public interface NetworkingConstants {
 		public static final byte POTION_BREW = 42;
 		public static final byte WIND_BLAST = 43;
 		public static final byte WITHER_SPAWN = 44;
+		public static final byte WITHER_DEATH = 45;
 		
 		@SuppressWarnings("MagicNumber")
         public static SoundEvent getSound(byte b) {
@@ -165,6 +166,7 @@ public interface NetworkingConstants {
 				case POTION_BREW -> SoundEvents.BLOCK_BREWING_STAND_BREW;
 				case WIND_BLAST -> SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST.value();
 				case WITHER_SPAWN -> SoundEvents.ENTITY_WITHER_SPAWN;
+				case WITHER_DEATH -> SoundEvents.ENTITY_WITHER_DEATH;
                 default -> null;
             };
 		}

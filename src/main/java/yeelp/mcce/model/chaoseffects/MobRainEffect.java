@@ -114,4 +114,8 @@ public final class MobRainEffect extends AbstractRainEffect {
 		return e;
 	}
 
+	@Override
+	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
+		return super.isApplicableIgnoringStackability(player) && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SIZE_EM_UP);
+	}
 }
