@@ -1,7 +1,5 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.Optional;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
@@ -9,6 +7,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 import yeelp.mcce.ModConfig;
+import yeelp.mcce.util.MCCESpawnCap;
+
+import java.util.Optional;
 
 public final class BlockRainEffect extends AbstractRainEffect implements OptionalEffect {
 
@@ -35,6 +36,11 @@ public final class BlockRainEffect extends AbstractRainEffect implements Optiona
 			block.dropItem = false;
 			return block;
 		}).get();
+	}
+
+	@Override
+	protected MCCESpawnCap getSpawnCap() {
+		return MCCESpawnCap.FALLING_BLOCK;
 	}
 
 	@Override

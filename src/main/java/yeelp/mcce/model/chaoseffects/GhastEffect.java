@@ -13,6 +13,7 @@ import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.AttributeUtils;
 import yeelp.mcce.util.ChaosLib;
+import yeelp.mcce.util.MCCESpawnCap;
 
 public final class GhastEffect extends AbstractInstantChaosEffect {
 	
@@ -39,7 +40,7 @@ public final class GhastEffect extends AbstractInstantChaosEffect {
 			}
 			ghast.setPersistent();
 			MCCEAPI.mutator.setDespawnTimer(ghast, DESPAWN_TIMER_AMOUNT);
-			world.spawnEntity(ghast);
+			MCCESpawnCap.MOB.attemptEntitySpawn(world, ghast);
 		});
 	}
 

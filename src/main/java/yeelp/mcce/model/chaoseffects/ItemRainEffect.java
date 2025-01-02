@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.util.MCCESpawnCap;
 
 public final class ItemRainEffect extends AbstractRainEffect {
 
@@ -33,4 +34,8 @@ public final class ItemRainEffect extends AbstractRainEffect {
 		}).orElseThrow();
 	}
 
+	@Override
+	protected MCCESpawnCap getSpawnCap() {
+		return MCCESpawnCap.ITEM;
+	}
 }

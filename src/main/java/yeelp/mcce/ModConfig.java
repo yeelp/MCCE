@@ -1,17 +1,16 @@
 package yeelp.mcce;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.fabricmc.loader.api.FabricLoader;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import net.fabricmc.loader.api.FabricLoader;
 
 public final class ModConfig {
 
@@ -20,11 +19,36 @@ public final class ModConfig {
 	private static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.IDENTITY).setPrettyPrinting().excludeFieldsWithModifiers(Modifier.PRIVATE).create();
 	
 	public final GameEffectsOptions game = new GameEffectsOptions();
+	public final PerformanceOptions performance = new PerformanceOptions();
 	
 	public static class GameEffectsOptions {
 		public final boolean quiver = false;
 		public final boolean blockrain = true;
 		public final boolean xprandomizer = true;
+	}
+
+	public static class PerformanceOptions {
+		public final boolean enableMassEntityDeletionWhenLagDetected = true;
+		public final boolean enableEntityCaps = true;
+		public final SpawnCaps spawnCaps = new SpawnCaps();
+		public static class SpawnCaps {
+			public final int localMobCap = 600;
+			public final int localItemCap = 1000;
+			public final int localFallingBlackCap = 600;
+			public final int getRadius = 100;
+
+			public int getLocalMobCap() {
+				return this.localMobCap;
+			}
+
+			public int getLocalItemCap() {
+				return this.localItemCap;
+			}
+
+			public int getLocalFallingBlackCap() {
+				return this.localFallingBlackCap;
+			}
+		}
 	}
 	
 	private ModConfig() {

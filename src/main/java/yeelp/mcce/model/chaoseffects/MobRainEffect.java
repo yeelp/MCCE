@@ -13,6 +13,7 @@ import net.minecraft.entity.projectile.thrown.ExperienceBottleEntity;
 import net.minecraft.world.World;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
+import yeelp.mcce.util.MCCESpawnCap;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -117,5 +118,10 @@ public final class MobRainEffect extends AbstractRainEffect {
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
 		return super.isApplicableIgnoringStackability(player) && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SIZE_EM_UP);
+	}
+
+	@Override
+	protected MCCESpawnCap getSpawnCap() {
+		return MCCESpawnCap.MOB;
 	}
 }

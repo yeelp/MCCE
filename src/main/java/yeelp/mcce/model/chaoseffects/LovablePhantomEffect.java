@@ -15,6 +15,7 @@ import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.ParticlePayload;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.ChaosLib;
+import yeelp.mcce.util.MCCESpawnCap;
 import yeelp.mcce.util.PlayerUtils;
 
 import java.util.Objects;
@@ -75,7 +76,7 @@ public final class LovablePhantomEffect extends AbstractIntervalTriggeredChaosEf
 		phantom.refreshPositionAndAngles(pos, 0.0f, 0.0f);
 		phantom.setTarget(player);
 		MCCEAPI.mutator.setDespawnTimer(phantom, this.durationRemaining());
-		world.spawnEntity(phantom);
+		MCCESpawnCap.MOB.attemptEntitySpawn(world, phantom);
 		int particles = this.getRNG().nextInt(3, 5);
 		ServerPlayerEntity spe = (ServerPlayerEntity) player;
 		for(int i = 0; i++ < particles;	new ParticlePayload(NetworkingConstants.ParticlePacketConstants.HEART, (float) phantom.getX(), (float) phantom.getY(), (float) phantom.getZ(), 0.0f, this.getRNG().nextFloat(PARTICLE_Y_SPEED_MAX), 0.0f).send(spe));

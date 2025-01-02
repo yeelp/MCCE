@@ -23,6 +23,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.ModifyBlockDrops;
+import yeelp.mcce.util.MCCESpawnCap;
 
 import java.util.List;
 import java.util.Set;
@@ -95,7 +96,7 @@ public final class IOUEffect extends AbstractTimedChaosEffect {
 			}
 			if(NETHER_ORES.contains(state.getBlock()) || OVERWORLD_ORES.stream().anyMatch(state::isIn)) {
 				String name = state.getBlock().getName().getString();
-				world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), getIOU(name)));
+				MCCESpawnCap.ITEM.attemptEntitySpawn(world, new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), getIOU(name)));
 				return true;
 			}
 			return false;

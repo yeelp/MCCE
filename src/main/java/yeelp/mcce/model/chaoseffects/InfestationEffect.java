@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import yeelp.mcce.MCCE;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.AttributeUtils;
+import yeelp.mcce.util.MCCESpawnCap;
 import yeelp.mcce.util.PlayerUtils;
 
 public final class InfestationEffect extends AbstractInstantChaosEffect {
@@ -50,7 +51,7 @@ public final class InfestationEffect extends AbstractInstantChaosEffect {
 			}
 			entity.refreshPositionAndAngles(player.getX() + this.getRNG().nextDouble(-HORIZONTAL_SPAWN_BOUND_MAX, HORIZONTAL_SPAWN_BOUND_MAX), player.getY() + this.getRNG().nextDouble(VERTICAL_SPAWN_BOUND_MAX) + 2, player.getZ() + this.getRNG().nextDouble(-HORIZONTAL_SPAWN_BOUND_MAX, HORIZONTAL_SPAWN_BOUND_MAX), 0.0f, 0.0f);
 			entity.setVelocity(this.getRNG().nextDouble(-HORIZONTAL_VELOCITY_MAX, HORIZONTAL_VELOCITY_MAX), this.getRNG().nextDouble(), this.getRNG().nextDouble(-HORIZONTAL_VELOCITY_MAX, HORIZONTAL_VELOCITY_MAX));
-			world.spawnEntity(entity);
+			MCCESpawnCap.MOB.attemptEntitySpawn(world, entity);
 		}
 	}
 

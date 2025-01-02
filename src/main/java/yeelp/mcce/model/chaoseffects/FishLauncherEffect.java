@@ -1,11 +1,6 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Function;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -19,7 +14,12 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import yeelp.mcce.event.EntityTickCallback;
 import yeelp.mcce.util.ChaosLib;
+import yeelp.mcce.util.MCCESpawnCap;
 import yeelp.mcce.util.PlayerUtils;
+
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
 
 public final class FishLauncherEffect extends AbstractIntervalChaosEffect implements EntityTickCallback {
 
@@ -48,7 +48,7 @@ public final class FishLauncherEffect extends AbstractIntervalChaosEffect implem
 		}
 		entity.setVelocity(this.getRNG().nextDouble(-VELOCITY_MAX, VELOCITY_MAX), this.getRNG().nextDouble(VERTICAL_VELOCITY_MIN, VELOCITY_MAX), this.getRNG().nextDouble(-VELOCITY_MAX, VELOCITY_MAX));
 		FISHES.add(entity.getUuid());
-		world.spawnEntity(entity);
+		MCCESpawnCap.MOB.attemptEntitySpawn(world, entity);
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.world.LocalDifficulty;
+import yeelp.mcce.util.MCCESpawnCap;
 import yeelp.mcce.util.PlayerUtils;
 
 import java.util.Collections;
@@ -132,7 +133,7 @@ public final class GiantEffect extends AbstractInstantChaosEffect {
 				giant.equipStack(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
 			}
 		}
-		player.getWorld().spawnEntity(giant);
+		MCCESpawnCap.MOB.attemptEntitySpawn(player.getWorld(), giant);
 	}
 
 	@Override

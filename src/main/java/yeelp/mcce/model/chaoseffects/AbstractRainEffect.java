@@ -2,6 +2,7 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import yeelp.mcce.util.MCCESpawnCap;
 
 public abstract class AbstractRainEffect extends SimpleTimedChaosEffect {
 
@@ -12,7 +13,7 @@ public abstract class AbstractRainEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.getWorld().spawnEntity(this.getEntityToSpawn(player));
+		this.getSpawnCap().attemptEntitySpawn(player.getWorld(), this.getEntityToSpawn(player));
 	}
 
 	@Override
@@ -26,6 +27,8 @@ public abstract class AbstractRainEffect extends SimpleTimedChaosEffect {
 	}
 	
 	protected abstract Entity getEntityToSpawn(PlayerEntity player);
+
+	protected abstract MCCESpawnCap getSpawnCap();
 
 	@Override
 	public boolean canBeFirstEffect() {

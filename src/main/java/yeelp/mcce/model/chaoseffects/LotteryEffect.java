@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.util.MCCESpawnCap;
 import yeelp.mcce.util.Tracker;
 
 import java.util.Collections;
@@ -121,7 +122,7 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 
                 while(num-- > 0) {
                     ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack, ce.getRNG().nextDouble(V_MIN, V_MAX), ce.getRNG().nextDouble(0, V_MAX), ce.getRNG().nextDouble(V_MIN, V_MAX));
-                    world.spawnEntity(entity);
+                    MCCESpawnCap.ITEM.attemptEntitySpawn(world, entity);
                 }
                 ce.trigger();
             });

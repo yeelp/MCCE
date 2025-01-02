@@ -3,7 +3,7 @@ package yeelp.mcce.model.chaoseffects;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
@@ -56,11 +56,15 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
     }
 
     private interface ComponentModifier {
-        void setComponent(ItemStack stack, Random rand, World world);
+        Optional<List<Text>> setComponent(ItemStack stack, Random rand, World world);
 
         boolean canBeApplied(ItemStack stack);
 
         String getComponentString();
+
+        default boolean shouldLorePersist() {
+            return true;
+        }
     }
 
     private record BasicComponentModification<C>(ComponentType<? super C> type, String name,
@@ -81,38 +85,15 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
         }
 
         @Override
-        public void setComponent(ItemStack stack, Random rand, World world) {
+        public Optional<List<Text>> setComponent(ItemStack stack, Random rand, World world) {
             C comp = this.applyFunc.apply(stack, rand, world);
             if(comp != null) {
                 stack.set(this.type, comp);
+                return Optional.ofNullable(this.loreAppender == null ? null : this.loreAppender().apply(comp));
             }
             else {
                 stack.remove(this.type);
-            }
-            if(this.loreAppender != null) {
-                NbtComponent nbt = stack.get(DataComponentTypes.CUSTOM_DATA);
-                if(nbt == null) {
-                    nbt = NbtComponent.of(new NbtCompound());
-                    stack.set(DataComponentTypes.CUSTOM_DATA, nbt);
-                }
-                NbtCompound tag = nbt.copyNbt();
-                if(comp != null) {
-                    LoreComponent lore = stack.get(DataComponentTypes.LORE);
-                    List<Text> text = Lists.newArrayList();
-                    if(lore != null) {
-                        text.addAll(lore.lines());
-                    }
-                    List<Text> specificLore = this.loreAppender.apply(comp);
-                    text.addAll(specificLore);
-                    stack.set(DataComponentTypes.LORE, new LoreComponent(text));
-                    NbtList lst = new NbtList();
-                    specificLore.forEach((t) -> lst.add(NbtString.of(t.getString())));
-                    tag.put(this.getComponentString(), lst);
-                }
-                else {
-                    tag.remove(this.getComponentString());
-                }
-                stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(tag));
+                return Optional.ofNullable(this.loreAppender == null ? null : Lists.newArrayList());
             }
         }
 
@@ -127,24 +108,32 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
         }
     }
 
+    private static Identifier createIdentifier(String name) {
+        return MCCE.createIdentifier("%s%s".formatted(NAME, name));
+    }
 
 
     private static final int EFFECT_STRENGTH = 10;
     private static final List<ComponentCompensationEffect.ComponentModifier> COMPONENT_OPTIONS = Lists.newArrayList();
     private static final List<AttributeModifierOption> ATTRIBUTE_MODIFIER_OPTIONS = Lists.newArrayList(
-            new AttributeModifierOption(EntityAttributes.STEP_HEIGHT, new EntityAttributeModifier(MCCE.createIdentifier("componentcompensationstephieght"), 1.5, Operation.ADD_VALUE)),
-            new AttributeModifierOption(EntityAttributes.BLOCK_BREAK_SPEED, new EntityAttributeModifier(MCCE.createIdentifier("componentcompensationblockbreakspeed"), 1, Operation.ADD_VALUE)),
-            new AttributeModifierOption(EntityAttributes.BLOCK_INTERACTION_RANGE, new EntityAttributeModifier(MCCE.createIdentifier("componentcompensationblockrange"), 64, Operation.ADD_VALUE)),
-            new AttributeModifierOption(EntityAttributes.BURNING_TIME, new EntityAttributeModifier(MCCE.createIdentifier("componentcompensationburningtime"), -0.5, Operation.ADD_MULTIPLIED_BASE)),
-            new AttributeModifierOption(EntityAttributes.GRAVITY, new EntityAttributeModifier(MCCE.createIdentifier("componentcompensationgravity"), -0.2, Operation.ADD_VALUE)),
-            new AttributeModifierOption(EntityAttributes.SCALE, new EntityAttributeModifier(MCCE.createIdentifier("componentcompensationscale"), -0.5, Operation.ADD_MULTIPLIED_BASE)),
-            new AttributeModifierOption(EntityAttributes.MAX_HEALTH, new EntityAttributeModifier(MCCE.createIdentifier("componentcompensationmaxhealth"), -5, Operation.ADD_VALUE))
+            new AttributeModifierOption(EntityAttributes.STEP_HEIGHT, createIdentifier("stephieght"), -0.5, 1.6, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.BLOCK_BREAK_SPEED, MCCE.createIdentifier("blockbreakspeed"), -1, 1, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.BLOCK_INTERACTION_RANGE, MCCE.createIdentifier("blockrange"), -4, 64, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.BURNING_TIME, MCCE.createIdentifier("burningtime"), -0.8, 2, Operation.ADD_MULTIPLIED_BASE),
+            new AttributeModifierOption(EntityAttributes.GRAVITY, MCCE.createIdentifier("gravity"), -0.5, 0.8, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.SCALE, MCCE.createIdentifier("scale"), -0.5, 1.5, Operation.ADD_MULTIPLIED_BASE),
+            new AttributeModifierOption(EntityAttributes.MAX_HEALTH, MCCE.createIdentifier("maxhealth"), -5, 15, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.MOVEMENT_EFFICIENCY, createIdentifier("movementefficiency"), 0, 1, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.SNEAKING_SPEED, createIdentifier("sneakspeed"), -0.3, 0.7, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.ENTITY_INTERACTION_RANGE, createIdentifier("entityrange"), -3, 32, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.ATTACK_DAMAGE, createIdentifier("damage"), -1, 10, Operation.ADD_VALUE),
+            new AttributeModifierOption(EntityAttributes.ATTACK_KNOCKBACK, createIdentifier("knockback"), 0, 5, Operation.ADD_VALUE)
     );
     private static final List<ConsumableOption> CONSUMABLE_OPTIONS = Lists.newArrayList(
-            new ConsumableOption(2.4f, UseAction.BRUSH, new TeleportRandomlyConsumeEffect()),
-            new ConsumableOption(1.6f, UseAction.DRINK, new ClearAllEffectsConsumeEffect()),
-            new ConsumableOption(5.0f, UseAction.SPEAR, new ApplyEffectsConsumeEffect(List.of(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.SATURATION, 1, EFFECT_STRENGTH)))),
-            new ConsumableOption(0.5f, UseAction.BLOCK, null)
+            new ConsumableOption(2.4f, new TeleportRandomlyConsumeEffect()),
+            new ConsumableOption(1.6f, new ClearAllEffectsConsumeEffect()),
+            new ConsumableOption(5.0f, new ApplyEffectsConsumeEffect(List.of(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.SATURATION, 1, EFFECT_STRENGTH)))),
+            new ConsumableOption(0.5f, null)
     );
     private static final int CUSTOM_NAME_MAX_LENGTH_EXCLUSIVE = 21, UNICODE_MIN = 32, UNICODE_MAX = 384, CONTROL_BLOCK_START = 127, CONTROL_BLOCK_END = 159;
     private static final int DEATH_PROTECTION_RESISTANCE_DURATION = 200;
@@ -156,6 +145,7 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
     private static final int COLOR_MASK = 0x00FFFFFF;
     private static final int STACK_MAX_EXCLUSIVE = 100;
     private static final float MAX_COOLDOWN = 480;
+    private static final String NAME = "componentcompensation";
     private static final Identifier COOLDOWN_GROUP_A = MCCE.createIdentifier("cooldown_a"), COOLDOWN_GROUP_B = MCCE.createIdentifier("cooldown_b");
 
     @Override
@@ -170,50 +160,65 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
                 return;
             }
             NbtComponent customData = stack.get(DataComponentTypes.CUSTOM_DATA);
-            NbtCompound nbt = customData != null ? customData.copyNbt() : null;
+            NbtCompound nbt = customData != null ? customData.copyNbt() : new NbtCompound();
             stack.remove(DataComponentTypes.LORE);
-            Set<String> compsAdded = Sets.newHashSet();
+            Map<ComponentCompensationEffect.ComponentModifier, List<Text>> newLore = Maps.newHashMap();
+            Map<String, List<Text>> allLore = Maps.newHashMap();
             int times = this.getRNG().nextInt(3);
+            if(customData != null) {
+                nbt.getKeys().forEach((key) -> {
+                    List<Text> l = Lists.newArrayList();
+                    nbt.getList(key, NbtString.STRING_TYPE).forEach((s) -> l.add(Text.of(s.asString())));
+                    allLore.put(key, l);
+                });
+            }
             while(times > 0) {
-                ComponentCompensationEffect.ComponentModifier mod = ChaosLib.getRandomElementFrom(COMPONENT_OPTIONS, this.getRNG());
+                ComponentModifier mod = ChaosLib.getRandomElementFrom(COMPONENT_OPTIONS, this.getRNG());
                 if(mod.canBeApplied(stack)) {
-                    mod.setComponent(stack, this.getRNG(), player.getWorld());
-                    compsAdded.add(mod.getComponentString());
+                    mod.setComponent(stack, this.getRNG(), player.getWorld()).ifPresent((lst) -> {
+                        newLore.put(mod, lst);
+                        allLore.put(mod.getComponentString(), lst);
+                    });
                     times--;
                 }
             }
-            if(nbt != null) {
-                NbtComponent temp = stack.get(DataComponentTypes.CUSTOM_DATA);
-                final NbtComponent newData = temp == null ? NbtComponent.DEFAULT : temp;
-                List<Text> newText = Lists.newArrayList();
-                nbt.getKeys().forEach((key) -> {
-                    if(newData.contains(key) && !compsAdded.contains(key)) {
-                        //data persisted so it wasn't removed, but it wasn't added this time, so copy lore data over from last time
-                        nbt.getList(key, NbtString.STRING_TYPE).forEach((s) -> newText.add(Text.of(s.asString())));
+
+            List<Text> totalLore = allLore.values().stream().filter(Predicates.not(List::isEmpty)).reduce(Lists.newArrayList(), (l1, l2) -> {
+                l1.addAll(l2);
+                return l1;
+            });
+            if(!totalLore.isEmpty() || customData != null) {
+                newLore.forEach((mod, loreText) -> {
+                    if(mod.shouldLorePersist()) {
+                        NbtList lst = new NbtList();
+                        loreText.forEach((t) -> lst.add(NbtString.of(t.getString())));
+                        nbt.put(mod.getComponentString(), lst);
                     }
                 });
-                LoreComponent lore = stack.get(DataComponentTypes.LORE);
-                if(lore != null) {
-                    newText.addAll(lore.lines());
+                stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+                if(!totalLore.isEmpty()) {
+                    stack.set(DataComponentTypes.LORE, new LoreComponent(totalLore));
                 }
-                stack.set(DataComponentTypes.LORE, new LoreComponent(newText));
             }
         });
     }
 
     @Override
     public String getName() {
-        return "componentcompensation";
+        return NAME;
     }
 
-    private record AttributeModifierOption(RegistryEntry<EntityAttribute> attribute, EntityAttributeModifier mod) {
+    private record AttributeModifierOption(RegistryEntry<EntityAttribute> attribute, Identifier id, double minInclusive, double maxExclusive, Operation op) {
 
+        EntityAttributeModifier createModifier() {
+            return new EntityAttributeModifier(this.id, ChaosLib.getStaticRandomInstance().nextDouble(this.minInclusive, this.maxExclusive), this.op);
+        }
     }
 
-    private record ConsumableOption(float seconds, UseAction animation, ConsumeEffect effect) {
+    private record ConsumableOption(float seconds, ConsumeEffect effect) {
 
         ConsumableComponent createComponent() {
-            ConsumableComponent.Builder builder = ConsumableComponent.builder().consumeSeconds(this.seconds()).useAction(this.animation());
+            ConsumableComponent.Builder builder = ConsumableComponent.builder().consumeSeconds(this.seconds()).useAction(ChaosLib.getRandomElementFrom(UseAction.values()));
             if(this.effect != null) {
                 builder = builder.consumeEffect(this.effect());
             }
@@ -228,10 +233,10 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
             }
             Builder builder = AttributeModifiersComponent.builder();
             AttributeModifierOption option = ChaosLib.getRandomElementFrom(ATTRIBUTE_MODIFIER_OPTIONS, rand);
-            builder.add(option.attribute(), option.mod(), AttributeModifierSlot.ANY);
+            builder.add(option.attribute(), option.createModifier(), AttributeModifierSlot.ANY);
             if(rand.nextBoolean()) {
                 option = ChaosLib.getRandomElementFrom(ATTRIBUTE_MODIFIER_OPTIONS, rand);
-                builder.add(option.attribute(), option.mod(), AttributeModifierSlot.ANY);
+                builder.add(option.attribute(), option.createModifier(), AttributeModifierSlot.ANY);
             }
             return builder.build();
         }, Predicates.alwaysTrue()));
@@ -250,7 +255,7 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
             text.add(Text.of(sb.toString()));
             return text;
         }));
-        COMPONENT_OPTIONS.add(new BasicComponentModification<Text>(DataComponentTypes.CUSTOM_NAME, "name", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE ? null : Text.of(randomString(rand.nextInt(1, CUSTOM_NAME_MAX_LENGTH_EXCLUSIVE))), Predicates.alwaysTrue()));
+        COMPONENT_OPTIONS.add(new ComponentCompensationEffect.BasicComponentModification<Text>(DataComponentTypes.CUSTOM_NAME, "name", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE ? null : Text.of(randomString(rand.nextInt(1, CUSTOM_NAME_MAX_LENGTH_EXCLUSIVE))), Predicates.alwaysTrue()));
         COMPONENT_OPTIONS.add(new BasicComponentModification<Integer>(DataComponentTypes.DAMAGE, "damage", (stack, rand, world) -> rand.nextInt(0, stack.getMaxDamage()), ItemStack::isDamageable));
         COMPONENT_OPTIONS.add(new BasicComponentModification<DeathProtectionComponent>(DataComponentTypes.DEATH_PROTECTION, "death protection", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE? null : new DeathProtectionComponent(List.of(new ClearAllEffectsConsumeEffect(), new ApplyEffectsConsumeEffect(List.of(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.SATURATION, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.RESISTANCE, DEATH_PROTECTION_RESISTANCE_DURATION, EFFECT_STRENGTH))))), Predicates.alwaysTrue(), (comp) -> List.of(Text.of("Will protect from death"))));
         COMPONENT_OPTIONS.add(new BasicComponentModification<DyedColorComponent>(DataComponentTypes.DYED_COLOR, "dyed", (stack, rand, world) -> rand.nextFloat() < NO_COMP_CHANCE ? null : new DyedColorComponent(Math.abs(rand.nextInt()) & COLOR_MASK, true), (stack) -> stack.isIn(ItemTags.DYEABLE)));
@@ -288,15 +293,14 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
         }, Predicates.alwaysTrue()));
         COMPONENT_OPTIONS.add(new ComponentCompensationEffect.ComponentModifier() {
             @Override
-            public void setComponent(ItemStack stack, Random rand, World world) {
-                LoreComponent comp = stack.get(DataComponentTypes.LORE);
-                List<Text> text = comp == null ? Lists.newArrayList() : Lists.newArrayList(comp.lines());
+            public Optional<List<Text>> setComponent(ItemStack stack, Random rand, World world) {
+                List<Text> text = Lists.newArrayList();
                 for(int lines = rand.nextInt(RANDOM_LORE_MIN, RANDOM_LORE_MAX_EXCLUSIVE); lines > 0; lines--) {
                     Text t = Text.of(randomString(rand.nextInt(RANDOM_LORE_LENGTH)));
                     Style s = t.getStyle().withObfuscated(rand.nextBoolean()).withBold(rand.nextBoolean()).withUnderline(rand.nextBoolean()).withStrikethrough(rand.nextBoolean()).withItalic(rand.nextBoolean()).withColor(Math.abs(rand.nextInt()) & COLOR_MASK);
                     text.addAll(t.getWithStyle(s));
                 }
-                stack.set(DataComponentTypes.LORE, new LoreComponent(text));
+                return Optional.of(text);
             }
 
             @Override
@@ -307,6 +311,11 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
             @Override
             public String getComponentString() {
                 return "lore";
+            }
+
+            @Override
+            public boolean shouldLorePersist() {
+                return false;
             }
         });
         COMPONENT_OPTIONS.add(new BasicComponentModification<Integer>(DataComponentTypes.MAX_DAMAGE, "max damage", (stack, rand, world) -> rand.nextInt(Integer.MAX_VALUE), ItemStack::isDamageable, (damage) -> List.of(Text.of("Has %d total uses".formatted(damage)))));

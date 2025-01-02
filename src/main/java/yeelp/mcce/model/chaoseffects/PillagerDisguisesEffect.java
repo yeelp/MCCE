@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.EnchantmentUtils;
+import yeelp.mcce.util.MCCESpawnCap;
 
 import java.util.Optional;
 import java.util.Random;
@@ -195,7 +196,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 			BlockPos pos = player.getBlockPos();
 			MobEntity mob;
 			setUpEntity(mob = pc.create(world, world.getLocalDifficulty(pos), this.getRNG()), e);
-			world.spawnEntity(mob);
+			MCCESpawnCap.MOB.attemptEntitySpawn(world, mob);
 		});
 	}
 
