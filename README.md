@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/yeelp/MCCE/1.19/images/MCCE_logo.png)
 # MCCE
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X8X5G4LPG)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X8X5G4LPG) [![Patreon](https://i.imgur.com/JkRflNx.png)](https://www.patreon.com/join/Yeelp)
 
 [![](https://img.shields.io/modrinth/dt/minecraft-chaos-edition?label=Modrinth&logo=Modrinth&style=flat&color=00af5c)](https://modrinth.com/mod/minecraft-chaos-edition)
 [![](https://img.shields.io/curseforge/dt/873662?style=flat&logo=curseforge&label=CurseForge%20Downloads&color=f16436)](https://www.curseforge.com/minecraft/mc-mods/minecraft-chaos-edition) 
