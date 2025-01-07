@@ -130,10 +130,10 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
             new AttributeModifierOption(EntityAttributes.ATTACK_KNOCKBACK, createIdentifier("knockback"), 0, 5, Operation.ADD_VALUE)
     );
     private static final List<ConsumableOption> CONSUMABLE_OPTIONS = Lists.newArrayList(
-            new ConsumableOption(2.4f, new TeleportRandomlyConsumeEffect()),
-            new ConsumableOption(1.6f, new ClearAllEffectsConsumeEffect()),
-            new ConsumableOption(5.0f, new ApplyEffectsConsumeEffect(List.of(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.SATURATION, 1, EFFECT_STRENGTH)))),
-            new ConsumableOption(0.5f, null)
+            new ConsumableOption(new TeleportRandomlyConsumeEffect()),
+            new ConsumableOption(new ClearAllEffectsConsumeEffect()),
+            new ConsumableOption(new ApplyEffectsConsumeEffect(List.of(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, EFFECT_STRENGTH), new StatusEffectInstance(StatusEffects.SATURATION, 1, EFFECT_STRENGTH)))),
+            new ConsumableOption(null)
     );
     private static final int CUSTOM_NAME_MAX_LENGTH_EXCLUSIVE = 21, UNICODE_MIN = 32, UNICODE_MAX = 384, CONTROL_BLOCK_START = 127, CONTROL_BLOCK_END = 159;
     private static final int DEATH_PROTECTION_RESISTANCE_DURATION = 200;
@@ -145,6 +145,7 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
     private static final int COLOR_MASK = 0x00FFFFFF;
     private static final int STACK_MAX_EXCLUSIVE = 100;
     private static final float MAX_COOLDOWN = 480;
+    private static final float EAT_DURATION_MIN = 0.5f, EAT_DURATION_MAX = 5.5f;
     private static final String NAME = "componentcompensation";
     private static final Identifier COOLDOWN_GROUP_A = MCCE.createIdentifier("cooldown_a"), COOLDOWN_GROUP_B = MCCE.createIdentifier("cooldown_b");
 
@@ -215,10 +216,10 @@ public final class ComponentCompensationEffect extends AbstractInstantChaosEffec
         }
     }
 
-    private record ConsumableOption(float seconds, ConsumeEffect effect) {
+    private record ConsumableOption(ConsumeEffect effect) {
 
         ConsumableComponent createComponent() {
-            ConsumableComponent.Builder builder = ConsumableComponent.builder().consumeSeconds(this.seconds()).useAction(ChaosLib.getRandomElementFrom(UseAction.values()));
+            ConsumableComponent.Builder builder = ConsumableComponent.builder().consumeSeconds(ChaosLib.getStaticRandomInstance().nextFloat(EAT_DURATION_MIN, EAT_DURATION_MAX)).useAction(ChaosLib.getRandomElementFrom(UseAction.values()));
             if(this.effect != null) {
                 builder = builder.consumeEffect(this.effect());
             }
