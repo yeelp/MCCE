@@ -1,4 +1,6 @@
 {
   "death.attack.simonsays": "%s didn't follow instructions in time",
-  "death.attack.disobey": "%s disobeyed instructions"
+  "death.attack.simonsays.player": "%s didn't follow instructions in time because they were distracted by %s",
+  "death.attack.disobey": "%s disobeyed instructions",
+  "death.attack.disobey.player": "%s disobeyed instructions because %s told them to"
 }

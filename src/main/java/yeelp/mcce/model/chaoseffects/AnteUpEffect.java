@@ -7,18 +7,19 @@ public final class AnteUpEffect extends SimpleTimedChaosEffect {
 
     private static final int DURATION_MIN = 3600, DURATION_MAX = 5600;
     private static final float TRIPLE_CHANCE = 0.4f;
+    private static final float APPLY_CHANCE = 0.8f;
 
     public AnteUpEffect() {
         super(DURATION_MIN, DURATION_MAX);
     }
     @Override
     protected boolean canStack() {
-        return true;
+        return false;
     }
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return true;
+        return Math.random() < APPLY_CHANCE;
     }
 
     @Override

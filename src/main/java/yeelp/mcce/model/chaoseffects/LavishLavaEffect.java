@@ -52,6 +52,7 @@ public final class LavishLavaEffect extends AbstractTimedChaosEffect {
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
 		player.setOnFire(false);
+		player.setFireTicks(0);
 		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(NetworkingConstants.SoundPacketConstants.EXTINGUISH_ID, 1.0f, 1.0f)::send);
 	}
 

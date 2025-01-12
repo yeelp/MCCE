@@ -6,6 +6,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import yeelp.mcce.MCCE;
+import yeelp.mcce.util.ChaosLib;
 
 public interface NetworkingConstants {
 	
@@ -20,9 +21,19 @@ public interface NetworkingConstants {
 		private ParticlePacketConstants() {
 			//not to be instantiated
 		}
+
+		private record ParticleComboType(ParticleEffect effect1, ParticleEffect effect2) {
+			ParticleEffect getRandomParticleEffect() {
+				return ChaosLib.getStaticRandomInstance().nextBoolean() ? this.effect1 : this.effect2;
+			}
+		}
 		
 		public static final Identifier PARTICLE_PACKET_ID = MCCE.createIdentifier("particle");
-		
+
+		private static final ParticleComboType OMEN_PARTICLES = new ParticleComboType(ParticleTypes.TRIAL_OMEN, ParticleTypes.RAID_OMEN);
+		private static final ParticleComboType TRIAL_SPAWNER_PARTICLES = new ParticleComboType(ParticleTypes.TRIAL_SPAWNER_DETECTION, ParticleTypes.TRIAL_SPAWNER_DETECTION_OMINOUS);
+		private static final ParticleComboType TORCH_FLAME_PARTICLES = new ParticleComboType(ParticleTypes.FLAME, ParticleTypes.SOUL_FIRE_FLAME);
+
 		public static final byte DAMAGE_INDICATOR = 0;
 		public static final byte NAUTILUS = 1;
 		public static final byte EXPLOSION = 2;
@@ -38,6 +49,9 @@ public interface NetworkingConstants {
 		public static final byte ASH = 12;
 		public static final byte SPARK = 13;
 		public static final byte BUBBLE = 14;
+		public static final byte OMEN = 15;
+		public static final byte TRAIL = 16;
+		public static final byte TORCH_FLAME = 17;
 		
 		public static ParticleEffect getParticle(byte b) {
             return switch (b) {
@@ -56,6 +70,9 @@ public interface NetworkingConstants {
                 case ASH -> ParticleTypes.ASH;
                 case SPARK -> ParticleTypes.ELECTRIC_SPARK;
                 case BUBBLE -> ParticleTypes.BUBBLE_COLUMN_UP;
+				case OMEN -> OMEN_PARTICLES.getRandomParticleEffect();
+				case TRAIL -> TRIAL_SPAWNER_PARTICLES.getRandomParticleEffect();
+				case TORCH_FLAME -> TORCH_FLAME_PARTICLES.getRandomParticleEffect();
                 default -> null;
             };
 		}

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
@@ -32,6 +33,7 @@ public final class SuddenDeathEffect extends AbstractAttributeChaosEffect {
 	public void applyEffect(PlayerEntity player) {
 		super.applyEffect(player);
 		player.heal(0.01f);
+		player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, this.durationRemaining(), 200, true, true));
 		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(NetworkingConstants.SoundPacketConstants.POWER_UP_ID, 1.0f, 1.0f)::send);
 	}
 
@@ -41,6 +43,7 @@ public final class SuddenDeathEffect extends AbstractAttributeChaosEffect {
 	public void onEffectEnd(PlayerEntity player) {
 		super.onEffectEnd(player);
 		player.heal(player.getMaxHealth());
+		player.removeStatusEffect(StatusEffects.STRENGTH);
 		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(NetworkingConstants.SoundPacketConstants.POWER_DOWN_ID, 1.0f, 1.0f)::send);
 	}
 
