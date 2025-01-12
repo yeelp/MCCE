@@ -12,19 +12,10 @@ public final class ParticleEffect extends SimpleTimedChaosEffect {
 	
 	private static final String ID_KEY = "particle_id";
 	private static final int DURATION_MIN = 2000, DURATION_MAX = 3000;
-	private static final float HORIZONTAL_OFFSET = 0.5f;
 
 	public ParticleEffect() {
 		super(DURATION_MIN, DURATION_MAX);
-		this.type = this.getRNG().nextInt(PARTICLE_TYPES_AMOUNT);
-	}
-
-	public static final int PARTICLE_TYPES_AMOUNT;
-
-	static {
-		int i;
-		for(i = 0; NetworkingConstants.ParticlePacketConstants.getParticle((byte) i) != null; i++);
-		PARTICLE_TYPES_AMOUNT = i;
+		this.type = this.getRNG().nextInt(NetworkingConstants.ParticlePacketConstants.getTotalNumberOfGenerators());
 	}
 
 	@Override
@@ -69,40 +60,8 @@ public final class ParticleEffect extends SimpleTimedChaosEffect {
 		});
 	}
 
-	@SuppressWarnings("MagicNumber")
     private float[] getPosition(PlayerEntity player) {
-		float x = (float) player.getX(), y = (float) player.getY(), z = (float) player.getZ();
-		float rx = this.getRNG().nextFloat(-HORIZONTAL_OFFSET, HORIZONTAL_OFFSET), rz = this.getRNG().nextFloat(-HORIZONTAL_OFFSET, HORIZONTAL_OFFSET);
-        return switch ((byte) this.type) {
-            case NetworkingConstants.ParticlePacketConstants.SOUL -> new float[]{
-                    x + rx,
-                    y + this.getRNG().nextFloat(0.0f, 0.25f),
-                    z + rz
-            };
-            case NetworkingConstants.ParticlePacketConstants.DAMAGE_INDICATOR,
-                 NetworkingConstants.ParticlePacketConstants.EXPLOSION,
-                 NetworkingConstants.ParticlePacketConstants.TOTEM -> new float[]{
-                    x + rx,
-                    y + this.getRNG().nextFloat(0.25f, 0.75f),
-                    z + rz
-            };
-            case NetworkingConstants.ParticlePacketConstants.ASH, NetworkingConstants.ParticlePacketConstants.NAUTILUS,
-                 NetworkingConstants.ParticlePacketConstants.CAMPFIRE,
-                 NetworkingConstants.ParticlePacketConstants.CHERRY, NetworkingConstants.ParticlePacketConstants.HEART,
-                 NetworkingConstants.ParticlePacketConstants.WITCH, NetworkingConstants.ParticlePacketConstants.NOTE,
-                 NetworkingConstants.ParticlePacketConstants.BUBBLE, NetworkingConstants.ParticlePacketConstants.SPORE,
-                 NetworkingConstants.ParticlePacketConstants.SPARK -> new float[]{
-                    x + rx,
-                    y + this.getRNG().nextFloat(1.0f, 1.8f),
-                    z + rz
-            };
-            case NetworkingConstants.ParticlePacketConstants.SONIC_BOOM -> new float[]{
-                    x,
-                    y + 0.5f,
-                    z
-            };
-            default -> new float[]{x, y, z};
-        };
+        return NetworkingConstants.ParticlePacketConstants.getGeneratorById((byte) this.type).calculatePositionOffset((float) player.getX(), (float) player.getY(), (float) player.getZ());
 	}
 
 }

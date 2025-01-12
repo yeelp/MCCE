@@ -11,7 +11,7 @@ public final class ParticlePacketReceiver implements ClientPacketReceiver<Partic
 
 	@Override
 	public void handlePayload(ParticlePayload particlePayload, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> Objects.requireNonNull(context.client().world).addParticle(NetworkingConstants.ParticlePacketConstants.getParticle(particlePayload.id()), particlePayload.x(), particlePayload.y(), particlePayload.z(), particlePayload.dx(), particlePayload.dy(), particlePayload.dz()));
+		context.client().execute(() -> Objects.requireNonNull(context.client().world).addParticle(NetworkingConstants.ParticlePacketConstants.getGeneratorById(particlePayload.id()).particle().get(), particlePayload.x(), particlePayload.y(), particlePayload.z(), particlePayload.dx(), particlePayload.dy(), particlePayload.dz()));
 	}
 
 	@Override

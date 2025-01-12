@@ -1,5 +1,6 @@
 package yeelp.mcce.network;
 
+import com.google.common.collect.Lists;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvent;
@@ -7,6 +8,9 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import yeelp.mcce.MCCE;
 import yeelp.mcce.util.ChaosLib;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public interface NetworkingConstants {
 	
@@ -22,8 +26,61 @@ public interface NetworkingConstants {
 			//not to be instantiated
 		}
 
-		private record ParticleComboType(ParticleEffect effect1, ParticleEffect effect2) {
-			ParticleEffect getRandomParticleEffect() {
+		@FunctionalInterface
+		private interface FloatSupplier {
+			float getAsFloat();
+		}
+
+		private record PositionGenerator(float offset, float range, boolean centered) implements FloatSupplier {
+
+			PositionGenerator(float offset, float range) {
+				this(offset, range, true);
+			}
+
+			PositionGenerator(float range) {
+				this(0.0f, range, true);
+			}
+
+			@Override
+			public float getAsFloat() {
+				return ChaosLib.getStaticRandomInstance().nextFloat(this.centered ? -this.range : 0, this.range) + this.offset;
+			}
+		}
+
+		public record ParticleGenerator(Supplier<ParticleEffect> particle, FloatSupplier horizontal, FloatSupplier vertical) {
+
+			ParticleGenerator(Supplier<ParticleEffect> particle, FloatSupplier vertical) {
+				this(particle, STANDARD_HORIZONTAL_OFFSET, vertical);
+			}
+
+			ParticleGenerator(Supplier<ParticleEffect> particle) {
+				this(particle, STANDARD_HORIZONTAL_OFFSET, MID_SECTION_VERTICAL_OFFSET);
+			}
+
+			ParticleGenerator(ParticleEffect particle, FloatSupplier horizontal, FloatSupplier vertical) {
+				this(() -> particle, horizontal, vertical);
+			}
+
+			ParticleGenerator(ParticleEffect particle, FloatSupplier vertical) {
+				this(particle, STANDARD_HORIZONTAL_OFFSET, vertical);
+			}
+
+			ParticleGenerator(ParticleEffect particle) {
+				this(particle, STANDARD_HORIZONTAL_OFFSET, MID_SECTION_VERTICAL_OFFSET);
+			}
+
+			public float[] calculatePositionOffset(float x, float y, float z) {
+				return new float[] {
+						x + horizontal().getAsFloat(),
+						y + vertical().getAsFloat(),
+						z + horizontal().getAsFloat()
+				};
+			}
+		}
+
+		private record ParticleComboType(ParticleEffect effect1, ParticleEffect effect2) implements Supplier<ParticleEffect> {
+			@Override
+			public ParticleEffect get() {
 				return ChaosLib.getStaticRandomInstance().nextBoolean() ? this.effect1 : this.effect2;
 			}
 		}
@@ -34,47 +91,61 @@ public interface NetworkingConstants {
 		private static final ParticleComboType TRIAL_SPAWNER_PARTICLES = new ParticleComboType(ParticleTypes.TRIAL_SPAWNER_DETECTION, ParticleTypes.TRIAL_SPAWNER_DETECTION_OMINOUS);
 		private static final ParticleComboType TORCH_FLAME_PARTICLES = new ParticleComboType(ParticleTypes.FLAME, ParticleTypes.SOUL_FIRE_FLAME);
 
-		public static final byte DAMAGE_INDICATOR = 0;
-		public static final byte NAUTILUS = 1;
-		public static final byte EXPLOSION = 2;
-		public static final byte SONIC_BOOM = 3;
-		public static final byte CHERRY = 4;
-		public static final byte SOUL = 5;
-		public static final byte HEART = 6;
-		public static final byte NOTE = 7;
-		public static final byte TOTEM = 8;
-		public static final byte WITCH = 9;
-		public static final byte SPORE = 10;
-		public static final byte CAMPFIRE = 11;
-		public static final byte ASH = 12;
-		public static final byte SPARK = 13;
-		public static final byte BUBBLE = 14;
-		public static final byte OMEN = 15;
-		public static final byte TRAIL = 16;
-		public static final byte TORCH_FLAME = 17;
-		
-		public static ParticleEffect getParticle(byte b) {
-            return switch (b) {
-                case DAMAGE_INDICATOR -> ParticleTypes.DAMAGE_INDICATOR;
-                case NAUTILUS -> ParticleTypes.NAUTILUS;
-                case EXPLOSION -> ParticleTypes.EXPLOSION;
-                case SONIC_BOOM -> ParticleTypes.SONIC_BOOM;
-                case CHERRY -> ParticleTypes.CHERRY_LEAVES;
-                case SOUL -> ParticleTypes.SOUL;
-                case HEART -> ParticleTypes.HEART;
-                case NOTE -> ParticleTypes.NOTE;
-                case TOTEM -> ParticleTypes.TOTEM_OF_UNDYING;
-                case WITCH -> ParticleTypes.WITCH;
-                case SPORE -> ParticleTypes.SPORE_BLOSSOM_AIR;
-                case CAMPFIRE -> ParticleTypes.CAMPFIRE_SIGNAL_SMOKE;
-                case ASH -> ParticleTypes.ASH;
-                case SPARK -> ParticleTypes.ELECTRIC_SPARK;
-                case BUBBLE -> ParticleTypes.BUBBLE_COLUMN_UP;
-				case OMEN -> OMEN_PARTICLES.getRandomParticleEffect();
-				case TRAIL -> TRIAL_SPAWNER_PARTICLES.getRandomParticleEffect();
-				case TORCH_FLAME -> TORCH_FLAME_PARTICLES.getRandomParticleEffect();
-                default -> null;
-            };
+		private static final FloatSupplier STANDARD_HORIZONTAL_OFFSET = new PositionGenerator(0.5f);
+		private static final FloatSupplier MID_SECTION_VERTICAL_OFFSET = new PositionGenerator(1.0f, 0.8f, false);
+		private static final FloatSupplier LOW_SECTION_VERTICAL_OFFSET = new PositionGenerator(0.25f, 0.5f, false);
+
+		private static final List<ParticleGenerator> GENERATORS = Lists.newArrayList();
+		public static final ParticleGenerator DAMAGE_INDICATOR = new ParticleGenerator(ParticleTypes.DAMAGE_INDICATOR, LOW_SECTION_VERTICAL_OFFSET);
+		public static final ParticleGenerator NAUTILUS = new ParticleGenerator(ParticleTypes.NAUTILUS);
+		public static final ParticleGenerator EXPLOSION = new ParticleGenerator(ParticleTypes.EXPLOSION, LOW_SECTION_VERTICAL_OFFSET);
+		public static final ParticleGenerator SONIC_BOOM = new ParticleGenerator(ParticleTypes.SONIC_BOOM, () -> 0.0f, () -> 0.5f);
+		public static final ParticleGenerator CHERRY = new ParticleGenerator(ParticleTypes.CHERRY_LEAVES);
+		public static final ParticleGenerator SOUL = new ParticleGenerator(ParticleTypes.SOUL, new PositionGenerator(0.125f, 0.125f));
+		public static final ParticleGenerator HEART = new ParticleGenerator(ParticleTypes.HEART);
+		public static final ParticleGenerator NOTE = new ParticleGenerator(ParticleTypes.NOTE);
+		public static final ParticleGenerator TOTEM = new ParticleGenerator(ParticleTypes.TOTEM_OF_UNDYING, LOW_SECTION_VERTICAL_OFFSET);
+		public static final ParticleGenerator WITCH = new ParticleGenerator(ParticleTypes.WITCH);
+		public static final ParticleGenerator SPORE = new ParticleGenerator(ParticleTypes.SPORE_BLOSSOM_AIR);
+		public static final ParticleGenerator CAMPFIRE = new ParticleGenerator(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE);
+		public static final ParticleGenerator ASH = new ParticleGenerator(ParticleTypes.ASH);
+		public static final ParticleGenerator SPARK = new ParticleGenerator(ParticleTypes.ELECTRIC_SPARK);
+		public static final ParticleGenerator BUBBLE = new ParticleGenerator(ParticleTypes.BUBBLE_COLUMN_UP);
+		public static final ParticleGenerator OMEN = new ParticleGenerator(OMEN_PARTICLES, LOW_SECTION_VERTICAL_OFFSET);
+		public static final ParticleGenerator TRIAL = new ParticleGenerator(TRIAL_SPAWNER_PARTICLES);
+		public static final ParticleGenerator TORCH = new ParticleGenerator(TORCH_FLAME_PARTICLES);
+
+		static {
+			GENERATORS.add(DAMAGE_INDICATOR);
+			GENERATORS.add(NAUTILUS);
+			GENERATORS.add(EXPLOSION);
+			GENERATORS.add(SONIC_BOOM);
+			GENERATORS.add(CHERRY);
+			GENERATORS.add(SOUL);
+			GENERATORS.add(HEART);
+			GENERATORS.add(NOTE);
+			GENERATORS.add(TOTEM);
+			GENERATORS.add(WITCH);
+			GENERATORS.add(SPORE);
+			GENERATORS.add(CAMPFIRE);
+			GENERATORS.add(ASH);
+			GENERATORS.add(SPARK);
+			GENERATORS.add(BUBBLE);
+			GENERATORS.add(OMEN);
+			GENERATORS.add(TRIAL);
+			GENERATORS.add(TORCH);
+		}
+
+		public static ParticleGenerator getGeneratorById(byte b) {
+			return GENERATORS.get(b);
+		}
+
+		public static byte getId(ParticleGenerator generator) {
+			return (byte) GENERATORS.indexOf(generator);
+		}
+
+		public static int getTotalNumberOfGenerators() {
+			return GENERATORS.size();
 		}
 	}
 	

@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.model.ServerState;
 import yeelp.mcce.network.NetworkingConstants;
+import yeelp.mcce.network.NetworkingConstants.ParticlePacketConstants;
 import yeelp.mcce.network.ParticlePayload;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.ChaosLib;
@@ -28,6 +29,7 @@ public final class LovablePhantomEffect extends AbstractIntervalTriggeredChaosEf
 	private static final int RADIUS = 30;
 	private static final float PITCH_MIN = 0.5f, PITCH_MAX= 2.5f, VOLUME = 1.3f;
 	private static final float PARTICLE_Y_SPEED_MAX = 2.0f;
+	private static final byte HEART_ID = ParticlePacketConstants.getId(ParticlePacketConstants.HEART);
 	
 	public LovablePhantomEffect() {
 		super(DURATION_MIN, DURATION_MAX, INTERVAL, INTERVAL, AbstractLastingChaosEffect.getIntInRange(5, 10));
@@ -79,7 +81,10 @@ public final class LovablePhantomEffect extends AbstractIntervalTriggeredChaosEf
 		MCCESpawnCap.MOB.attemptEntitySpawn(world, phantom);
 		int particles = this.getRNG().nextInt(3, 5);
 		ServerPlayerEntity spe = (ServerPlayerEntity) player;
-		for(int i = 0; i++ < particles;	new ParticlePayload(NetworkingConstants.ParticlePacketConstants.HEART, (float) phantom.getX(), (float) phantom.getY(), (float) phantom.getZ(), 0.0f, this.getRNG().nextFloat(PARTICLE_Y_SPEED_MAX), 0.0f).send(spe));
+		for(int i = 0; i < particles; i++) {
+			float[] offset = ParticlePacketConstants.HEART.calculatePositionOffset((float) phantom.getX(), (float) phantom.getY(), (float) phantom.getZ());
+			new ParticlePayload(HEART_ID, offset[0], offset[1], offset[2], 0, this.getRNG().nextFloat(PARTICLE_Y_SPEED_MAX), 0.0f).send(spe);
+		}
 	}
 
 	@Override
