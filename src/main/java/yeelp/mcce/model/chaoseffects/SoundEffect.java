@@ -1,48 +1,53 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import yeelp.mcce.network.NetworkingConstants;
+import yeelp.mcce.network.NetworkingConstants.SoundPacketConstants;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.PlayerUtils;
 
 public final class SoundEffect extends AbstractInstantChaosEffect {
 
-	private static final byte[] VALID_SOUNDS = {
-			NetworkingConstants.SoundPacketConstants.BASALT_DELTAS_ADDITIONS,
-			NetworkingConstants.SoundPacketConstants.ARROW_HIT_PLAYER,
-			NetworkingConstants.SoundPacketConstants.BELL_RESONATE,
-			NetworkingConstants.SoundPacketConstants.BLAZE_AMBIENT,
-			NetworkingConstants.SoundPacketConstants.CHEST_LOCKED,
-			NetworkingConstants.SoundPacketConstants.CREEPER_PRIMED,
-			NetworkingConstants.SoundPacketConstants.DRINK_HONEY,
-			NetworkingConstants.SoundPacketConstants.EVOKER_WOLOLO,
-			NetworkingConstants.SoundPacketConstants.FIREWORK_TWINKLE,
-			NetworkingConstants.SoundPacketConstants.FOX_AMBIENT,
-			NetworkingConstants.SoundPacketConstants.GHAST_AMBIENT,
-			NetworkingConstants.SoundPacketConstants.GOAT_HORN,
-			NetworkingConstants.SoundPacketConstants.ITEM_BREAK,
-			NetworkingConstants.SoundPacketConstants.PHANTOM_AMBIENT,
-			NetworkingConstants.SoundPacketConstants.PHANTOM_SWOOP,
-			NetworkingConstants.SoundPacketConstants.SCULK_SENSOR,
-			NetworkingConstants.SoundPacketConstants.SILVERFISH_AMBIENT,
-			NetworkingConstants.SoundPacketConstants.STAL,
-			NetworkingConstants.SoundPacketConstants.STRAD,
-			NetworkingConstants.SoundPacketConstants.WARD,
-			NetworkingConstants.SoundPacketConstants.INVERSE_START};
+    private static final byte[] VALID_SOUNDS = {
+            SoundPacketConstants.BASALT_DELTAS_ADDITIONS,
+            SoundPacketConstants.ARROW_HIT_PLAYER,
+            SoundPacketConstants.BELL_RESONATE,
+            SoundPacketConstants.BLAZE_AMBIENT,
+            SoundPacketConstants.CHEST_LOCKED,
+            SoundPacketConstants.CREEPER_PRIMED,
+            SoundPacketConstants.DRINK_HONEY,
+            SoundPacketConstants.EVOKER_WOLOLO,
+            SoundPacketConstants.FIREWORK_TWINKLE,
+            SoundPacketConstants.FOX_AMBIENT,
+            SoundPacketConstants.GHAST_AMBIENT,
+            SoundPacketConstants.GOAT_HORN,
+            SoundPacketConstants.ITEM_BREAK,
+            SoundPacketConstants.PHANTOM_AMBIENT,
+            SoundPacketConstants.PHANTOM_SWOOP,
+            SoundPacketConstants.SCULK_SENSOR,
+            SoundPacketConstants.SILVERFISH_AMBIENT,
+            SoundPacketConstants.STAL,
+            SoundPacketConstants.STRAD,
+            SoundPacketConstants.WARD,
+            SoundPacketConstants.INVERSE_START,
+            SoundPacketConstants.VAULT_ACTIVATE,
+            SoundPacketConstants.OMINOUS_SPAWNER,
+            SoundPacketConstants.OMINOUS_PREPARE,
+            SoundPacketConstants.AMBIENT_CAVE,
+            SoundPacketConstants.PLING};
 
-	@Override
-	public void applyEffect(PlayerEntity player) {
-		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(VALID_SOUNDS[this.getRNG().nextInt(VALID_SOUNDS.length)], 1.0f, 1.0f)::send);
-	}
+    @Override
+    public void applyEffect(PlayerEntity player) {
+        PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(VALID_SOUNDS[this.getRNG().nextInt(VALID_SOUNDS.length)], 1.0f, 1.0f)::send);
+    }
 
-	@Override
-	public String getName() {
-		return "sound";
-	}
+    @Override
+    public String getName() {
+        return "sound";
+    }
 
-	@Override
-	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
-	}
+    @Override
+    protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
+        return true;
+    }
 
 }
