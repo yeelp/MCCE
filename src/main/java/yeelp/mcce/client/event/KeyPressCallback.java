@@ -1,14 +1,13 @@
 package yeelp.mcce.client.event;
 
-import java.util.Iterator;
-
-import org.spongepowered.include.com.google.common.collect.Iterators;
-
+import com.google.common.collect.Iterators;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.Keyboard;
 import yeelp.mcce.event.CallbackResult;
 import yeelp.mcce.event.CallbackResult.ProcessState;
+
+import java.util.Iterator;
 
 @FunctionalInterface
 public interface KeyPressCallback {

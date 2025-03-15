@@ -1,5 +1,6 @@
 package yeelp.mcce.model.chaoseffects;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
@@ -19,13 +20,14 @@ import net.minecraft.item.Items;
 import net.minecraft.item.equipment.trim.ArmorTrim;
 import net.minecraft.item.equipment.trim.ArmorTrimPattern;
 import net.minecraft.potion.Potion;
-import net.minecraft.registry.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
-import org.apache.commons.compress.utils.Lists;
 import yeelp.mcce.MCCE;
 import yeelp.mcce.util.AttributeUtils;
 import yeelp.mcce.util.ChaosLib;
