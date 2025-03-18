@@ -20,6 +20,8 @@ public interface NetworkingConstants {
 	Identifier QUIVER_UPDATE_PACKET_ID = MCCE.createIdentifier("quiverupdate");
 	Identifier STUTTER_SOUND_STATUS_PACKET_ID = MCCE.createIdentifier("stuttersoundstatus");
 	Identifier LOOK_INVERSION_STATUS_PACKET_ID = MCCE.createIdentifier("lookinversion");
+	Identifier INVERSE_STATUS_PACKET_ID = MCCE.createIdentifier("inverse");
+	Identifier CLIPPY_STATUS_PACKET_ID = MCCE.createIdentifier("clippy");
 
 	final class ParticlePacketConstants {
 		private ParticlePacketConstants() {

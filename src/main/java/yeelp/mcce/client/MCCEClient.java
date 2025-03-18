@@ -16,6 +16,8 @@ public final class MCCEClient implements ClientModInitializer {
 		new ParticlePacketReceiver().register();
 		new StutterSoundStatusPacketReceiver().register();
 		new LookInversionStatusPacketReceiver().register();
+		new ClippyStatusPacketReceiver().register();
+		new InverseStatusPacketReceiver().register();
 		ClientCallbacks.registerCallbacks();
 	}
 }

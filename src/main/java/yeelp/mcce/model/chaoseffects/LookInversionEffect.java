@@ -2,17 +2,13 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import yeelp.mcce.api.MCCEAPI;
-import yeelp.mcce.event.PlayerTickCallback;
 import yeelp.mcce.network.LookInversionStatusPayload;
 import yeelp.mcce.network.NetworkingConstants.SoundPacketConstants;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.PlayerUtils;
-import yeelp.mcce.util.Tracker;
 
-public final class LookInversionEffect extends StatusPayloadSendingChaosEffect<LookInversionStatusPayload> {
+public final class LookInversionEffect extends ClientPlayerTrackingChaosEffect<LookInversionStatusPayload> {
     private static final int DURATION_MIN = 1200, DURATION_MAX = 1800;
-    private static final Tracker TRACKED_CLIENT = new Tracker();
 
     private boolean silent = false;
 
@@ -21,7 +17,7 @@ public final class LookInversionEffect extends StatusPayloadSendingChaosEffect<L
     }
 
     LookInversionEffect(int duration) {
-        super(duration, duration, LookInversionStatusPayload::new);
+        super(duration, LookInversionStatusPayload::new);
         this.silent = true;
     }
 
@@ -49,12 +45,6 @@ public final class LookInversionEffect extends StatusPayloadSendingChaosEffect<L
     }
 
     @Override
-    public void registerCallbacks() {
-        super.registerCallbacks();
-        PlayerTickCallback.EVENT.register(new LookInversionTickHandler());
-    }
-
-    @Override
     public void onEffectEnd(PlayerEntity player) {
         super.onEffectEnd(player);
         if(!this.silent) {
@@ -63,7 +53,7 @@ public final class LookInversionEffect extends StatusPayloadSendingChaosEffect<L
     }
 
     public static double changeInput(Entity entity, double input) {
-        return entity instanceof PlayerEntity player && TRACKED_CLIENT.tracked(player) ? input * -1 : input;
+        return entity instanceof PlayerEntity player && ClientPlayerTrackingChaosEffect.isClientTracked(player, ChaosEffects.LOOK_INVERSION) ? input * -1 : input;
     }
 
     public static boolean isAffected(PlayerEntity player) {
@@ -71,30 +61,29 @@ public final class LookInversionEffect extends StatusPayloadSendingChaosEffect<L
     }
 
     public static void trackClient(PlayerEntity player, LookInversionStatusPayload payload) {
-        if(payload.status()) {
-            TRACKED_CLIENT.add(player);
-        }
-        else {
-            TRACKED_CLIENT.remove(player);
-        }
+        ClientPlayerTrackingChaosEffect.trackClient(player, ChaosEffects.LOOK_INVERSION, payload);
     }
 
     @Override
-    protected void tickAdditionalEffectLogic(PlayerEntity player) {
-        Tracker tracker = this.getTracker();
-        if(tracker.tracked(player)) {
-            return;
-        }
-        tracker.add(player);
+    protected ResetEffectHandler getHandler() {
+        return new LookInversionTickHandler();
     }
 
-    private static final class LookInversionTickHandler implements PlayerTickCallback {
+    private static final class LookInversionTickHandler extends ResetEffectHandler {
 
         @Override
-        public void tick(PlayerEntity player) {
-            if(LookInversionEffect.isAffected(player) && PlayerUtils.isPlayerWorldServer(player) && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.LOOK_INVERSION)) {
-                MCCEAPI.mutator.addNewChaosEffect(player, new LookInversionEffect(1));
-            }
+        protected ChaosEffectRegistryEntry getRegistryEntry() {
+            return ChaosEffects.LOOK_INVERSION;
+        }
+
+        @Override
+        protected boolean isAffected(PlayerEntity player) {
+            return LookInversionEffect.isAffected(player);
+        }
+
+        @Override
+        protected ChaosEffect createDummyChaosEffectWithDurationOne() {
+            return new LookInversionEffect(1);
         }
     }
 }
