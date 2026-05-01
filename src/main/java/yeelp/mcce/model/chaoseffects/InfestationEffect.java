@@ -33,7 +33,7 @@ public final class InfestationEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 		for(int amount = this.getRNG().nextInt(5) + 3; amount > 0; amount--) {
 			LivingEntity entity;
 			if(Math.random() < ENDERMITE_CHANCE) {
@@ -46,7 +46,7 @@ public final class InfestationEffect extends AbstractInstantChaosEffect {
 					AttributeUtils.addAttributeModifier(entity, EntityAttributes.MAX_HEALTH, new EntityAttributeModifier(GEORGE_HEALTH_BOOST_NAME, GEORGE_HEALTH_BOOST_AMOUNT, Operation.ADD_VALUE));
 					entity.heal(GEORGE_HEALTH_TOTAL);
 					entity.equipStack(EquipmentSlot.OFFHAND, new ItemStack(Items.MUSIC_DISC_BLOCKS));
-					((SilverfishEntity) entity).updateDropChances(EquipmentSlot.OFFHAND);
+					((SilverfishEntity) entity).setEquipmentDropChance(EquipmentSlot.OFFHAND, 1.0f);
 				}
 			}
 			entity.refreshPositionAndAngles(player.getX() + this.getRNG().nextDouble(-HORIZONTAL_SPAWN_BOUND_MAX, HORIZONTAL_SPAWN_BOUND_MAX), player.getY() + this.getRNG().nextDouble(VERTICAL_SPAWN_BOUND_MAX) + 2, player.getZ() + this.getRNG().nextDouble(-HORIZONTAL_SPAWN_BOUND_MAX, HORIZONTAL_SPAWN_BOUND_MAX), 0.0f, 0.0f);

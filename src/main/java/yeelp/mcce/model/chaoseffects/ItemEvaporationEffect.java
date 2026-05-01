@@ -30,6 +30,11 @@ public final class ItemEvaporationEffect extends SimpleTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Item Evaporation";
+	}
+
+	@Override
 	protected boolean canStack() {
 		return true;
 	}

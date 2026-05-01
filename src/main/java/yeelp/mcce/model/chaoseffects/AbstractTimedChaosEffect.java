@@ -22,7 +22,7 @@ public abstract class AbstractTimedChaosEffect extends AbstractLastingChaosEffec
 
 	@Override
 	public void readNbt(NbtCompound nbt) {
-		this.setDuration(nbt.getInt(DURATION_KEY));
+		this.setDuration(nbt.getInt(DURATION_KEY).orElse(0));
 	}
 
 }

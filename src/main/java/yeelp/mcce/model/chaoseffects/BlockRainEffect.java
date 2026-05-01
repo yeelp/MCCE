@@ -26,13 +26,18 @@ public final class BlockRainEffect extends AbstractRainEffect implements Optiona
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Block Rain";
+	}
+
+	@Override
 	protected Entity getEntityToSpawn(PlayerEntity player) {
 		int index = this.getRNG().nextInt(BLOCK_COUNT);
 		return Registries.BLOCK.stream().skip(index).filter((b) -> b != Blocks.END_PORTAL && b != Blocks.NETHER_PORTAL).findFirst().or(() -> Optional.of(Blocks.BEDROCK)).map((b) -> {
 			int x = player.getBlockX() + this.getRNG().nextInt(-HORIZONTAL_RADIUS, HORIZONTAL_RADIUS), z = player.getBlockZ() + this.getRNG().nextInt(-HORIZONTAL_RADIUS, HORIZONTAL_RADIUS);
-			BlockPos pos = new BlockPos(x, player.getWorld().getTopYInclusive(), z);
-			FallingBlockEntity block = FallingBlockEntity.spawnFromBlock(player.getWorld(), pos, b.getDefaultState());
-			player.getWorld().setBlockState(pos, Blocks.AIR.getDefaultState());
+			BlockPos pos = new BlockPos(x, player.getEntityWorld().getTopYInclusive(), z);
+			FallingBlockEntity block = FallingBlockEntity.spawnFromBlock(player.getEntityWorld(), pos, b.getDefaultState());
+			player.getEntityWorld().setBlockState(pos, Blocks.AIR.getDefaultState());
 			block.dropItem = false;
 			return block;
 		}).get();

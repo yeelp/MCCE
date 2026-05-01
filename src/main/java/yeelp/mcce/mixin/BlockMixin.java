@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yeelp.mcce.api.MCCEAPI;
@@ -24,6 +25,7 @@ import yeelp.mcce.event.CallbackResult.CancelState;
 import yeelp.mcce.event.ModifyBlockDrops;
 import yeelp.mcce.event.OnBlockPlaceCallback;
 import yeelp.mcce.model.chaoseffects.ChaosEffects;
+import yeelp.mcce.util.PlayerUtils;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -34,7 +36,7 @@ public abstract class BlockMixin extends AbstractBlock {
 	@Unique
 	private static final Predicate<PlayerEntity> BOUNCY_ACTIVE = (p) -> MCCEAPI.accessor.isChaosEffectActive(p, ChaosEffects.BOUNCY);
 	@Unique
-	private static final Predicate<PlayerEntity> BOUNCY_CHECK = BOUNCY_ACTIVE.and((p) -> p.fallDistance > 0.125f).and(Predicates.not(PlayerEntity::isSneaking));
+	private static final Predicate<PlayerEntity> BOUNCY_CHECK = BOUNCY_ACTIVE.and((p) -> p.fallDistance > 0.125f).and(Predicates.not(playerEntity -> playerEntity != null && playerEntity.isSneaking()));
 	
 	@SuppressWarnings("unused")
     public BlockMixin(Settings settings) {
@@ -42,7 +44,7 @@ public abstract class BlockMixin extends AbstractBlock {
 	}
 
 	@SuppressWarnings("static-method")
-	@Inject(method = "afterBreak(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", shift = At.Shift.AFTER), cancellable = true)
+	@Inject(method = "afterBreak(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", shift = Shift.AFTER), cancellable = true)
 	private void modifyBlockDrops(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo info) {
 		if(ModifyBlockDrops.EVENT.invoker().changeBlockDrops(world, player, pos, state, blockEntity, tool)) {
 			info.cancel();
@@ -53,15 +55,14 @@ public abstract class BlockMixin extends AbstractBlock {
 	@Inject(method = "onEntityLand(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"), cancellable = true)
 	private void modifyLanding(@SuppressWarnings("unused") BlockView world, Entity entity, CallbackInfo info) {
 		getPlayerIfBouncy(entity).ifPresent((p) -> {
-			p.setVelocity(p.getVelocity().multiply(1.0, -1.0, 1.0));
-			p.velocityModified = true;
+			PlayerUtils.updatePlayerVelocity(p, p.getVelocity().multiply(1.0, -1.0, 1.0));
 			info.cancel();
 		});
 	}
 	
 	@SuppressWarnings("static-method")
-	@Inject(method = "onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V", at = @At("HEAD"), cancellable = true)
-	private void preventFallDamage(@SuppressWarnings("unused") World world, @SuppressWarnings("unused") BlockState state, @SuppressWarnings("unused") BlockPos pos, Entity entity, @SuppressWarnings("unused") float fallDistance, CallbackInfo info) {
+	@Inject(method = "onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;D)V", at = @At("HEAD"), cancellable = true)
+	private void preventFallDamage(@SuppressWarnings("unused") World world, @SuppressWarnings("unused") BlockState state, @SuppressWarnings("unused") BlockPos pos, Entity entity, @SuppressWarnings("unused") double fallDistance, CallbackInfo info) {
 		if(getPlayerIfBouncy(entity).isPresent()) {
 			info.cancel();
 		}

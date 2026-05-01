@@ -23,12 +23,17 @@ public final class ItemRainEffect extends AbstractRainEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Item Rain";
+	}
+
+	@Override
 	protected Entity getEntityToSpawn(PlayerEntity player) {
 		int index = this.getRNG().nextInt(ITEM_COUNT);
 		return Registries.ITEM.stream().skip(index).findFirst().map((item) -> {
 			final double x = this.getRNG().nextDouble(-HORIZONTAL_RADIUS, HORIZONTAL_RADIUS), z = this.getRNG().nextDouble(-HORIZONTAL_RADIUS,  HORIZONTAL_RADIUS);
 			ItemStack stack = new ItemStack(item);
-            Entity itemEntity = new ItemEntity(player.getWorld(), player.getX() + x, player.getWorld().getTopYInclusive(), player.getZ() + z, stack);
+            Entity itemEntity = new ItemEntity(player.getEntityWorld(), player.getX() + x, player.getEntityWorld().getTopYInclusive(), player.getZ() + z, stack);
 			MCCEAPI.mutator.setDespawnTimer(itemEntity, this.durationRemaining() + DURATION_MAX/2);
 			return itemEntity;
 		}).orElseThrow();

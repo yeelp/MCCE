@@ -79,7 +79,7 @@ public final class SimonSaysEffect extends AbstractTriggeredChaosEffect {
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return !player.isSneaking() && !player.isSubmergedInWater() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.MEMORY_GAME) && player.currentScreenHandler == player.playerScreenHandler;
+        return !player.isSneaking() && !player.isSubmergedInWater() && MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.MEMORY_GAME, ChaosEffects.RAVE) && player.currentScreenHandler == player.playerScreenHandler;
     }
 
     @Override
@@ -92,7 +92,7 @@ public final class SimonSaysEffect extends AbstractTriggeredChaosEffect {
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        this.type = InstructionType.decode(nbt.getByte(INTSTRUCTION_TYPE_KEY));
+        this.type = InstructionType.decode(nbt.getByte(INTSTRUCTION_TYPE_KEY).orElse((byte) 0));
     }
 
     @Override
@@ -126,6 +126,11 @@ public final class SimonSaysEffect extends AbstractTriggeredChaosEffect {
     @Override
     public String getName() {
         return "simonsays";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Simon Says";
     }
 
     @Override

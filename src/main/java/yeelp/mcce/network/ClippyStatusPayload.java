@@ -10,11 +10,16 @@ import yeelp.mcce.network.NetworkingPayloads.ChaosPayload.StatusPayload;
 
 public record ClippyStatusPayload(boolean status) implements StatusPayload {
     public static final Id<ClippyStatusPayload> ID = new Id<>(NetworkingConstants.CLIPPY_STATUS_PACKET_ID);
-    public static final PacketCodec<RegistryByteBuf, ClippyStatusPayload> CODEC = PacketCodec.tuple(PacketCodecs.BOOL, ClippyStatusPayload::status, ClippyStatusPayload::new);
+    public static final PacketCodec<RegistryByteBuf, ClippyStatusPayload> CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN, ClippyStatusPayload::status, ClippyStatusPayload::new);
 
     @Override
     public void onSendCallback(ChaosPayload payload, ServerPlayerEntity player) {
         //nothing
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, ? extends ChaosPayload> getCodec() {
+        return CODEC;
     }
 
     @Override

@@ -38,12 +38,17 @@ public final class SmackDownEffect extends AbstractAttributeChaosEffect {
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return !player.isSubmergedInWater() && MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.TO_THE_MOON, ChaosEffects.CLIPPY, ChaosEffects.PRESS_L_TO_LEVITATE);
+        return !player.isSubmergedInWater() && MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.TO_THE_MOON, ChaosEffects.CLIPPY, ChaosEffects.PRESS_L_TO_LEVITATE, ChaosEffects.RAVE);
     }
 
     @Override
     public String getName() {
         return "smackdown";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Smack Down";
     }
 
     @Override

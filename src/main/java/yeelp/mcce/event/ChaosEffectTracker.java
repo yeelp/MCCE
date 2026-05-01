@@ -46,7 +46,7 @@ public final class ChaosEffectTracker implements PlayerTickCallback {
 
 	@Override
 	public void tick(PlayerEntity player) {
-		if(player.getWorld().isClient || player.isDead() || player.isSpectator()) {
+		if(player.getEntityWorld().isClient() || player.isDead() || player.isSpectator()) {
 			return;
 		}
 		MCCEAPI.mutator.modifyEffectState(player, (pces) -> {

@@ -7,6 +7,7 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import yeelp.mcce.mixin.ServerPlayerASMMixin;
+import yeelp.mcce.network.NetworkingPayloads.ChaosPayload;
 
 public record SilentStatUpdatePayload(float health, float sat, int hunger, int air) implements NetworkingPayloads.ChaosPayload {
     public static final Id<SilentStatUpdatePayload> ID = new Id<>(NetworkingConstants.SILENT_UPDATE_PACKET_ID);
@@ -20,6 +21,11 @@ public record SilentStatUpdatePayload(float health, float sat, int hunger, int a
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, ? extends ChaosPayload> getCodec() {
+        return CODEC;
     }
 
     public SilentStatUpdatePayload(PlayerEntity p) {

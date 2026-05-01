@@ -14,6 +14,7 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.MCCESpawnCap;
@@ -100,7 +101,7 @@ public final class LotteryEffect extends AbstractTriggeredChaosEffect {
 
         @SuppressWarnings("MagicNumber")
         @Override
-        public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+        public void afterBlockBreak(@NotNull World world, @NotNull PlayerEntity player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity) {
             MCCEAPI.mutator.modifyEffect(player, LotteryEffect.class, (ce) -> {
                 if(ce.getTriggersRemaining() <= 0 || !AFFECTED_PLAYERS.tracked(player) || !player.getMainHandStack().getItem().isCorrectForDrops(player.getMainHandStack(), state)) {
                     return;

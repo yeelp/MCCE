@@ -18,7 +18,7 @@ public abstract class AttributeUtils {
     public static void addAttributeModifier(ItemStack stack, RegistryEntry<EntityAttribute> key, EntityAttributeModifier modifier, AttributeModifierSlot slot) {
         AttributeModifiersComponent comp = stack.get(DataComponentTypes.ATTRIBUTE_MODIFIERS);
         if (comp == null || comp == AttributeModifiersComponent.DEFAULT) {
-            stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, comp = new AttributeModifiersComponent(Lists.newArrayList(), true));
+            stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, comp = new AttributeModifiersComponent(Lists.newArrayList()));
         }
         comp.modifiers().add(new AttributeModifiersComponent.Entry(key, modifier, slot));
     }

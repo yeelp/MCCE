@@ -9,9 +9,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.LocalDifficulty;
 import yeelp.mcce.util.MCCESpawnCap;
 import yeelp.mcce.util.PlayerUtils;
+import yeelp.mcce.util.SimpleUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -97,9 +99,10 @@ public final class GiantEffect extends AbstractInstantChaosEffect {
 	
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		GiantEntity giant = new GiantEntity(EntityType.GIANT, player.getWorld());
+		ServerWorld world = SimpleUtil.getServerWorldFromEntity(player);
+		GiantEntity giant = new GiantEntity(EntityType.GIANT, world);
 		giant.refreshPositionAndAngles(player.getX(), player.getY(), player.getZ(), 0.0f, 0.0f);
-		LocalDifficulty local = player.getWorld().getLocalDifficulty(player.getBlockPos());
+		LocalDifficulty local = world.getLocalDifficulty(player.getBlockPos());
 		boolean enchant = local.isHarderThan(this.getRNG().nextFloat(ENCHANT_THRESHOLD_MAX));
 		if(this.getRNG().nextFloat() < EQUIPMENT_CHANCE) {
 			Collections.shuffle(STRENGTHS, this.getRNG());
@@ -112,7 +115,7 @@ public final class GiantEffect extends AbstractInstantChaosEffect {
 						pieces--;
 						ItemStack stack = new ItemStack(equipmentStrength.getItemForSlot(slot));
 						if(enchant) {
-							EnchantmentHelper.enchant(player.getWorld().getRandom(), stack, this.getRNG().nextInt(ENCHANT_LEVEL_MIN, ENCHANT_LEVEL_MAX), player.getRegistryManager(), Optional.empty());
+							EnchantmentHelper.enchant(world.getRandom(), stack, this.getRNG().nextInt(ENCHANT_LEVEL_MIN, ENCHANT_LEVEL_MAX), player.getRegistryManager(), Optional.empty());
 						}
 						giant.equipStack(slot, stack);
 						if(pieces == 0) {
@@ -125,7 +128,7 @@ public final class GiantEffect extends AbstractInstantChaosEffect {
 			if(this.getRNG().nextDouble() < WEAPON_CHANCE) {
 				ItemStack weapon = new ItemStack(this.getRNG().nextDouble() < SWORD_CHANCE ? Items.IRON_SWORD : Items.IRON_SHOVEL);
 				if(enchant) {
-					EnchantmentHelper.enchant(player.getWorld().getRandom(), weapon, this.getRNG().nextInt(ENCHANT_LEVEL_MIN, ENCHANT_LEVEL_MAX), player.getRegistryManager(), Optional.empty());
+					EnchantmentHelper.enchant(world.getRandom(), weapon, this.getRNG().nextInt(ENCHANT_LEVEL_MIN, ENCHANT_LEVEL_MAX), player.getRegistryManager(), Optional.empty());
 				}
 				giant.equipStack(EquipmentSlot.MAINHAND, weapon);
 			}
@@ -133,7 +136,7 @@ public final class GiantEffect extends AbstractInstantChaosEffect {
 				giant.equipStack(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
 			}
 		}
-		MCCESpawnCap.MOB.attemptEntitySpawn(player.getWorld(), giant);
+		MCCESpawnCap.MOB.attemptEntitySpawn(world, giant);
 	}
 
 	@Override

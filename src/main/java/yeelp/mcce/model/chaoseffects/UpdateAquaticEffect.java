@@ -1,15 +1,14 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.stream.Stream;
-
 import com.google.common.base.Predicates;
-
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import yeelp.mcce.util.SimpleUtil;
+
+import java.util.stream.Stream;
 
 public final class UpdateAquaticEffect extends SimpleTimedChaosEffect {
 
@@ -22,7 +21,7 @@ public final class UpdateAquaticEffect extends SimpleTimedChaosEffect {
 	@Override
 	public void applyEffect(PlayerEntity player) {
 		Stream<RegistryEntry<StatusEffect>> effects = Stream.of(StatusEffects.CONDUIT_POWER, StatusEffects.DOLPHINS_GRACE);
-		if(player.isWet()) {
+		if(player.isTouchingWaterOrRain()) {
 			effects.filter(Predicates.not(player::hasStatusEffect)).forEach((effect) -> player.addStatusEffect(new StatusEffectInstance(effect, this.durationRemaining())));
 		}
 		else {
@@ -39,13 +38,18 @@ public final class UpdateAquaticEffect extends SimpleTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Update Aquatic";
+	}
+
+	@Override
 	protected boolean canStack() {
 		return false;
 	}
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.isWet();
+		return player.isTouchingWaterOrRain();
 	}
 
 }

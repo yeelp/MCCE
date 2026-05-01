@@ -5,6 +5,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import yeelp.mcce.network.InverseStatusPayload;
 import yeelp.mcce.network.NetworkingConstants;
+import yeelp.mcce.network.NetworkingPayloads.ChaosPayload.StatusPayload;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.PlayerUtils;
 
@@ -57,7 +58,7 @@ public final class InverseEffect extends ClientPlayerTrackingChaosEffect<Inverse
 		return ClientPlayerTrackingChaosEffect.isAffected(player, ChaosEffects.INVERSE);
 	}
 
-	public static void trackClient(PlayerEntity player, InverseStatusPayload payload) {
+	public static void trackClient(PlayerEntity player, StatusPayload payload) {
 		ClientPlayerTrackingChaosEffect.trackClient(player, ChaosEffects.INVERSE, payload);
 	}
 

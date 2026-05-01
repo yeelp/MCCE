@@ -20,12 +20,34 @@ import java.util.Queue;
 
 public final class EnchantmentEffect extends AbstractInstantChaosEffect {
 
-	private static final List<RegistryKey<Enchantment>> ENCHANTS = Lists.newArrayList(Enchantments.BINDING_CURSE, Enchantments.AQUA_AFFINITY, Enchantments.BANE_OF_ARTHROPODS, Enchantments.DEPTH_STRIDER, Enchantments.EFFICIENCY, Enchantments.FIRE_PROTECTION, Enchantments.IMPALING, Enchantments.INFINITY, Enchantments.LOOTING, Enchantments.LOYALTY, Enchantments.MENDING, Enchantments.POWER, Enchantments.PROTECTION, Enchantments.SMITE, Enchantments.SILK_TOUCH, Enchantments.SWIFT_SNEAK, Enchantments.UNBREAKING, Enchantments.VANISHING_CURSE);
+	private static final List<RegistryKey<Enchantment>> ENCHANTS = Lists.newArrayList(
+			Enchantments.BINDING_CURSE,
+			Enchantments.AQUA_AFFINITY,
+			Enchantments.BANE_OF_ARTHROPODS,
+			Enchantments.DEPTH_STRIDER,
+			Enchantments.EFFICIENCY,
+			Enchantments.FIRE_PROTECTION,
+			Enchantments.IMPALING,
+			Enchantments.INFINITY,
+			Enchantments.LOOTING,
+			Enchantments.LOYALTY,
+			Enchantments.MENDING,
+			Enchantments.POWER,
+			Enchantments.PROTECTION,
+			Enchantments.SMITE,
+			Enchantments.SILK_TOUCH,
+			Enchantments.SWIFT_SNEAK,
+			Enchantments.UNBREAKING,
+			Enchantments.VANISHING_CURSE,
+			Enchantments.DENSITY,
+			Enchantments.BREACH,
+			Enchantments.CHANNELING,
+			Enchantments.LUNGE);
 	private static final float PITCH_MIN = 0.5f, PITCH_MAX = 1.0f, VOLUME = 1.0f;
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		ItemStack mainHand = player.getInventory().getMainHandStack();
+		ItemStack mainHand = player.getInventory().getSelectedStack();
 		if(mainHand.hasEnchantments()) {
 			mainHand.remove(DataComponentTypes.ENCHANTMENTS);
 		}
@@ -49,7 +71,7 @@ public final class EnchantmentEffect extends AbstractInstantChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !player.getInventory().getMainHandStack().isEmpty();
+		return !player.getInventory().getSelectedStack().isEmpty();
 	}
 
 }

@@ -22,9 +22,10 @@ public final class ModConfig {
 	public final PerformanceOptions performance = new PerformanceOptions();
 	
 	public static class GameEffectsOptions {
-		public final boolean quiver = false;
+		public final boolean quiver = true;
 		public final boolean blockrain = true;
 		public final boolean xprandomizer = true;
+		public final boolean paint = false;
 	}
 
 	public static class PerformanceOptions {
@@ -34,7 +35,7 @@ public final class ModConfig {
 		public static class SpawnCaps {
 			public final int localMobCap = 600;
 			public final int localItemCap = 1000;
-			public final int localFallingBlackCap = 600;
+			public final int localFallingBlockCap = 600;
 			public final int getRadius = 100;
 
 			public int getLocalMobCap() {
@@ -45,8 +46,8 @@ public final class ModConfig {
 				return this.localItemCap;
 			}
 
-			public int getLocalFallingBlackCap() {
-				return this.localFallingBlackCap;
+			public int getLocalFallingBlockCap() {
+				return this.localFallingBlockCap;
 			}
 		}
 	}

@@ -79,7 +79,7 @@ public final class SluggishEffect extends AbstractAttributeChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.GOTTA_BLAST);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.GOTTA_BLAST, ChaosEffects.PUSHY);
 	}
 	
 	public static boolean isAffected(PlayerEntity player) {

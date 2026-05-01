@@ -10,7 +10,7 @@ import yeelp.mcce.network.NetworkingPayloads.ChaosPayload.StatusPayload;
 
 public record InverseStatusPayload(boolean status) implements StatusPayload {
     public static final Id<InverseStatusPayload> ID = new Id<>(NetworkingConstants.INVERSE_STATUS_PACKET_ID);
-    public static final PacketCodec<RegistryByteBuf, InverseStatusPayload> CODEC = PacketCodec.tuple(PacketCodecs.BOOL, InverseStatusPayload::status, InverseStatusPayload::new);
+    public static final PacketCodec<RegistryByteBuf, InverseStatusPayload> CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN, InverseStatusPayload::status, InverseStatusPayload::new);
 
     @Override
     public void onSendCallback(ChaosPayload payload, ServerPlayerEntity player) {
@@ -20,5 +20,10 @@ public record InverseStatusPayload(boolean status) implements StatusPayload {
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, ? extends ChaosPayload> getCodec() {
+        return CODEC;
     }
 }

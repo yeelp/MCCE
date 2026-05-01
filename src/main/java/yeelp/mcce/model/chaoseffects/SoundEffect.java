@@ -33,7 +33,11 @@ public final class SoundEffect extends AbstractInstantChaosEffect {
             SoundPacketConstants.OMINOUS_SPAWNER,
             SoundPacketConstants.OMINOUS_PREPARE,
             SoundPacketConstants.AMBIENT_CAVE,
-            SoundPacketConstants.PLING};
+            SoundPacketConstants.PLING,
+            SoundPacketConstants.COPPER_SPIN,
+            SoundPacketConstants.CREAKING_ACTIVATE,
+            SoundPacketConstants.ANGRY_PIGLIN,
+            SoundPacketConstants.WAX_ON};
 
     @Override
     public void applyEffect(PlayerEntity player) {

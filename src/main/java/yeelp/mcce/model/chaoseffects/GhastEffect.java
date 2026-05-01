@@ -29,7 +29,7 @@ public final class GhastEffect extends AbstractInstantChaosEffect {
 	public void applyEffect(PlayerEntity player) {
 		Box outer = ChaosLib.getBoxCenteredOnPlayerWithRadius(player, OUTER_SPAWN_RADIUS);
 		Box inner = ChaosLib.getBoxCenteredOnPlayerWithRadius(player, INNER_SPAWN_RADIUS);
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 		ChaosLib.getPosWithin(outer, inner, (pos) -> world.isAir(pos) && world.isAir(pos.up()) && world.isAir(pos.up(2)), SPAWN_TRIES, this.getRNG()).ifPresent((pos) -> {
 			GhastEntity ghast = new GhastEntity(EntityType.GHAST, world);
 			ghast.refreshPositionAndAngles(pos, this.getRNG().nextFloat(ROTATION_ANGLE_BOUND), this.getRNG().nextFloat(ROTATION_ANGLE_BOUND));

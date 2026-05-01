@@ -22,6 +22,11 @@ public final class DoubleTimeEffect extends SimpleTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Double Time";
+	}
+
+	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
 		return true;
 	}

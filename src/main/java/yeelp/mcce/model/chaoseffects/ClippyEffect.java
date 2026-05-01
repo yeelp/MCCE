@@ -8,6 +8,7 @@ import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.EntityTickCallback;
 import yeelp.mcce.mixin.EntityASMMixin;
 import yeelp.mcce.network.ClippyStatusPayload;
+import yeelp.mcce.network.NetworkingPayloads.ChaosPayload.StatusPayload;
 
 public final class ClippyEffect extends ClientPlayerTrackingChaosEffect<ClippyStatusPayload> {
 
@@ -41,14 +42,14 @@ public final class ClippyEffect extends ClientPlayerTrackingChaosEffect<ClippySt
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getY() > 0 && MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.BOUNCY, ChaosEffects.SMACK_DOWN);
+		return player.getY() > 0 && MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.BOUNCY, ChaosEffects.SMACK_DOWN, ChaosEffects.RAVE);
 	}
 	
 	public static boolean isAffected(PlayerEntity player) {
 		return ClientPlayerTrackingChaosEffect.isAffected(player, ChaosEffects.CLIPPY);
 	}
 
-	public static void trackClient(PlayerEntity player, ClippyStatusPayload payload) {
+	public static void trackClient(PlayerEntity player, StatusPayload payload) {
 		ClientPlayerTrackingChaosEffect.trackClient(player, ChaosEffects.CLIPPY, payload);
 	}
 

@@ -1,10 +1,13 @@
 package yeelp.mcce.model;
 
 import com.google.common.collect.Maps;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.PersistentStateType;
 import net.minecraft.world.World;
 import yeelp.mcce.MCCE;
 
@@ -23,11 +26,11 @@ public final class ServerState extends PersistentState {
 	private final Map<UUID, DespawnTimer> timers = Maps.newHashMap();
 	
 	private static final String TIMERS_KEY = "despawnTimers";
+	private static final Codec<ServerState> CODEC = NbtCompound.CODEC.comapFlatMap((nbt) -> DataResult.success(ServerState.createFromNbt(nbt)), ServerState::writeNbt);
 	
-	private static final Type<ServerState> TYPE = new Type<>(ServerState::new, ServerState::createFromNbt, null);
-	
-	@Override
-	public NbtCompound writeNbt(NbtCompound var1, RegistryWrapper.WrapperLookup lookup) {
+	private static final PersistentStateType<ServerState> TYPE = new PersistentStateType<>(MCCE.MODID, ServerState::new, CODEC, DataFixTypes.LEVEL);
+
+	public NbtCompound writeNbt() {
 		NbtCompound tag = new NbtCompound();
 		NbtCompound nested = new NbtCompound();
 		
@@ -42,19 +45,19 @@ public final class ServerState extends PersistentState {
 	 * @param tag the stored NBT data
 	 * @return a ServerState reflecting the stored NBT data.
 	 */
-	public static ServerState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup ignoredLookup) {
+	public static ServerState createFromNbt(NbtCompound tag) {
 		ServerState state = new ServerState();
 		tag.getKeys().forEach((key) -> {
 			if(key.equals(TIMERS_KEY)) {
 				return;
 			}
 			UUID uuid = UUID.fromString(key);
-			state.players.put(uuid, new PlayerChaosEffectState(tag.getCompound(key)));
+			tag.getCompound(key).ifPresent((t) -> state.players.put(uuid, new PlayerChaosEffectState(t)));
 		});
-		tag.getCompound(TIMERS_KEY).getKeys().forEach((key) -> {
+		tag.getCompound(TIMERS_KEY).map(NbtCompound::getKeys).ifPresent((keys) -> keys.forEach((key) -> {
 			UUID uuid = UUID.fromString(key);
-			state.timers.put(uuid, new DespawnTimer(tag.getCompound(key)));
-		});
+			tag.getCompound(key).ifPresent((t) -> state.timers.put(uuid, new DespawnTimer(t)));
+		}));
 		return state;
 	}
 	
@@ -99,7 +102,7 @@ public final class ServerState extends PersistentState {
 	 * @return the active ServerState.
 	 */
 	public static ServerState getServerState(MinecraftServer server) {
-		return Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager().getOrCreate(TYPE, MCCE.MODID);
+		return Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager().getOrCreate(TYPE);
 	}
 
 }

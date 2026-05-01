@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LocalDifficulty;
@@ -25,6 +26,7 @@ import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.EnchantmentUtils;
 import yeelp.mcce.util.MCCESpawnCap;
+import yeelp.mcce.util.SimpleUtil;
 
 import java.util.Optional;
 import java.util.Random;
@@ -187,7 +189,7 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		World world = player.getWorld();
+		ServerWorld world = SimpleUtil.getServerWorldFromEntity(player);
 		world.getEntitiesByClass(MobEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 10), (e) -> TARGETS.contains(e.getClass())).forEach((e) -> {
 			PillagerChoices pc = PillagerChoices.getPillagerChoice(e, this.getRNG());
 			if(pc == null) {
@@ -206,17 +208,22 @@ public final class PillagerDisguisesEffect extends SimpleTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Pillager Disguises";
+	}
+
+	@Override
 	protected boolean canStack() {
 		return false;
 	}
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.OVERWORLD;
+		return player.getEntityWorld().getRegistryKey() == World.OVERWORLD;
 	}
 
 	private static void setUpEntity(MobEntity pillagerLike, MobEntity villagerLike) {
-		pillagerLike.setPosition(villagerLike.getPos());
+		pillagerLike.setPosition(villagerLike.getX(), villagerLike.getY(), villagerLike.getZ());
 		pillagerLike.setVelocity(villagerLike.getVelocity());
 		pillagerLike.setPersistent();
 		MCCEAPI.mutator.copyDespawnTimerTo(villagerLike, pillagerLike);

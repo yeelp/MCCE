@@ -1,11 +1,6 @@
 package yeelp.mcce.model;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-
 import com.google.common.collect.Maps;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +8,11 @@ import yeelp.mcce.model.chaoseffects.AbstractLastingChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistryEntry;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * Our player state for tracking which effects they have active.
@@ -34,7 +34,6 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	private static final int DURATION_MIN = 200;
 	private static final int DURATION_MAX = 1000;
 
-
 	/**
 	 * Create an empty PlayerChaosEffectState.
 	 */
@@ -51,10 +50,13 @@ public final class PlayerChaosEffectState implements Iterable<ChaosEffect> {
 	 */
 	public PlayerChaosEffectState(NbtCompound nbt) {
 		super();
-		NbtCompound effects = nbt.getCompound(EFFECT_KEY);
-		effects.getKeys().forEach((s) -> this.activeEffects.put(s, ChaosEffectRegistry.createEffectFromNbt(s, effects.getCompound(s))));
-		this.durationUntilNextEffect = nbt.getInt(TIME_KEY);
-		this.hasHadEffects = nbt.getBoolean(HAS_HAD_EFFECTS_KEY);
+		Optional<NbtCompound> oEffects = nbt.getCompound(EFFECT_KEY);
+		if(oEffects.isPresent()) {
+			NbtCompound effects = oEffects.get();
+			effects.getKeys().forEach((s) -> effects.getCompound(s).ifPresent((compound) -> this.activeEffects.put(s, ChaosEffectRegistry.createEffectFromNbt(s, compound))));
+			this.durationUntilNextEffect = nbt.getInt(TIME_KEY).orElse(INITIAL_DURATION);
+			this.hasHadEffects = nbt.getBoolean(HAS_HAD_EFFECTS_KEY).orElse(false);
+		}
 	}
 
 	/**

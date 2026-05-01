@@ -43,7 +43,7 @@ public final class ParticleEffect extends SimpleTimedChaosEffect {
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
-		this.type = nbt.getByte(ID_KEY);
+		this.type = nbt.getByte(ID_KEY).orElse((byte) 0);
 	}
 
 	@Override

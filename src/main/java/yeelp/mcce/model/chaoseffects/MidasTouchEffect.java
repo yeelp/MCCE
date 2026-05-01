@@ -6,10 +6,21 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.EquippableComponent;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,6 +29,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.OnBlockBreakingCallback;
 import yeelp.mcce.event.OnBlockInteractCallback;
@@ -28,18 +40,37 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public final class MidasTouchEffect extends AbstractTimedChaosEffect implements OnBlockInteractCallback, OnBlockBreakingCallback {
 
 	private static final Tracker AFFECTED_PLAYERS = new Tracker();
 	private static final BlockState GOLD_STATE = Blocks.GOLD_BLOCK.getDefaultState();
 	private static final BlockState GOLD_PRESSURE_PLATE_STATE = Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE.getDefaultState();
-	private static final Map<Class<? extends Item>, Item> TOOL_MAPPER = Maps.newHashMap();
 	private static final Map<Item, Set<Item>> ITEM_MAPPER = Maps.newHashMap();
 	private static final Set<Item> BLACKLIST = Sets.newHashSet();
 	private static final int DURATION_MIN = 700, DURATION_MAX = 1300;
 
-	private enum GoldArmorData {
+	private interface GoldItemSupplier extends Supplier<Item> {
+		Item getConvertedItem();
+
+		@Override
+		default Item get() {
+			return this.getConvertedItem();
+		}
+	}
+
+	private interface GoldData extends GoldItemSupplier {
+		TagKey<Item> getTagToConvert();
+
+		@SafeVarargs
+        @SuppressWarnings("DataFlowIssue")
+        static <T extends GoldData> Optional<T> determineGoldDataFrom(ItemStack stack, @NotNull T... data) {
+			return Arrays.stream(data).filter(Predicates.compose(stack::isIn, GoldData::getTagToConvert)).findFirst();
+		}
+	}
+
+	private enum GoldArmorData implements GoldData {
 		HELMET(Items.GOLDEN_HELMET, ItemTags.HEAD_ARMOR, EquipmentSlot.HEAD),
 		CHESTPLATE(Items.GOLDEN_CHESTPLATE, ItemTags.CHEST_ARMOR, EquipmentSlot.CHEST),
 		LEGGINGS(Items.GOLDEN_LEGGINGS, ItemTags.LEG_ARMOR, EquipmentSlot.LEGS),
@@ -55,11 +86,13 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 			this.slot = slot;
 		}
 
-		TagKey<Item> getTag() {
+		@Override
+		public TagKey<Item> getTagToConvert() {
 			return this.tag;
 		}
 
-		Item getItem() {
+		@Override
+		public Item getConvertedItem() {
 			return this.item;
 		}
 
@@ -68,20 +101,86 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 		}
 
 		static Optional<GoldArmorData> determineGoldArmor(ItemStack stack) {
-			return Arrays.stream(GoldArmorData.values()).filter(Predicates.compose(stack::isIn, GoldArmorData::getTag)).findFirst();
+			return GoldData.determineGoldDataFrom(stack, GoldArmorData.values());
 		}
 	}
 
+	private enum GoldToolData implements GoldData {
+		SWORD(Items.GOLDEN_SWORD, ItemTags.SWORDS),
+		AXE(Items.GOLDEN_AXE, ItemTags.AXES),
+		PICKAXES(Items.GOLDEN_PICKAXE, ItemTags.PICKAXES),
+		SHOVELS(Items.GOLDEN_SHOVEL, ItemTags.SHOVELS),
+		HOES(Items.GOLDEN_HOE, ItemTags.HOES),
+		SPEARS(Items.GOLDEN_SPEAR, ItemTags.SPEARS);
+
+		private final Item item;
+		private final TagKey<Item> tag;
+
+		GoldToolData(Item item, TagKey<Item> tag) {
+			this.item = item;
+			this.tag = tag;
+		}
+
+		@Override
+		public Item getConvertedItem() {
+			return item;
+		}
+
+		@Override
+		public TagKey<Item> getTagToConvert() {
+			return tag;
+		}
+
+		static Optional<GoldToolData> determineGoldTool(ItemStack stack) {
+			return GoldData.determineGoldDataFrom(stack, GoldToolData.values());
+		}
+	}
+
+	private enum GoldPetArmorData implements GoldItemSupplier {
+		HORSE_ARMOR(Items.GOLDEN_HORSE_ARMOR, EntityTypeTags.CAN_WEAR_HORSE_ARMOR),
+		NAUTILUS_ARMOR(Items.GOLDEN_NAUTILUS_ARMOR, EntityTypeTags.CAN_WEAR_NAUTILUS_ARMOR);
+
+		private final Item item;
+		private final TagKey<EntityType<?>> tag;
+		private static final RegistryEntryLookup<EntityType<?>> LOOKUP = Registries.createEntryLookup(Registries.ENTITY_TYPE);
+
+		GoldPetArmorData(Item item, TagKey<EntityType<?>> tag) {
+			this.item = item;
+			this.tag = tag;
+		}
+
+		@Override
+		public Item getConvertedItem() {
+			return this.item;
+		}
+
+		static Optional<GoldPetArmorData> determineGoldPetArmor(ItemStack stack) {
+			EquippableComponent equip = stack.getComponents().get(DataComponentTypes.EQUIPPABLE);
+			if(equip == null) {
+				return Optional.empty();
+			}
+			return equip.allowedEntities().flatMap((entities) -> Arrays.stream(GoldPetArmorData.values()).filter((data) -> {
+				RegistryEntryList<EntityType<?>> list = LOOKUP.getOrThrow(data.tag);
+				if(list.size() == entities.size()) {
+					boolean same = true;
+					for(RegistryEntry<EntityType<?>> type : entities) {
+						if(!list.contains(type)) {
+							same = false;
+							break;
+						}
+					}
+					return same;
+				}
+				return false;
+			}).findFirst());
+		}
+
+	}
+
 	static {
-		TOOL_MAPPER.put(SwordItem.class, Items.GOLDEN_SWORD);
-		TOOL_MAPPER.put(ShovelItem.class, Items.GOLDEN_SHOVEL);
-		TOOL_MAPPER.put(PickaxeItem.class, Items.GOLDEN_PICKAXE);
-		TOOL_MAPPER.put(AxeItem.class, Items.GOLDEN_AXE);
-		TOOL_MAPPER.put(HoeItem.class, Items.GOLDEN_HOE);
 
 		ITEM_MAPPER.put(Items.GOLD_INGOT, ImmutableSet.<Item>builder().add(Items.COPPER_INGOT, Items.IRON_INGOT, Items.NETHERITE_INGOT, Items.BRICK, Items.NETHER_BRICK).build());
-		ITEM_MAPPER.put(Items.GOLD_NUGGET, ImmutableSet.<Item>builder().add(Items.IRON_NUGGET, Items.NETHERITE_SCRAP).build());
-		ITEM_MAPPER.put(Items.GOLDEN_HORSE_ARMOR, ImmutableSet.<Item>builder().add(Items.IRON_HORSE_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.DIAMOND_HORSE_ARMOR).build());
+		ITEM_MAPPER.put(Items.GOLD_NUGGET, ImmutableSet.<Item>builder().add(Items.IRON_NUGGET, Items.NETHERITE_SCRAP, Items.COPPER_NUGGET).build());
 		ITEM_MAPPER.put(Items.GOLDEN_CARROT, ImmutableSet.of(Items.CARROT));
 
 		BLACKLIST.add(Items.BELL);
@@ -91,6 +190,14 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 		BLACKLIST.add(Items.ENCHANTED_GOLDEN_APPLE);
 		BLACKLIST.add(Items.GOLDEN_APPLE);
 		BLACKLIST.add(Items.LIGHT_WEIGHTED_PRESSURE_PLATE);
+
+		//This initializes the enum classes early.
+        //noinspection ResultOfMethodCallIgnored
+        GoldArmorData.values();
+		//noinspection ResultOfMethodCallIgnored
+		GoldPetArmorData.values();
+		//noinspection ResultOfMethodCallIgnored
+		GoldToolData.values();
 	}
 
 	public MidasTouchEffect() {
@@ -105,6 +212,11 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 	@Override
 	public String getName() {
 		return "midastouch";
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Midas Touch";
 	}
 
 	@Override
@@ -131,7 +243,7 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
 		BlockPos pos = player.getBlockPos();
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 		boolean secondPass = false;
 		do {
 			final BlockPos p = pos;
@@ -149,14 +261,17 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 			ItemStack stack = player.getStackInHand(hand);
 			Item stackItem = stack.getItem();
 			if(!stack.isEmpty() && !BLACKLIST.contains(stackItem)) {
-				if(TOOL_MAPPER.containsKey(stackItem.getClass())) {
-					Item itemToSet = TOOL_MAPPER.get(stackItem.getClass());
-					if(itemToSet != null && !stackItem.equals(itemToSet)) {
-						player.setStackInHand(hand, makeGold(stack, itemToSet));
-					}
+				Optional<GoldArmorData> goldArmor;
+				Optional<GoldToolData> goldTool;
+				Optional<GoldPetArmorData> goldPet;
+				if((goldArmor = GoldArmorData.determineGoldArmor(stack)).isPresent()) {
+					tryConvertToGoldFromSupplier(player, hand, stack, stackItem, goldArmor.get());
 				}
-				else if(stackItem instanceof ArmorItem) {
-					GoldArmorData.determineGoldArmor(stack).filter((data) -> !stackItem.equals(data.getItem())).ifPresent((data) -> player.setStackInHand(hand, makeGold(stack, data.getItem())));
+				else if((goldTool = GoldToolData.determineGoldTool(stack)).isPresent()) {
+					tryConvertToGoldFromSupplier(player, hand, stack, stackItem, goldTool.get());
+				}
+				else if ((goldPet = GoldPetArmorData.determineGoldPetArmor(stack)).isPresent()) {
+					tryConvertToGoldFromSupplier(player, hand, stack, stackItem, goldPet.get());
 				}
 				else if(stackItem == Items.APPLE) {
 					if(stack.hasGlint()) {
@@ -194,12 +309,12 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 				}
 			}
 		}
-		for(GoldArmorData data : GoldArmorData.values()) {
+		for(MidasTouchEffect.GoldArmorData data : GoldArmorData.values()) {
 			EquipmentSlot slot = data.getSlot();
 			ItemStack stack = player.getEquippedStack(slot);
-			Item goldItem = data.getItem();
+			Item goldItem = data.getConvertedItem();
 			if(!stack.isEmpty() && !stack.getItem().equals(goldItem)) {
-				player.getInventory().armor.set(slot.getEntitySlotId(), makeGold(stack, goldItem));
+				player.equipStack(slot, makeGold(stack, goldItem));
 			}
 		}
 	}
@@ -244,6 +359,14 @@ public final class MidasTouchEffect extends AbstractTimedChaosEffect implements 
 			return Optional.of(GOLD_STATE);
 		}
 		return Optional.empty();
+	}
+
+	private static void tryConvertToGoldFromSupplier(PlayerEntity player, Hand hand, ItemStack stack, Item stackItem, GoldItemSupplier supplier) {
+		Item gold = supplier.getConvertedItem();
+		if(stackItem.equals(gold)) {
+			return;
+		}
+		player.setStackInHand(hand, makeGold(stack, gold));
 	}
 
 }

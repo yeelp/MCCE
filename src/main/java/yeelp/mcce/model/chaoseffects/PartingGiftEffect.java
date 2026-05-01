@@ -39,7 +39,7 @@ public final class PartingGiftEffect extends AbstractIntervalChaosEffect {
 
     @Override
     public void applyEffect(PlayerEntity player) {
-        List<LivingEntity> targets = player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), LivingEntity::isAlive);
+        List<LivingEntity> targets = player.getEntityWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), LivingEntity::isAlive);
         targets.forEach((entity) -> {
             Arrays.stream(PartingEffects.values()).map(PartingEffects::getStatusEffect).forEach(entity::removeStatusEffect);
             for(int i = this.getRNG().nextInt(1,4); i > 0; i--) {
@@ -54,6 +54,11 @@ public final class PartingGiftEffect extends AbstractIntervalChaosEffect {
     @Override
     public String getName() {
         return "partinggift";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Parting Gift";
     }
 
     @Override

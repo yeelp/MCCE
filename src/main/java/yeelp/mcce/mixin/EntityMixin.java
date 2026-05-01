@@ -28,7 +28,7 @@ public abstract class EntityMixin implements Nameable, EntityLike, CommandOutput
 		if(entity instanceof PlayerEntity) {
 			return;
 		}
-		MinecraftServer server = entity.getServer();
+		MinecraftServer server = entity.getEntityWorld().getServer();
 		if(server != null) {
 			ServerState state = ServerState.getServerState(server);
 			state.removeTimer(entity.getUuid());

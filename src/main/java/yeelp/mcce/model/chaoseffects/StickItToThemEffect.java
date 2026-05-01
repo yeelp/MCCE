@@ -1,15 +1,14 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import yeelp.mcce.util.ChaosLib;
+
+import java.util.Set;
 
 public final class StickItToThemEffect extends SimpleTimedChaosEffect {
 	private static final Set<String> NAMES = ImmutableSet.<String>builder().add("Stick it to the Man", "Stick Around for More", "Sticky", "Debug Stick", "Stick to the Plan!", "Short End of the Stick", "Stick to Your Guns!", "Stick to it!", "Stick in the Mud!", "Stick This One Out!", "Stick Together Team!", "Stick With Me", "The River Sticks", "Stick 'Em Up!", "Never Gonna Stick You Up", "Never Gonna Stick You Down", "Fantas-Stick", "Lip-Stick", "Stick Astley", "The Stickening", "Glow Stick", "Pumped Up Sticks", "Chop Sticks", "Joystick", "Hockey Stick", "Stick-er", "Popsicle Stick").build();
@@ -27,6 +26,11 @@ public final class StickItToThemEffect extends SimpleTimedChaosEffect {
 	@Override
 	public String getName() {
 		return "stickittothem";
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Stick It to Them";
 	}
 
 	@Override

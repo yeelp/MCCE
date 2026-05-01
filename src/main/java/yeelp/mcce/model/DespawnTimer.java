@@ -30,8 +30,8 @@ public final class DespawnTimer {
 	 * @param nbt NBT to load from.
 	 */
 	public DespawnTimer(NbtCompound nbt) {
-		this.timer = nbt.getInt(TIMER_KEY);
-		this.set = nbt.getBoolean(SET_KEY);
+		this.timer = nbt.getInt(TIMER_KEY).orElse(0);
+		this.set = nbt.getBoolean(SET_KEY).orElse(false);
 	}
 
 	/**

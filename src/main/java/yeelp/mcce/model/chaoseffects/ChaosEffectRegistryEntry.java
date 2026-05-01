@@ -9,6 +9,7 @@ public final class ChaosEffectRegistryEntry {
 
     private final Supplier<? extends ChaosEffect> generator;
     private final String name;
+    private final String displayName;
     private final boolean validForRepeating;
     private final ChaosEffect instance;
     private final BooleanSupplier isOptionalAndEnabled;
@@ -26,6 +27,7 @@ public final class ChaosEffectRegistryEntry {
         this.validForRepeating = validForRepeating;
         this.instance = instance;
         this.name = instance.getName();
+        this.displayName = instance.getDisplayName();
         this.isOptionalAndEnabled = this.instance instanceof OptionalEffect o ? o::enabled : () -> true;
     }
 
@@ -43,6 +45,10 @@ public final class ChaosEffectRegistryEntry {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     public boolean isValidForRepeating() {

@@ -23,6 +23,11 @@ public final class FoodChainEffect extends AbstractStatCycleEffect {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Food Chain";
+    }
+
+    @Override
     protected ChaosEffectRegistryEntry[] getMutualExclusiveEffects() {
         return new ChaosEffectRegistryEntry[] {ChaosEffects.EQUILIBRIUM};
     }

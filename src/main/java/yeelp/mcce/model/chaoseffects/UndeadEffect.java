@@ -19,8 +19,8 @@ public final class UndeadEffect extends SimpleTimedChaosEffect {
 	@SuppressWarnings("MagicNumber")
     @Override
 	public void applyEffect(PlayerEntity player) {
-		World world = player.getWorld();
-		if(world.isClient || !world.isDay() || player.isWet() || player.inPowderSnow || player.wasInPowderSnow) {
+		World world = player.getEntityWorld();
+		if(world.isClient() || !world.isDay() || player.isTouchingWaterOrRain() || player.inPowderSnow || player.wasInPowderSnow) {
 			return;
 		}
 		if(world.isSkyVisible(BlockPos.ofFloored(player.getX(), player.getEyeY(), player.getZ()))) {
@@ -52,7 +52,7 @@ public final class UndeadEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() >= player.getWorld().getSeaLevel() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
+		return player.getEntityWorld().getRegistryKey() == World.OVERWORLD && player.getY() >= player.getEntityWorld().getSeaLevel() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
 	}
 
 }

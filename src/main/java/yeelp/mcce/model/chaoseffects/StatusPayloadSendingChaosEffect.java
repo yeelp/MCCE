@@ -3,10 +3,10 @@ package yeelp.mcce.model.chaoseffects;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.event.ClientSideSyncHandler;
 import yeelp.mcce.event.PlayerTickCallback;
+import yeelp.mcce.network.NetworkingPayloads.ChaosPayload;
 import yeelp.mcce.network.NetworkingPayloads.ChaosPayload.StatusPayload;
-import yeelp.mcce.util.PlayerUtils;
 import yeelp.mcce.util.Tracker;
 
 import java.util.Map;
@@ -58,40 +58,27 @@ public abstract class StatusPayloadSendingChaosEffect<P extends StatusPayload> e
         return HANDLERS.computeIfAbsent(ChaosEffectRegistry.getEntry(this), (e) -> new PayloadValidationHandler<>(GENERATORS.get(this.getClass()), e));
     }
 
-    private record PayloadValidationHandler<P extends StatusPayload>(Function<Boolean, P> generator,
-                                                                     ChaosEffectRegistryEntry entry) implements PlayerTickCallback {
+    private static final class PayloadValidationHandler<P extends StatusPayload> extends ClientSideSyncHandler {
 
-        @Override
-        public void tick(PlayerEntity player) {
-            //If the player saves and quits while the ChaosEffect is active and then joins a different world where the ChaosEffect is inactive
-            //They will be "tracked" but will not have the effect active, so send a packet to disable the client side effects and stop tracking them.
-            if (PlayerUtils.isPlayerWorldClient(player)) {
-                return;
-            }
-            Tracker tracker;
-            boolean tracked = (tracker = this.getTracker()).tracked(player);
-            boolean active = MCCEAPI.accessor.isChaosEffectActive(player, this.entry());
-            if (tracked && !active) {
-                this.createAndSendPayload((ServerPlayerEntity) player, false);
-                tracker.remove(player);
-            }
-            if (!tracked && active) {
-                this.createAndSendPayload((ServerPlayerEntity) player, true);
-                tracker.add(player);
-            }
+        private final Function<Boolean, P> generator;
+
+        PayloadValidationHandler(Function<Boolean, P> generator, ChaosEffectRegistryEntry entry) {
+            super(entry);
+            this.generator = generator;
         }
 
         @Override
-        public int priority() {
-            return -1;
+        protected Tracker getTracker() {
+            return StatusPayloadSendingChaosEffect.getTracker(this.entry);
         }
 
-        private Tracker getTracker() {
-            return StatusPayloadSendingChaosEffect.getTracker(this.entry());
+        @Override
+        protected ChaosPayload getPayload(PlayerEntity player, boolean isBeingRemoved) {
+            return this.generator.apply(!isBeingRemoved);
         }
 
         void createAndSendPayload(ServerPlayerEntity player, boolean status) {
-            this.generator.apply(status).send(player);
+            this.getPayload(player, !status).send(player);
         }
     }
 }

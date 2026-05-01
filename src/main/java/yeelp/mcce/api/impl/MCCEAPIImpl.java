@@ -109,14 +109,14 @@ public enum MCCEAPIImpl implements MCCEAPIAccessor, MCCEAPIMutator {
         if (entity instanceof PlayerEntity) {
             return;
         }
-        ServerState state = ServerState.getServerState(Objects.requireNonNull(entity.getServer()));
+        ServerState state = ServerState.getServerState(Objects.requireNonNull(entity.getEntityWorld().getServer()));
         state.getDespawnTimer(entity.getUuid()).setTimer(duration);
         state.markDirty();
     }
 
     @Override
     public void copyDespawnTimerTo(Entity from, Entity to) {
-        MinecraftServer server = from.getServer();
+        MinecraftServer server = from.getEntityWorld().getServer();
         if(server != null) {
             ServerState state = ServerState.getServerState(server);
             if(state.hasDespawnTimer(from.getUuid())) {
@@ -130,7 +130,7 @@ public enum MCCEAPIImpl implements MCCEAPIAccessor, MCCEAPIMutator {
     }
 
     private static ServerState getServerState(PlayerEntity player) {
-        return ServerState.getServerState(Objects.requireNonNull(player.getServer()));
+        return ServerState.getServerState(Objects.requireNonNull(player.getEntityWorld().getServer()));
     }
 
     private static void alterServerState(PlayerEntity player, Consumer<ServerState> alteration) {

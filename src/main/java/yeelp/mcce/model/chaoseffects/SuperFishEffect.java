@@ -32,13 +32,18 @@ public final class SuperFishEffect extends AbstractEnchantedItemChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "SuperFish!";
+	}
+
+	@Override
 	protected Map<RegistryKey<Enchantment>, Integer> getEnchantments() {
 		return ENCHANTS;
 	}
 
 	@Override
 	protected Optional<Text> getCustomName() {
-		return Optional.of(Text.empty().formatted(Formatting.RESET).append("SuperFish!").formatted(Formatting.BLUE));
+		return Optional.of(Text.empty().formatted(Formatting.RESET).append(this.getDisplayName()).formatted(Formatting.BLUE));
 	}
 
 	@Override

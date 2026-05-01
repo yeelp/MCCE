@@ -24,6 +24,11 @@ public final class XPRandomizerEffect extends SimpleTimedChaosEffect implements 
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "XP Randomizer";
+	}
+
+	@Override
 	public boolean enabled() {
 		return ModConfig.getInstance().game.xprandomizer;
 	}

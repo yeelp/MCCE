@@ -6,6 +6,7 @@
   "mixins": [
     "BlockMixin",
     "EntityASMMixin",
+    "EntityConversionTypeMixin",
     "EntityMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
@@ -13,16 +14,22 @@
     "ServerPlayerASMMixin",
     "ServerPlayerInteractionManagerMixin",
     "ServerWorldASMMixin",
-    "ServerWorldMixin",
-    "EntityConversionTypeMixin"
+    "ServerWorldMixin"
   ],
   "client": [
+    "ClientEntityMixin",
     "ClientWorldMixin",
     "DrawContextMixin",
+    "GameRendererMixin",
+    "GLStateManagerMixin",
     "InGameHudMixin",
     "KeyboardASMMixin",
     "KeyboardMixin",
-    "ClientEntityMixin"
+    "LightmapTextureManagerMixin",
+    "MinecraftClientMixin",
+    "MixinSimpleOption",
+    "ModelMixin",
+    "MouseASMMixin"
   ],
   "injectors": {
     "defaultRequire": 1

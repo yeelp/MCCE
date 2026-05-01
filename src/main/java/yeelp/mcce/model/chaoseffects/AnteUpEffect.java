@@ -39,6 +39,11 @@ public final class AnteUpEffect extends SimpleTimedChaosEffect {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Ante Up";
+    }
+
+    @Override
     public boolean canBeFirstEffect() {
         return false;
     }

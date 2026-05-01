@@ -55,6 +55,11 @@ public final class SuddenDeathEffect extends AbstractAttributeChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Sudden Death";
+	}
+
+	@Override
 	protected List<AttributeModifierFactory> getAttributeModifierFactories() {
 		return ImmutableList.of(new AttributeModifierFactory(EntityAttributes.MAX_HEALTH, new EntityAttributeModifier(HEALTH_ID, -1, Operation.ADD_MULTIPLIED_TOTAL)) {
 			@Override

@@ -43,6 +43,16 @@ public interface ChaosEffect {
 	String getName();
 
 	/**
+	 * Get the display name of this Chaos Effect. The default implementation just capitalizes the first letter of {@link #getName()}.
+	 * Implementors should override this implementation with the correct display name when the Chaos Effect's name has more than one word.
+	 *
+	 *  @return The display name of this Chaos Effect.
+	 */
+	default String getDisplayName() {
+		return Character.toTitleCase(this.getName().charAt(0)) + this.getName().substring(1);
+	}
+
+	/**
 	 * If this Chaos Effect relies on callbacks (like those injected via mixins),
 	 * then those callbacks will be registered in this method.
 	 */

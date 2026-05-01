@@ -18,7 +18,7 @@ public interface OnBlockPlaceCallback {
     Event<OnBlockPlaceCallback> EVENT = EventFactory.createArrayBacked(OnBlockPlaceCallback.class, (listeners) -> ((world, pos, state, placer, stack) -> {
         CallbackResult result = new CallbackResult();
         Iterator<OnBlockPlaceCallback> it = Iterators.forArray(listeners);
-        for(CancelState cancel = CancelState.PASS; it.hasNext() && cancel == CancelState.PASS; cancel = (result = it.next().onBlockPlace(world, pos, state, placer, stack)).getCancelState());
+        for(CancelState cancel = CancelState.PASS; it.hasNext() && cancel == CancelState.PASS; cancel = (result = result.mergeResults(it.next().onBlockPlace(world, pos, state, placer, stack))).getCancelState());
         return result;
     }));
 

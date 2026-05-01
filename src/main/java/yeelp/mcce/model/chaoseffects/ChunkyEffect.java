@@ -1,5 +1,6 @@
 package yeelp.mcce.model.chaoseffects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -58,8 +59,8 @@ public final class ChunkyEffect extends AbstractTimedChaosEffect {
 	private static final class BlockBreakHandler implements After {
 
 		@Override
-		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-			if(world.isClient || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CHUNKY)) {
+		public void afterBlockBreak(World world, @NotNull PlayerEntity player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity) {
+			if(world.isClient() || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.CHUNKY)) {
 				return;
 			}
 			ChunkPos cPos = world.getChunk(pos).getPos();

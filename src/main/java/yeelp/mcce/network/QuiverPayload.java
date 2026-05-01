@@ -5,6 +5,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
+import yeelp.mcce.network.NetworkingPayloads.ChaosPayload;
 
 public record QuiverPayload(float pitch, float yaw) implements NetworkingPayloads.ChaosPayload {
     public static final Id<QuiverPayload> ID = new Id<>(NetworkingConstants.QUIVER_UPDATE_PACKET_ID);
@@ -16,6 +17,11 @@ public record QuiverPayload(float pitch, float yaw) implements NetworkingPayload
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, ? extends ChaosPayload> getCodec() {
+        return CODEC;
     }
 
     @Override

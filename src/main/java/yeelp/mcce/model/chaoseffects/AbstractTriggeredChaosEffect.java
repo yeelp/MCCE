@@ -26,7 +26,7 @@ public abstract class AbstractTriggeredChaosEffect extends AbstractTimedChaosEff
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
-		this.triggers = nbt.getInt(TRIGGERS_KEY);
+		this.triggers = nbt.getInt(TRIGGERS_KEY).orElse(0);
 	}
 
 	protected final int getTriggersRemaining() {

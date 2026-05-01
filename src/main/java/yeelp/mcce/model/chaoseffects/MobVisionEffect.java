@@ -4,6 +4,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.ChaosLib;
 
 public final class MobVisionEffect extends SimpleTimedChaosEffect {
@@ -17,12 +18,17 @@ public final class MobVisionEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (entity) -> entity != player).forEach((entity) -> entity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, EFFECT_DURATION)));
+		player.getEntityWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (entity) -> entity != player).forEach((entity) -> entity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, EFFECT_DURATION)));
 	}
 
 	@Override
 	public String getName() {
 		return "mobvision";
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Mob Vision";
 	}
 
 	@Override
@@ -32,7 +38,7 @@ public final class MobVisionEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return true;
+		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.PAINT);
 	}
 
 }

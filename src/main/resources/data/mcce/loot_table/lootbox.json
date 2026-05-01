@@ -373,6 +373,17 @@
               "mode": "append"
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:wooden_spear",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": 30
+            }
+          ]
         }
       ]
     }

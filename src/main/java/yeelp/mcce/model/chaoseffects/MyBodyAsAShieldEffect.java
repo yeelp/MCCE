@@ -24,6 +24,11 @@ public final class MyBodyAsAShieldEffect extends AbstractInstantChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "My Body as a Shield";
+	}
+
+	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
 		return player.getAbsorptionAmount() == 0;
 	}

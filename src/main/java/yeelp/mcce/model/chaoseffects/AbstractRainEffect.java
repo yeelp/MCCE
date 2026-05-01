@@ -13,7 +13,7 @@ public abstract class AbstractRainEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		this.getSpawnCap().attemptEntitySpawn(player.getWorld(), this.getEntityToSpawn(player));
+		this.getSpawnCap().attemptEntitySpawn(player.getEntityWorld(), this.getEntityToSpawn(player));
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public abstract class AbstractRainEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().isSkyVisible(player.getBlockPos()) && Math.random() < APPLY_CHANCE;
+		return player.getEntityWorld().isSkyVisible(player.getBlockPos()) && Math.random() < APPLY_CHANCE;
 	}
 	
 	protected abstract Entity getEntityToSpawn(PlayerEntity player);

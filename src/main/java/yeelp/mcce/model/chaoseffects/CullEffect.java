@@ -23,7 +23,7 @@ public final class CullEffect extends AbstractInstantChaosEffect {
 
     @Override
     public void applyEffect(PlayerEntity player) {
-        player.getWorld().getEntitiesByClass(Entity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (entity) -> !(entity instanceof PlayerEntity) && !(entity instanceof EnderDragonEntity)).forEach(Entity::discard);
+        player.getEntityWorld().getEntitiesByClass(Entity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (entity) -> !(entity instanceof PlayerEntity) && !(entity instanceof EnderDragonEntity)).forEach(Entity::discard);
         PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(ChaosLib.getRandomElementFrom(SOUNDS, this.getRNG()), this.getRNG().nextFloat(PITCH_MIN, PITCH_MAX), 1.0f)::send);
     }
 

@@ -1,17 +1,20 @@
 package yeelp.mcce.model.chaoseffects;
 
-import java.util.function.Predicate;
-
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import net.minecraft.world.attribute.BedRule;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import yeelp.mcce.util.Tracker;
+
+import java.util.Objects;
+import java.util.function.Predicate;
 
 public final class InsomniaEffect extends AbstractTimedChaosEffect {
 
 	private static final Tracker AFFECTED_PLAYERS = new Tracker();
-	private static final Predicate<World> IS_APPLICABLE = (w) -> w.getDimension().bedWorks() && w.isNight();
+	private static final Predicate<World> IS_APPLICABLE = (w) -> ((BedRule) Objects.requireNonNull(w.getDimension().attributes().getEntry(EnvironmentAttributes.BED_RULE_GAMEPLAY)).argument()).canSleep(w) && w.isNight();
 	private static final int DURATION_MIN = 2000, DURATION_MAX = 3000;
 
 	public InsomniaEffect() {
@@ -50,7 +53,7 @@ public final class InsomniaEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return IS_APPLICABLE.test(player.getWorld());
+		return IS_APPLICABLE.test(player.getEntityWorld());
 	}
 
 	@Override

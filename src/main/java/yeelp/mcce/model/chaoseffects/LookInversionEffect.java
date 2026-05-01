@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.network.LookInversionStatusPayload;
 import yeelp.mcce.network.NetworkingConstants.SoundPacketConstants;
+import yeelp.mcce.network.NetworkingPayloads.ChaosPayload.StatusPayload;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.PlayerUtils;
 
@@ -45,6 +46,11 @@ public final class LookInversionEffect extends ClientPlayerTrackingChaosEffect<L
     }
 
     @Override
+    public String getDisplayName() {
+        return "Look Inversion";
+    }
+
+    @Override
     public void onEffectEnd(PlayerEntity player) {
         super.onEffectEnd(player);
         if(!this.silent) {
@@ -60,7 +66,7 @@ public final class LookInversionEffect extends ClientPlayerTrackingChaosEffect<L
         return StatusPayloadSendingChaosEffect.getTracker(ChaosEffects.LOOK_INVERSION).tracked(player);
     }
 
-    public static void trackClient(PlayerEntity player, LookInversionStatusPayload payload) {
+    public static void trackClient(PlayerEntity player, StatusPayload payload) {
         ClientPlayerTrackingChaosEffect.trackClient(player, ChaosEffects.LOOK_INVERSION, payload);
     }
 

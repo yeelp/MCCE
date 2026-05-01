@@ -21,7 +21,7 @@ public abstract class AbstractIntervalTriggeredChaosEffect extends AbstractInter
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
-		this.triggers = nbt.getInt(AbstractTriggeredChaosEffect.TRIGGERS_KEY);
+		this.triggers = nbt.getInt(AbstractTriggeredChaosEffect.TRIGGERS_KEY).orElse(0);
 	}
 
 	protected final int getTriggersRemaining() {

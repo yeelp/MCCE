@@ -17,7 +17,7 @@ public final class BatBombEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 		world.getEntitiesByClass(BatEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, 5), (bat) -> true).forEach((bat) -> {
 			world.createExplosion(bat, bat.getX(), bat.getY(), bat.getZ(), this.getRNG().nextFloat(EXPLOSION_POWER_MIN, EXPLOSION_POWER_MAX), World.ExplosionSourceType.MOB);
 			bat.discard();
@@ -30,13 +30,18 @@ public final class BatBombEffect extends SimpleTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Bat Bomb";
+	}
+
+	@Override
 	protected boolean canStack() {
 		return false;
 	}
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.OVERWORLD && player.getY() < player.getWorld().getSeaLevel() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
+		return player.getEntityWorld().getRegistryKey() == World.OVERWORLD && player.getY() < player.getEntityWorld().getSeaLevel() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
 	}
 
 }

@@ -47,7 +47,7 @@ public final class RepeatingEffect extends AbstractIntervalTriggeredChaosEffect 
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
-		this.effect = nbt.getString(EFFECT_KEY);
+		this.effect = nbt.getString(EFFECT_KEY).orElse("null");
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
+import yeelp.mcce.network.NetworkingPayloads.ChaosPayload;
 
 public record ParticlePayload(byte id, float x, float y, float z, float dx, float dy, float dz) implements NetworkingPayloads.ChaosPayload {
     public static final Id<ParticlePayload> ID = new Id<>(NetworkingConstants.ParticlePacketConstants.PARTICLE_PACKET_ID);
@@ -21,6 +22,11 @@ public record ParticlePayload(byte id, float x, float y, float z, float dx, floa
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, ? extends ChaosPayload> getCodec() {
+        return CODEC;
     }
 
     @Override

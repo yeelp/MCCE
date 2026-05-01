@@ -23,13 +23,17 @@ public final class MobRainEffect extends AbstractRainEffect {
 	private static final Set<Function<World, ? extends Entity>> VALID_MOBS = Sets.newHashSet();
 	
 	static {
+		VALID_MOBS.add((world) -> new ArmadilloEntity(EntityType.ARMADILLO, world));
 		VALID_MOBS.add((world) -> new ArrowEntity(EntityType.ARROW, world));
 		VALID_MOBS.add((world) -> new AxolotlEntity(EntityType.AXOLOTL, world));
 		VALID_MOBS.add((world) -> new BoggedEntity(EntityType.BOGGED, world));
 		VALID_MOBS.add((world) -> new CamelEntity(EntityType.CAMEL, world));
+		VALID_MOBS.add((world) -> new CamelHuskEntity(EntityType.CAMEL_HUSK, world));
 		VALID_MOBS.add((world) -> new CaveSpiderEntity(EntityType.CAVE_SPIDER, world));
 		VALID_MOBS.add((world) -> new CodEntity(EntityType.COD, world));
+		VALID_MOBS.add((world) -> new CopperGolemEntity(EntityType.COPPER_GOLEM, world));
 		VALID_MOBS.add((world) -> new CowEntity(EntityType.COW, world));
+		VALID_MOBS.add((world) -> new CreakingEntity(EntityType.CREAKING, world));
 		VALID_MOBS.add((world) -> new CreeperEntity(EntityType.CREEPER, world));
 		VALID_MOBS.add((world) -> new DolphinEntity(EntityType.DOLPHIN, world));
 		VALID_MOBS.add((world) -> new DonkeyEntity(EntityType.DONKEY, world));
@@ -52,6 +56,7 @@ public final class MobRainEffect extends AbstractRainEffect {
 		VALID_MOBS.add((world) -> new MooshroomEntity(EntityType.MOOSHROOM, world));
 		VALID_MOBS.add((world) -> new MuleEntity(EntityType.MULE, world));
 		VALID_MOBS.add((world) -> new PandaEntity(EntityType.PANDA, world));
+		VALID_MOBS.add((world) -> new ParchedEntity(EntityType.PARCHED, world));
 		VALID_MOBS.add((world) -> new PigEntity(EntityType.PIG, world));
 		VALID_MOBS.add((world) -> new PiglinEntity(EntityType.PIGLIN, world));
 		VALID_MOBS.add((world) -> new PiglinBruteEntity(EntityType.PIGLIN_BRUTE, world));
@@ -104,9 +109,14 @@ public final class MobRainEffect extends AbstractRainEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Mob Rain";
+	}
+
+	@Override
 	protected Entity getEntityToSpawn(PlayerEntity player) {
-		Entity e = ChaosLib.getRandomElementFrom(VALID_MOBS, this.getRNG()).apply(player.getWorld());
-		e.setPos(player.getX() + this.getRNG().nextDouble(-RADIUS, RADIUS), player.getWorld().getTopYInclusive(), player.getZ() + this.getRNG().nextDouble(-RADIUS, RADIUS));
+		Entity e = ChaosLib.getRandomElementFrom(VALID_MOBS, this.getRNG()).apply(player.getEntityWorld());
+		e.setPos(player.getX() + this.getRNG().nextDouble(-RADIUS, RADIUS), player.getEntityWorld().getTopYInclusive(), player.getZ() + this.getRNG().nextDouble(-RADIUS, RADIUS));
 		e.setVelocity(0.0, INITIAL_Y_VELOCITY, 0.0);
 		if(e instanceof MobEntity mob) {
 			mob.setPersistent();

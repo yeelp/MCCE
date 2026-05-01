@@ -43,6 +43,11 @@ public final class NetheriteTransmutation extends SimpleTimedChaosEffect impleme
     }
 
     @Override
+    public String getDisplayName() {
+        return "Netherite Transmutation";
+    }
+
+    @Override
     public void registerCallbacks() {
         OnBlockPlaceCallback.EVENT.register(this);
     }

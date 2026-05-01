@@ -24,7 +24,7 @@ public final class EnderDriveThruEffect extends AbstractInstantChaosEffect {
 
     @Override
     public void applyEffect(PlayerEntity player) {
-        if(player.getEnderChestInventory() != null && player.getWorld() instanceof ServerWorld) {
+        if(player.getEnderChestInventory() != null && player.getEntityWorld() instanceof ServerWorld) {
             player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, inv, plyer) -> GenericContainerScreenHandler.createGeneric9x3(i, inv, plyer.getEnderChestInventory()), ChaosLib.getRandomElementFrom(NAMES, this.getRNG())));
             PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.ENDER_DRIVE_THRU_ACTIVATE, 1.0f, 1.0f)::send);
         }
@@ -33,5 +33,10 @@ public final class EnderDriveThruEffect extends AbstractInstantChaosEffect {
     @Override
     public String getName() {
         return "enderdrivethru";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Ender Drive Thru";
     }
 }

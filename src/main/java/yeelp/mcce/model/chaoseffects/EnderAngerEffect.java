@@ -1,6 +1,7 @@
 package yeelp.mcce.model.chaoseffects;
 
 import com.google.common.base.Predicates;
+import net.minecraft.entity.LazyEntityReference;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
@@ -21,17 +22,25 @@ public final class EnderAngerEffect extends SimpleTimedChaosEffect {
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return player.getWorld().getRegistryKey() == World.END;
+        return player.getEntityWorld().getRegistryKey() == World.END;
     }
 
     @Override
     public void applyEffect(PlayerEntity player) {
-        ChaosLib.forEachPos(player.getBlockPos().up(3).north().west(), player.getBlockPos().up(5).south().east(), (pos) -> ChaosLib.setToAir(player.getWorld(), pos));
-        player.getWorld().getEntitiesByClass(EndermanEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), Predicates.alwaysTrue()).forEach((enderman) -> enderman.setAngryAt(player.getUuid()));
+        ChaosLib.forEachPos(player.getBlockPos().up(2).north().west(), player.getBlockPos().up(5).south().east(), (pos) -> ChaosLib.setToAir(player.getEntityWorld(), pos));
+        player.getEntityWorld().getEntitiesByClass(EndermanEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), Predicates.alwaysTrue()).forEach((enderman) -> {
+            enderman.setAngryAt(LazyEntityReference.ofUUID(player.getUuid()));
+            enderman.setTarget(player);
+        });
     }
 
     @Override
     public String getName() {
         return "enderanger";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Ender Anger";
     }
 }

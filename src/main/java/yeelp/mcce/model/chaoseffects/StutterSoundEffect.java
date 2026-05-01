@@ -16,6 +16,11 @@ public final class StutterSoundEffect extends StatusPayloadSendingChaosEffect<St
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Stutter Sound";
+	}
+
+	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
 		//no effect logic
 	}

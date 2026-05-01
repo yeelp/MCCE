@@ -35,7 +35,7 @@ public final class SizeEmUpEffect extends AbstractIntervalChaosEffect {
 
     @Override
     public void applyEffect(PlayerEntity player) {
-        player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), SizeEmUpEffect::isValidEntity).forEach((entity) -> {
+        player.getEntityWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), SizeEmUpEffect::isValidEntity).forEach((entity) -> {
             EntityAttributeInstance instance = Objects.requireNonNull(entity.getAttributeInstance(EntityAttributes.SCALE));
             double mod = this.getRNG().nextDouble(1, SCALE_MAX);
             mod = this.getRNG().nextBoolean() ? 1/mod : mod;
@@ -49,13 +49,18 @@ public final class SizeEmUpEffect extends AbstractIntervalChaosEffect {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Size 'Em Up";
+    }
+
+    @Override
     public void registerCallbacks() {
         //no callbacks
     }
 
     @Override
     public void onEffectEnd(PlayerEntity player) {
-        player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS * 2), SizeEmUpEffect::isValidEntity).forEach((entity) -> {
+        player.getEntityWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS * 2), SizeEmUpEffect::isValidEntity).forEach((entity) -> {
             if(this.getRNG().nextBoolean() && Objects.requireNonNull(entity.getAttributeInstance(EntityAttributes.SCALE)).getValue() >= SCALE_KILL_THRESHOLD_ON_EFFECT_END) {
                 entity.discard();
             }

@@ -16,8 +16,7 @@ public final class OofEffect extends AbstractInstantChaosEffect {
 		Vec3d direction = new Vec3d(MathHelper.sin(ChaosLib.convertToRadians(player.getYaw())), 0, -MathHelper.cos(ChaosLib.convertToRadians(player.getYaw())));
 		direction = direction.multiply(this.getRNG().nextDouble(4, 9));
 		direction = direction.add(0, this.getRNG().nextDouble(Y_DIRECTION_MIN, Y_DIRECTION_MAX), 0);
-		player.addVelocityInternal(direction);
-		player.velocityModified = true;
+		PlayerUtils.addPlayerVelocity(player, direction);
 		PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(NetworkingConstants.SoundPacketConstants.KNOCKBACK_ID, 1.0f, 1.0f)::send);
 	}
 

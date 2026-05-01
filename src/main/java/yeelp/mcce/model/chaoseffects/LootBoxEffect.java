@@ -1,11 +1,13 @@
 package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.VaultBlockEntity;
 import net.minecraft.block.vault.VaultConfig;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.TypedEntityData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +17,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
+import net.minecraft.storage.NbtWriteView;
 import net.minecraft.text.Text;
+import net.minecraft.util.ErrorReporter.Logging;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.BlockPos;
 import yeelp.mcce.MCCE;
@@ -45,6 +49,11 @@ public final class LootBoxEffect extends AbstractInstantChaosEffect {
         return "lootbox";
     }
 
+    @Override
+    public String getDisplayName() {
+        return "Loot Box";
+    }
+
     private enum LootType {
         VAULT(Items.VAULT, "Loot Box") {
             @Override
@@ -52,7 +61,11 @@ public final class LootBoxEffect extends AbstractInstantChaosEffect {
                 VaultBlockEntity vault = new VaultBlockEntity(new BlockPos(0, 0, 0), Blocks.VAULT.getDefaultState());
                 VaultConfig config = new VaultConfig(LOOT_TABLE, ACTIVATION_RANGE_MIN, ACTIVATION_RANGE_MAX, KEY.createStack(wrapper), Optional.empty());
                 vault.setConfig(config);
-                vault.setStackNbt(stack, wrapper);
+                try(Logging logger = new Logging(MCCE.LOGGER)) {
+                    NbtWriteView writer = NbtWriteView.create(logger);
+                    vault.writeFullData(writer);
+                    stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, TypedEntityData.create(BlockEntityType.VAULT, writer.getNbt()));
+                }
             }
         },
         KEY(Items.TRIAL_KEY, "Loot Box Key") {

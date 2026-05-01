@@ -11,4 +11,8 @@ public final class TripleThreatEffect extends MultiChaosEffect {
 		return "triplethreat";
 	}
 
+	@Override
+	public String getDisplayName() {
+		return "Triple Threat";
+	}
 }

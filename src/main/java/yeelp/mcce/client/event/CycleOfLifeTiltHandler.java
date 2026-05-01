@@ -6,7 +6,7 @@ import yeelp.mcce.event.CallbackResult.CancelState;
 import yeelp.mcce.event.TiltScreenCallback;
 import yeelp.mcce.util.Tracker;
 
-public class CycleOfLifeTiltHandler implements TiltScreenCallback {
+public final class CycleOfLifeTiltHandler implements TiltScreenCallback {
 
     private static final Tracker TRACKED = new Tracker();
 

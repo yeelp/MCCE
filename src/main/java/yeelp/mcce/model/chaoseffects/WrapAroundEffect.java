@@ -17,7 +17,7 @@ public final class WrapAroundEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		World world = player.getWorld();
+		World world = player.getEntityWorld();
 		if(player.getY() <= world.getDimension().minY()) {
 			player.teleport(SimpleUtil.getServerWorldFromEntity(player), player.getX(), world.getTopYInclusive(), player.getZ(), EnumSet.noneOf(PositionFlag.class), player.getBodyYaw(), player.getPitch(), false);
 		}
@@ -29,13 +29,18 @@ public final class WrapAroundEffect extends SimpleTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Wrap Around";
+	}
+
+	@Override
 	protected boolean canStack() {
 		return false;
 	}
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.END && PlayerUtils.doesPlayerHaveValidPosition(player);
+		return player.getEntityWorld().getRegistryKey() == World.END && PlayerUtils.doesPlayerHaveValidPosition(player);
 	}
 
 }

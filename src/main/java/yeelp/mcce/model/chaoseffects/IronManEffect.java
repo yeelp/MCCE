@@ -36,6 +36,11 @@ public final class IronManEffect extends AbstractTriggeredChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Iron Man";
+	}
+
+	@Override
 	public void registerCallbacks() {
 		PlayerHurtCallback.EVENT.register(new OnHurtCallback());
 	}
@@ -65,8 +70,8 @@ public final class IronManEffect extends AbstractTriggeredChaosEffect {
 	private static final class OnHurtCallback implements PlayerHurtCallback {
 		@Override
 		public CallbackResult onHurt(PlayerEntity player, DamageSource source, float amount) {
-			MinecraftServer server = player.getServer();
-			if(server != null && player.isInvulnerableTo(server.getWorld(player.getWorld().getRegistryKey()), source)) {
+			MinecraftServer server = player.getEntityWorld().getServer();
+			if(server != null && player.isInvulnerableTo(server.getWorld(player.getEntityWorld().getRegistryKey()), source)) {
 				return new CallbackResult();
 			}
 			CallbackResult result = new CallbackResult();

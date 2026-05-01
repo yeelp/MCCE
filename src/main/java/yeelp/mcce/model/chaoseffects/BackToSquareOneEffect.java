@@ -15,7 +15,7 @@ public final class BackToSquareOneEffect extends AbstractInstantChaosEffect {
 	private static final double APPLY_CHANCE = 0.5;
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		BlockPos pos = player.getWorld().getSpawnPos();
+		BlockPos pos = player.getEntityWorld().getSpawnPoint().getPos();
 		player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 100, 3));
 		player.teleport(SimpleUtil.getServerWorldFromEntity(player), pos.getX(), pos.getY(), pos.getZ(), EnumSet.noneOf(PositionFlag.class), player.getBodyYaw(), player.getPitch(), false);
 	}
@@ -26,8 +26,13 @@ public final class BackToSquareOneEffect extends AbstractInstantChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Back to Square One";
+	}
+
+	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.OVERWORLD && Math.random() < APPLY_CHANCE;
+		return player.getEntityWorld().getRegistryKey() == World.OVERWORLD && Math.random() < APPLY_CHANCE;
 	}
 
 }

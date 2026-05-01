@@ -24,6 +24,11 @@ public final class CycleOfLifeEffect extends AbstractStatCycleEffect {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Cycle of Life";
+    }
+
+    @Override
     protected ChaosEffectRegistryEntry[] getMutualExclusiveEffects() {
         return new ChaosEffectRegistryEntry[] {ChaosEffects.SUDDEN_DEATH, ChaosEffects.EQUILIBRIUM};
     }

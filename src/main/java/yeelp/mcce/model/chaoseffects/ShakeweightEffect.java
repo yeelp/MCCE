@@ -39,7 +39,7 @@ public final class ShakeweightEffect extends AbstractIntervalTriggeredChaosEffec
             return true;
         }
         BlockPos pos = player.getBlockPos();
-        World world = player.getWorld();
+        World world = player.getEntityWorld();
         int i;
         for(i = 0; i++ < 3 && world.isAir(pos); pos = pos.up());
         return i >= 3;
@@ -49,16 +49,11 @@ public final class ShakeweightEffect extends AbstractIntervalTriggeredChaosEffec
     public void applyEffect(PlayerEntity player) {
         this.trigger();
         Vec3d velocity = player.getVelocity();
-        if(velocity.y > 0) {
-            player.addVelocityInternal(DOWN);
-        }
-        else {
-            player.addVelocityInternal(UP);
-        }
+        Vec3d input = velocity.y > 0 ? DOWN : UP;
         if(this.getTriggersRemaining() == 0) {
-            player.addVelocityInternal(UP);
+            input = UP;
         }
-        player.velocityModified = true;
+        PlayerUtils.addPlayerVelocity(player, input);
         PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.SHAKE, SHAKE_PITCH, 1.0f)::send);
     }
 
@@ -66,8 +61,7 @@ public final class ShakeweightEffect extends AbstractIntervalTriggeredChaosEffec
     protected void tickAdditionalEffectLogic(PlayerEntity player) {
         super.tickAdditionalEffectLogic(player);
         if(player.isOnGround() && this.getDurationUntilNextActivation() > THROW_UP_WHEN_ON_GROUND_GRACE_PERIOD) {
-            player.addVelocityInternal(UP);
-            player.velocityModified = true;
+            PlayerUtils.addPlayerVelocity(player, UP);
         }
         if(this.getTriggersRemaining() == 0) {
             this.setDuration(1);
@@ -78,8 +72,7 @@ public final class ShakeweightEffect extends AbstractIntervalTriggeredChaosEffec
     public void onEffectEnd(PlayerEntity player) {
         super.onEffectEnd(player);
         Vec3d direction = new Vec3d(MathHelper.sin(ChaosLib.convertToRadians(player.getYaw())), 0, -MathHelper.cos(ChaosLib.convertToRadians(player.getYaw()))).multiply(this.getRNG().nextDouble(THROW_STRENGTH_MIN, THROW_STRENGTH_MAX)).multiply(this.getRNG().nextBoolean() ? 1 : -1).add(0, Math.PI/2, 0);
-        player.addVelocityInternal(direction);
-        player.velocityModified = true;
+        PlayerUtils.addPlayerVelocity(player, direction);
         PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.KNOCKBACK_ID, THROW_PITCH,1.0f)::send);
     }
 

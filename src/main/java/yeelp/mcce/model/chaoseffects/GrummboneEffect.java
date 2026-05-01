@@ -20,7 +20,7 @@ public final class GrummboneEffect extends SimpleTimedChaosEffect {
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		player.getWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, EFFECT_RADIUS), (entity) -> !(entity instanceof PlayerEntity)).forEach((entity) -> {
+		player.getEntityWorld().getEntitiesByClass(LivingEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, EFFECT_RADIUS), (entity) -> !(entity instanceof PlayerEntity)).forEach((entity) -> {
 			if(NAMES.contains(entity.getName().getString())) {
 				entity.setCustomName(null);
 			}

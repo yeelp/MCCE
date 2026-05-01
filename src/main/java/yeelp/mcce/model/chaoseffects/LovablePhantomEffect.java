@@ -40,8 +40,8 @@ public final class LovablePhantomEffect extends AbstractIntervalTriggeredChaosEf
 		if(PlayerUtils.isPlayerWorldClient(player)) {
 			return;
 		}
-		ServerState state = ServerState.getServerState(Objects.requireNonNull(player.getServer()));
-		World world = player.getWorld();
+		ServerState state = ServerState.getServerState(Objects.requireNonNull(player.getEntityWorld().getServer()));
+		World world = player.getEntityWorld();
 		if(this.getTriggersRemaining() > 0 && world.getEntitiesByClass(PhantomEntity.class, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (phantom) -> state.getDespawnTimer(phantom.getUuid()).getTimeRemaining() > 0).isEmpty()) {
 			this.trigger();
 			int spawnCount = (int) Math.pow(2, this.phantoms++);
@@ -55,6 +55,11 @@ public final class LovablePhantomEffect extends AbstractIntervalTriggeredChaosEf
 	@Override
 	public String getName() {
 		return "lovablephantom";
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Lovable Phantom";
 	}
 
 	@Override
@@ -97,7 +102,7 @@ public final class LovablePhantomEffect extends AbstractIntervalTriggeredChaosEf
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
-		this.phantoms = nbt.getInt(PHANTOMS_KEY);
+		this.phantoms = nbt.getInt(PHANTOMS_KEY).orElse(0);
 	}
 
 	@Override

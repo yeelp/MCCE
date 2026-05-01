@@ -1,15 +1,17 @@
 package yeelp.mcce.event;
 
-public class CallbackResult {
+import org.jetbrains.annotations.NotNull;
+
+public class CallbackResult implements Comparable<CallbackResult> {
 
 	private final CancelState cancel;
 	private final ProcessState process;
-	public enum CancelState {
+	public enum CancelState implements Comparable<CancelState> {
 		CANCEL,
 		PASS
     }
 	
-	public enum ProcessState {
+	public enum ProcessState implements Comparable<ProcessState> {
 		CANCEL,
 		PASS
     }
@@ -37,5 +39,15 @@ public class CallbackResult {
 	
 	public ProcessState getProcessState() {
 		return this.process;
+	}
+
+	@Override
+	public int compareTo(@NotNull CallbackResult o) {
+		int processCompare = this.getProcessState().compareTo(o.getProcessState());
+		return processCompare == 0 ? this.getCancelState().compareTo(o.getCancelState()) : processCompare;
+	}
+
+	public CallbackResult mergeResults(CallbackResult other) {
+		return new CallbackResult(this.getProcessState() == ProcessState.PASS ? other.getProcessState() : this.getProcessState(), this.getCancelState() == CancelState.PASS ? other.getCancelState() : this.getCancelState());
 	}
 }

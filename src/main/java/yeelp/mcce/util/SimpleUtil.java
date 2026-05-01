@@ -15,6 +15,6 @@ public abstract class SimpleUtil {
     }
 
     public static ServerWorld getServerWorldFromEntity(Entity entity) {
-        return Objects.requireNonNull(entity.getServer()).getWorld(entity.getWorld().getRegistryKey());
+        return Objects.requireNonNull(entity.getEntityWorld().getServer()).getWorld(entity.getEntityWorld().getRegistryKey());
     }
 }

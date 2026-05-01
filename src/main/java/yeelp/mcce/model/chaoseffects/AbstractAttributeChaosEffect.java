@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import yeelp.mcce.api.MCCEAPI;
 
 import java.util.List;
@@ -83,11 +84,18 @@ public abstract class AbstractAttributeChaosEffect extends AbstractTimedChaosEff
 		}
 
 		@Override
-		public void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+		public void copyFromPlayer(@NotNull ServerPlayerEntity oldPlayer, @NotNull ServerPlayerEntity newPlayer, boolean alive) {
 			MCCEAPI.accessor.getChaosEffect(oldPlayer, this.clazz).ifPresent((ce) -> {
 				AttributeContainer oldContainer = oldPlayer.getAttributes();
 				AttributeContainer newContainer = newPlayer.getAttributes();
-				((AbstractAttributeChaosEffect) ce).getFactories().forEach((factory) -> Objects.requireNonNull(newContainer.getCustomInstance(factory.getAttribute())).setFrom(oldContainer.getCustomInstance(factory.getAttribute())));
+				((AbstractAttributeChaosEffect) ce).getFactories().forEach((factory) -> {
+					EntityAttributeInstance newInstance = Objects.requireNonNull(newContainer.getCustomInstance(factory.getAttribute()));
+					EntityAttributeInstance oldInstance = Objects.requireNonNull(oldContainer.getCustomInstance(factory.getAttribute()));
+					EntityAttributeModifier mod = Objects.requireNonNull(oldInstance).getModifier(factory.getID());
+					if(mod != null) {
+						newInstance.addPersistentModifier(mod);
+					}
+				});
 			});
 
 		}

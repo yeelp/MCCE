@@ -16,7 +16,7 @@ public final class GlintEffect extends AbstractInstantChaosEffect {
 				stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 			}
 		});
-		ItemStack mainHand = player.getInventory().getMainHandStack();
+		ItemStack mainHand = player.getInventory().getSelectedStack();
 		if(!mainHand.isEmpty()) {
 			mainHand.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 		}

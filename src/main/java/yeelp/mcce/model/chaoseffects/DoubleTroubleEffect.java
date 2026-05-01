@@ -11,4 +11,8 @@ public final class DoubleTroubleEffect extends MultiChaosEffect {
 		return "doubletrouble";
 	}
 
+	@Override
+	public String getDisplayName() {
+		return "Double Trouble";
+	}
 }

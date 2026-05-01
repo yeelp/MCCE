@@ -2,6 +2,7 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
 import yeelp.mcce.api.MCCEAPI;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 
@@ -21,6 +22,11 @@ public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Press L to Levitate";
+	}
+
+	@Override
 	public void registerCallbacks() {
 		//no callbacks
 	}
@@ -28,6 +34,8 @@ public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
 		player.setNoGravity(false);
+		//reset floating timing so player doesn't get kicked for flying too long on non flying servers.
+		PlayerUtils.getServerPlayer(player).ifPresent((p) -> p.networkHandler.resetFloatingTicks());
 	}
 
 	@Override
@@ -37,7 +45,7 @@ public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SMACK_DOWN);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.SMACK_DOWN, ChaosEffects.RAVE);
 	}
 
 	@Override

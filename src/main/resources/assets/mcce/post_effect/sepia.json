@@ -1,0 +1,37 @@
+{
+  "targets": {
+    "swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/color_convolve",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "minecraft:main"
+        }
+      ],
+      "output": "minecraft:main",
+      "uniforms": {
+        "ColorConfig": [
+          {
+            "name": "RedMatrix",
+            "type": "vec3",
+            "value": [ 0.13, 0.26, 0.05 ]
+          },
+          {
+            "name": "GreenMatrix",
+            "type": "vec3",
+            "value": [ 0.07, 0.15, 0.03 ]
+          },
+          {
+            "name": "BlueMatrix",
+            "type": "vec3",
+            "value": [ 0.02, 0.05, 0.0 ]
+          }
+        ]
+      }
+    }
+  ]
+}

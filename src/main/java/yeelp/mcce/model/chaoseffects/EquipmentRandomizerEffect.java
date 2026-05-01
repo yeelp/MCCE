@@ -25,6 +25,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
@@ -32,6 +33,7 @@ import yeelp.mcce.MCCE;
 import yeelp.mcce.util.AttributeUtils;
 import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.PlayerUtils;
+import yeelp.mcce.util.SimpleUtil;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -96,7 +98,8 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 				Items.CHAINMAIL_HELMET, 
 				Items.IRON_HELMET, 
 				Items.DIAMOND_HELMET, 
-				Items.NETHERITE_HELMET, 
+				Items.NETHERITE_HELMET,
+                Items.COPPER_HELMET,
 				Items.BEACON, 
 				Items.DRAGON_HEAD) {
 			//@formatter:on
@@ -122,7 +125,8 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 				Items.CHAINMAIL_CHESTPLATE, 
 				Items.IRON_CHESTPLATE, 
 				Items.DIAMOND_CHESTPLATE, 
-				Items.NETHERITE_CHESTPLATE) {
+				Items.NETHERITE_CHESTPLATE,
+                Items.COPPER_CHESTPLATE) {
 			//@formatter:on
             @Override
             protected void applyModifications(World world, ItemStack stack, Random rand) {
@@ -140,7 +144,8 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 				Items.CHAINMAIL_LEGGINGS, 
 				Items.IRON_LEGGINGS, 
 				Items.DIAMOND_LEGGINGS, 
-				Items.NETHERITE_LEGGINGS) {
+				Items.NETHERITE_LEGGINGS,
+                Items.COPPER_LEGGINGS) {
 			//@formatter:on
             @Override
             protected void applyModifications(World world, ItemStack stack, Random rand) {
@@ -158,7 +163,8 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 				Items.CHAINMAIL_BOOTS, 
 				Items.IRON_BOOTS, 
 				Items.DIAMOND_BOOTS, 
-				Items.NETHERITE_BOOTS) {
+				Items.NETHERITE_BOOTS,
+                Items.COPPER_BOOTS) {
 			//@formatter:on
             @Override
             protected void applyModifications(World world, ItemStack stack, Random rand) {
@@ -214,31 +220,43 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 				Items.WOODEN_PICKAXE,
 				Items.WOODEN_SHOVEL,
 				Items.WOODEN_SWORD,
+                Items.WOODEN_SPEAR,
 				Items.STONE_AXE,
 				Items.STONE_HOE,
 				Items.STONE_PICKAXE,
 				Items.STONE_SHOVEL,
 				Items.STONE_SWORD,
+                Items.STONE_SPEAR,
 				Items.GOLDEN_AXE,
 				Items.GOLDEN_HOE,
 				Items.GOLDEN_PICKAXE,
 				Items.GOLDEN_SHOVEL,
 				Items.GOLDEN_SWORD,
+                Items.GOLDEN_SPEAR,
 				Items.IRON_AXE,
 				Items.IRON_HOE,
 				Items.IRON_PICKAXE,
 				Items.IRON_SHOVEL,
 				Items.IRON_SWORD,
+                Items.IRON_SPEAR,
 				Items.DIAMOND_AXE,
 				Items.DIAMOND_HOE,
 				Items.DIAMOND_PICKAXE,
 				Items.DIAMOND_SHOVEL,
 				Items.DIAMOND_SWORD,
+                Items.DIAMOND_SPEAR,
 				Items.NETHERITE_AXE,
 				Items.NETHERITE_HOE,
 				Items.NETHERITE_PICKAXE,
 				Items.NETHERITE_SHOVEL,
 				Items.NETHERITE_SWORD,
+                Items.NETHERITE_SPEAR,
+                Items.COPPER_AXE,
+                Items.COPPER_HOE,
+                Items.COPPER_PICKAXE,
+                Items.COPPER_SHOVEL,
+                Items.COPPER_SWORD,
+                Items.COPPER_SPEAR,
 				Items.BOW,
 				Items.TRIDENT,
 				Items.TOTEM_OF_UNDYING,
@@ -289,7 +307,7 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 
         @SuppressWarnings("MagicNumber")
         private static void dyeArmor(ItemStack stack, Random rand) {
-            stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(Math.abs(rand.nextInt()) & 0x00FFFFFF, true));
+            stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(Math.abs(rand.nextInt()) & 0x00FFFFFF));
         }
 
         private static void applyTrims(World world, ItemStack stack, Random rand) {
@@ -330,7 +348,7 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
 
     @Override
     public void applyEffect(PlayerEntity player) {
-        World world = player.getWorld();
+        ServerWorld world = SimpleUtil.getServerWorldFromEntity(player);
         LocalDifficulty local = world.getLocalDifficulty(player.getBlockPos());
         TARGETS.forEach((clazz) -> world.getEntitiesByClass(clazz, ChaosLib.getBoxCenteredOnPlayerWithRadius(player, RADIUS), (entity) -> true).forEach((mob) -> {
             for (SlotItems slot : SlotItems.values()) {
@@ -346,6 +364,11 @@ public final class EquipmentRandomizerEffect extends AbstractIntervalChaosEffect
     @Override
     public String getName() {
         return "equipmentrandomizer";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Equipment Randomizer";
     }
 
     @Override

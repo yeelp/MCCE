@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.util.PlayerUtils;
 
@@ -53,11 +54,11 @@ public final class CrumbleEffect extends AbstractTimedChaosEffect {
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
 		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.MIDAS_TOUCH, ChaosEffects.COLUMN_LIKE_YOU_SEE_EM, ChaosEffects.CHUNKY, ChaosEffects.UNBREAKABLE);
 	}
-	
+
 	private static final class OnBlockAttack implements AttackBlockCallback {
 
 		@Override
-		public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
+		public @NotNull ActionResult interact(@NotNull PlayerEntity player, @NotNull World world, @NotNull Hand hand, @NotNull BlockPos pos, @NotNull Direction direction) {
 			if(isEffectActiveAndContextApplicable(player)) {
 				BlockState state = world.getBlockState(pos);
 				boolean drop = true;

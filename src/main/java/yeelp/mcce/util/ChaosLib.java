@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 public final class ChaosLib {
 
     private static final Random RNG = new Random();
+    private static final int COLOUR_MASK = 0x00FFFFFF;
 
     private ChaosLib() {
         throw new UnsupportedOperationException("Class not to be instantiated!");
@@ -207,6 +208,10 @@ public final class ChaosLib {
      */
     public static Random getStaticRandomInstance() {
         return RNG;
+    }
+
+    public static int getRandomColour() {
+        return Math.abs(getStaticRandomInstance().nextInt()) & COLOUR_MASK;
     }
 
     @SuppressWarnings("MagicNumber")

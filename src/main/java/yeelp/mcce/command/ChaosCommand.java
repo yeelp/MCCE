@@ -1,7 +1,5 @@
 package yeelp.mcce.command;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.google.common.collect.Iterators;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -12,8 +10,9 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.permission.Permission;
+import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -23,6 +22,8 @@ import yeelp.mcce.model.chaoseffects.ChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistryEntry;
 
+import java.util.concurrent.CompletableFuture;
+
 public final class ChaosCommand {
 
 	private static final EffectSuggestionProvider EFFECT_SUGGESTIONS = new EffectSuggestionProvider();
@@ -30,7 +31,7 @@ public final class ChaosCommand {
 	private static final RequiredArgumentBuilder<ServerCommandSource, String> EFFECT_ARG_NODE = CommandManager.argument(EFFECT_ARG_NAME, StringArgumentType.word()).suggests(EFFECT_SUGGESTIONS);
 
 	public static void register() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, env) -> dispatcher.register(CommandManager.literal("chaos").requires((ctx) -> ctx.hasPermissionLevel(4))
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, env) -> dispatcher.register(CommandManager.literal("chaos").requires((ctx) -> ctx.getPermissions().hasPermission(new Permission.Level(PermissionLevel.ADMINS)))
 				.then(CommandManager.literal("apply")
 						.then(EFFECT_ARG_NODE
 								.executes((ctx) -> applyEffect(ctx.getSource(), getEffectArg(ctx))))

@@ -9,13 +9,14 @@ import net.minecraft.entity.passive.CodEntity;
 import net.minecraft.entity.passive.SalmonEntity;
 import net.minecraft.entity.passive.TropicalFishEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import yeelp.mcce.event.EntityTickCallback;
 import yeelp.mcce.util.ChaosLib;
 import yeelp.mcce.util.MCCESpawnCap;
 import yeelp.mcce.util.PlayerUtils;
+import yeelp.mcce.util.SimpleUtil;
 
 import java.util.Set;
 import java.util.UUID;
@@ -40,11 +41,11 @@ public final class FishLauncherEffect extends AbstractIntervalChaosEffect implem
 
 	@Override
 	public void applyEffect(PlayerEntity player) {
-		World world = player.getWorld();
+		ServerWorld world = SimpleUtil.getServerWorldFromEntity(player);
 		LivingEntity entity = ChaosLib.getRandomElementFrom(FISH_CHOICES, this.getRNG()).apply(world);
 		entity.refreshPositionAndAngles(player.getX(), player.getY() + Math.E, player.getZ(), 0.0f, 0.0f);
 		if(entity instanceof TropicalFishEntity && PlayerUtils.isPlayerWorldServer(player)) {
-			((TropicalFishEntity) entity).initialize((ServerWorldAccess) world, world.getLocalDifficulty(entity.getBlockPos()), SpawnReason.MOB_SUMMONED, null);
+			((TropicalFishEntity) entity).initialize(world, world.getLocalDifficulty(entity.getBlockPos()), SpawnReason.MOB_SUMMONED, null);
 		}
 		entity.setVelocity(this.getRNG().nextDouble(-VELOCITY_MAX, VELOCITY_MAX), this.getRNG().nextDouble(VERTICAL_VELOCITY_MIN, VELOCITY_MAX), this.getRNG().nextDouble(-VELOCITY_MAX, VELOCITY_MAX));
 		FISHES.add(entity.getUuid());
@@ -54,6 +55,11 @@ public final class FishLauncherEffect extends AbstractIntervalChaosEffect implem
 	@Override
 	public String getName() {
 		return "fishlauncher";
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Fish Launcher";
 	}
 
 	@Override

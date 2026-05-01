@@ -26,10 +26,10 @@ public abstract class AbstractIntervalChaosEffect extends AbstractLastingChaosEf
 
 	@Override
 	public void readNbt(NbtCompound nbt) {
-		this.setDuration(nbt.getInt(DURATION_KEY));
-		this.interval = nbt.getInt(INTERVAL_KEY);
-		this.intervalMin = nbt.getInt(INTERVAL_MIN_KEY);
-		this.intervalMax = nbt.getInt(INTERVAL_MAX_KEY);
+		this.setDuration(nbt.getInt(DURATION_KEY).orElse(0));
+		this.interval = nbt.getInt(INTERVAL_KEY).orElse(0);
+		this.intervalMin = nbt.getInt(INTERVAL_MIN_KEY).orElse(0);
+		this.intervalMax = nbt.getInt(INTERVAL_MAX_KEY).orElse(1);
 	}
 
 	@Override

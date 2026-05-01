@@ -1,10 +1,12 @@
 package yeelp.mcce.model.chaoseffects;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerChunkManager;
@@ -82,14 +84,14 @@ public final class BuilderEffect extends AbstractInstantChaosEffect {
 
     @Override
     protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-        return player.isOnGround() && !player.getWorld().getDimension().hasCeiling() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
+        return player.isOnGround() && !player.getEntityWorld().getDimension().hasCeiling() && !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SUDDEN_DEATH);
     }
 
     @Override
     public void applyEffect(PlayerEntity player) {
         PlayerUtils.getServerPlayer(player).ifPresent((p) -> {
             BlockPos pos = player.getBlockPos();
-            ServerWorld world = p.getServerWorld();
+            ServerWorld world = p.getEntityWorld();
             ServerChunkManager chunkManager = world.getChunkManager();
             ChunkGenerator generator = chunkManager.getChunkGenerator();
             DynamicRegistryManager registryManager = player.getRegistryManager();
@@ -103,7 +105,9 @@ public final class BuilderEffect extends AbstractInstantChaosEffect {
                     key = entry.getKey();
                     rand -= entry.getValue();
                 } while(it.hasNext() && rand > 0);
-                StructureStart start = Objects.requireNonNull(registryManager.getOrThrow(RegistryKeys.STRUCTURE).get(key)).createStructureStart(registryManager, generator, generator.getBiomeSource(), chunkManager.getNoiseConfig(), world.getStructureTemplateManager(), this.getRNG().nextLong(), new ChunkPos(pos), 0, world, (biome) -> true);
+                Registry<Structure> reg = Objects.requireNonNull(registryManager.getOrThrow(RegistryKeys.STRUCTURE));
+                Structure struct = Objects.requireNonNull(reg.get(key));
+                StructureStart start = struct.createStructureStart(reg.getEntry(struct), world.getRegistryKey(), registryManager, generator, generator.getBiomeSource(), chunkManager.getNoiseConfig(), world.getStructureTemplateManager(), this.getRNG().nextLong(), new ChunkPos(pos), 1, world, Predicates.alwaysTrue());
                 if(!start.hasChildren()) {
                     this.generateFeature(pos, generator, world);
                 }

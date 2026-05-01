@@ -4,6 +4,7 @@ import net.minecraft.entity.damage.DamageEffects;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.CallbackResult;
 import yeelp.mcce.event.CallbackResult.CancelState;
@@ -12,6 +13,8 @@ import yeelp.mcce.event.PlayerHurtCallback;
 import yeelp.mcce.network.NetworkingConstants;
 import yeelp.mcce.network.SoundPayload;
 import yeelp.mcce.util.PlayerUtils;
+
+import java.util.Objects;
 
 public final class LavishLavaEffect extends AbstractTimedChaosEffect {
 
@@ -35,13 +38,18 @@ public final class LavishLavaEffect extends AbstractTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Lavish Lava";
+	}
+
+	@Override
 	protected boolean canStack() {
 		return true;
 	}
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return player.getWorld().getRegistryKey() == World.NETHER;
+		return player.getEntityWorld().getRegistryKey() == World.NETHER;
 	}
 
 	@Override
@@ -58,7 +66,7 @@ public final class LavishLavaEffect extends AbstractTimedChaosEffect {
 
 	@Override
 	protected void tickAdditionalEffectLogic(PlayerEntity player) {
-		if(!player.getWorld().getDimension().respawnAnchorWorks()) {
+		if(!((Boolean) Objects.requireNonNull(player.getEntityWorld().getDimension().attributes().getEntry(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS_GAMEPLAY)).argument())) {
 			this.setDuration(1);
 			return;
 		}

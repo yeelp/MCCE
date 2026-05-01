@@ -41,8 +41,7 @@ public final class PingPongEffect extends AbstractIntervalTriggeredChaosEffect {
             direction = direction.multiply(-1);
         }
         direction = direction.multiply(this.getRNG().nextDouble(STRENGTH_MIN, STRENGTH_MAX)).add(0, dy <= Y_DIRECTION_MIN ? this.getRNG().nextDouble(Y_DIRECTION_MIN, Y_DIRECTION_MAX) : 0, 0);
-        player.addVelocityInternal(direction);
-        player.velocityModified = true;
+        PlayerUtils.addPlayerVelocity(player, direction);
         PlayerUtils.getServerPlayer(player).ifPresent(new SoundPayload(SoundPacketConstants.BOOP, this.shouldKnockBackwards ? PITCH_PONG : PITCH_PING, 1.0f)::send);
         this.shouldKnockBackwards = !this.shouldKnockBackwards;
     }
@@ -65,12 +64,17 @@ public final class PingPongEffect extends AbstractIntervalTriggeredChaosEffect {
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        this.shouldKnockBackwards = nbt.getBoolean(BACKWARDS_KEY);
+        this.shouldKnockBackwards = nbt.getBoolean(BACKWARDS_KEY).orElse(true);
     }
 
     @Override
     public String getName() {
         return "pingpong";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Ping Pong";
     }
 
     @Override

@@ -1,5 +1,6 @@
 package yeelp.mcce.model.chaoseffects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -30,6 +31,11 @@ public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Column Like You See 'Em";
+	}
+
+	@Override
 	public void registerCallbacks() {
 		PlayerBlockBreakEvents.AFTER.register(new BlockBreakHandler());
 	}
@@ -57,8 +63,8 @@ public final class ColumnLikeYouSeeEmEffect extends AbstractTimedChaosEffect {
 	private static final class BlockBreakHandler implements After {
 
 		@Override
-		public void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-			if(world.isClient || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.COLUMN_LIKE_YOU_SEE_EM)) {
+		public void afterBlockBreak(World world, @NotNull PlayerEntity player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity) {
+			if(world.isClient() || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.COLUMN_LIKE_YOU_SEE_EM)) {
 				return;
 			}
 			BlockPos colPos = new BlockPos(pos.getX(), world.getDimension().minY(), pos.getZ());

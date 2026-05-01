@@ -37,6 +37,11 @@ public final class InteractionInteractorEffect extends AbstractAttributeChaosEff
         return "interactioninteractor";
     }
 
+    @Override
+    public String getDisplayName() {
+        return "Interaction Interactor";
+    }
+
     private static final class InteractionAttributeModifierFactory extends AttributeModifierFactory {
 
         private int t = 0;

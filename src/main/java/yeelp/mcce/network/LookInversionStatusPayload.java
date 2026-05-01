@@ -10,7 +10,7 @@ import yeelp.mcce.network.NetworkingPayloads.ChaosPayload.StatusPayload;
 
 public record LookInversionStatusPayload(boolean status) implements StatusPayload {
     public static final Id<LookInversionStatusPayload> ID = new Id<>(NetworkingConstants.LOOK_INVERSION_STATUS_PACKET_ID);
-    public static final PacketCodec<RegistryByteBuf, LookInversionStatusPayload> CODEC = PacketCodec.tuple(PacketCodecs.BOOL, LookInversionStatusPayload::status, LookInversionStatusPayload::new);
+    public static final PacketCodec<RegistryByteBuf, LookInversionStatusPayload> CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN, LookInversionStatusPayload::status, LookInversionStatusPayload::new);
 
     @Override
     public void onSendCallback(ChaosPayload payload, ServerPlayerEntity player) {
@@ -20,5 +20,10 @@ public record LookInversionStatusPayload(boolean status) implements StatusPayloa
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, ? extends ChaosPayload> getCodec() {
+        return CODEC;
     }
 }

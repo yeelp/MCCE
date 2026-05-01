@@ -46,4 +46,9 @@ public final class CookieCutterEffect extends AbstractEnchantedItemChaosEffect {
     public String getName() {
         return "cookiecutter";
     }
+
+    @Override
+    public String getDisplayName() {
+        return "Cookie Cutter";
+    }
 }

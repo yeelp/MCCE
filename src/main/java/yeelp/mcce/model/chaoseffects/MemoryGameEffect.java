@@ -17,8 +17,13 @@ public final class MemoryGameEffect extends StatusPayloadSendingChaosEffect<Memo
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Memory Game";
+	}
+
+	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.RAINBOW, ChaosEffects.SIMON_SAYS);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.RAINBOW, ChaosEffects.SIMON_SAYS, ChaosEffects.SPIN_TO_WIN, ChaosEffects.GRAYSCALE, ChaosEffects.ICONIC, ChaosEffects.SCATTER);
 	}
 
 	@Override

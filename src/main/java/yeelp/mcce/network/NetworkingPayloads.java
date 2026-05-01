@@ -2,6 +2,8 @@ package yeelp.mcce.network;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -14,6 +16,8 @@ public interface NetworkingPayloads {
         }
 
         void onSendCallback(ChaosPayload payload, ServerPlayerEntity player);
+
+        PacketCodec<RegistryByteBuf, ? extends ChaosPayload> getCodec();
 
         interface StatusPayload extends ChaosPayload {
             boolean status();
@@ -31,5 +35,26 @@ public interface NetworkingPayloads {
         PayloadTypeRegistry.playS2C().register(LookInversionStatusPayload.ID, LookInversionStatusPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(ClippyStatusPayload.ID, ClippyStatusPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(InverseStatusPayload.ID, InverseStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(PaintStatusPayload.ID, PaintStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(RotateStatusPayload.ID, RotateStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(AroundTheWorldStatusPayload.ID, AroundTheWorldStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(SpinToWinStatusPayload.ID, SpinToWinStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(GrayscaleStatusPayload.ID, GrayscaleStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(MosaicStatusPayload.ID, MosaicStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ColourInversionStatusPayload.ID, ColourInversionStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(BakeStatusPayload.ID, BakeStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(SepiaStatusPayload.ID, SepiaStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ClickyPayload.ID, ClickyPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(HotbarRoulettePayload.ID, HotbarRoulettePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(PushyPayload.ID, PushyPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ScatterStatusPayload.ID, ScatterStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(IconicPayload.ID, IconicPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(PolitePayload.ID, PolitePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(FlippingOutStatusPayload.ID, FlippingOutStatusPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(GammegaStatusPayload.ID, GammegaStatusPayload.CODEC);
+
+        PayloadTypeRegistry.playS2C().register(EntityInitialUpdatePacket.ID, EntityInitialUpdatePacket.CODEC);
+
+        PayloadTypeRegistry.playC2S().register(PolitePayload.ID, PolitePayload.CODEC);
     }
 }

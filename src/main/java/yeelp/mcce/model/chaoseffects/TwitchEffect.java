@@ -2,6 +2,7 @@ package yeelp.mcce.model.chaoseffects;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import yeelp.mcce.util.PlayerUtils;
 
 public final class TwitchEffect extends AbstractInstantChaosEffect {
 
@@ -14,8 +15,7 @@ public final class TwitchEffect extends AbstractInstantChaosEffect {
 		direction = direction.multiply(magnitude);
 		direction = direction.rotateY(this.getRNG().nextFloat((float) (2*Math.PI)));
 		direction = direction.add(0, this.getRNG().nextDouble(Y_STRENGTH_MIN, Y_STRENGTH_MAX), 0);
-		player.addVelocityInternal(direction);
-		player.velocityModified = true;
+		PlayerUtils.addPlayerVelocity(player, direction);
 	}
 
 	@Override

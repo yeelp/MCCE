@@ -14,7 +14,7 @@ public interface TiltScreenCallback {
     Event<TiltScreenCallback> EVENT = EventFactory.createArrayBacked(TiltScreenCallback.class, (listeners) -> (player, deltaX, deltaY) -> {
         CallbackResult result = new CallbackResult();
         Iterator<TiltScreenCallback> it = Iterators.forArray(listeners);
-        for(CancelState state = CancelState.PASS; it.hasNext() && state == CancelState.PASS; state = (result = it.next().shouldAllowTilt(player, deltaX, deltaY)).getCancelState());
+        for(CancelState state = CancelState.PASS; it.hasNext() && state == CancelState.PASS; state = (result = result.mergeResults(it.next().shouldAllowTilt(player, deltaX, deltaY))).getCancelState());
         return result;
     });
 

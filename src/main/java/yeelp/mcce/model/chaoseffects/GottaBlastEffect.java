@@ -27,6 +27,11 @@ public final class GottaBlastEffect extends AbstractAttributeChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Gotta Blast";
+	}
+
+	@Override
 	protected List<AttributeModifierFactory> getAttributeModifierFactories() {
 		return ImmutableList.of(new AttributeModifierFactory(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(MODIFIER_NAME, 0, Operation.ADD_VALUE)) {
 			
@@ -44,7 +49,7 @@ public final class GottaBlastEffect extends AbstractAttributeChaosEffect {
 
 	@Override
 	protected boolean isApplicableIgnoringStackability(PlayerEntity player) {
-		return !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.SLUGGISH);
+		return MCCEAPI.accessor.areChaosEffectsNotActive(player, ChaosEffects.SLUGGISH, ChaosEffects.PUSHY);
 	}
 
 }

@@ -6,16 +6,19 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.event.CallbackResult.CancelState;
 import yeelp.mcce.event.TiltScreenCallback;
 import yeelp.mcce.model.chaoseffects.ChaosEffects;
+import yeelp.mcce.model.chaoseffects.PushyEffect;
 import yeelp.mcce.model.chaoseffects.SimonSaysEffect;
 import yeelp.mcce.model.chaoseffects.SluggishEffect;
 
@@ -52,5 +55,14 @@ public abstract class LivingEntityMixin extends Entity implements Attackable {
 		if (entity instanceof PlayerEntity player && TiltScreenCallback.EVENT.invoker().shouldAllowTilt(player, deltaX, deltaY).getCancelState() == CancelState.CANCEL) {
 			info.cancel();
 		}
+	}
+
+	@ModifyVariable(method = "travel", at = @At("HEAD"), ordinal = 0, argsOnly = true)
+	private Vec3d onTravel(Vec3d input) {
+		LivingEntity entity = (LivingEntity) (Object) this;
+		if(entity instanceof PlayerEntity player) {
+            return PushyEffect.getDirection(player).map(input::add).orElse(input);
+		}
+		return input;
 	}
 }

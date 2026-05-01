@@ -46,6 +46,11 @@ public final class IOUEffect extends AbstractTimedChaosEffect {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "IOU";
+	}
+
+	@Override
 	public void registerCallbacks() {
 		ModifyBlockDrops.EVENT.register(new BlockDropChanger());
 	}
@@ -91,7 +96,7 @@ public final class IOUEffect extends AbstractTimedChaosEffect {
 		
 		@Override
 		public boolean changeBlockDrops(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
-			if(world.isClient || !(player instanceof ServerPlayerEntity) || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.IOU)) {
+			if(world.isClient() || !(player instanceof ServerPlayerEntity) || !MCCEAPI.accessor.isChaosEffectActive(player, ChaosEffects.IOU)) {
 				return false;
 			}
 			if(NETHER_ORES.contains(state.getBlock()) || OVERWORLD_ORES.stream().anyMatch(state::isIn)) {

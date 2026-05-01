@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 public enum MCCESpawnCap {
     MOB(LivingEntity.class, ModConfig.getInstance().performance.spawnCaps::getLocalMobCap),
     ITEM(ItemEntity.class, ModConfig.getInstance().performance.spawnCaps::getLocalItemCap),
-    FALLING_BLOCK(FallingBlockEntity.class, ModConfig.getInstance().performance.spawnCaps::getLocalFallingBlackCap);
+    FALLING_BLOCK(FallingBlockEntity.class, ModConfig.getInstance().performance.spawnCaps::getLocalFallingBlockCap);
 
     private final IntSupplier cap;
     private final Class<? extends Entity> clazz;
