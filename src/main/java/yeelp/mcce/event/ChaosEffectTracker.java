@@ -8,6 +8,7 @@ import yeelp.mcce.api.MCCEAPI;
 import yeelp.mcce.model.chaoseffects.ChaosEffect;
 import yeelp.mcce.model.chaoseffects.ChaosEffectRegistry;
 import yeelp.mcce.model.chaoseffects.ChaosEffects;
+import yeelp.mcce.util.PlayerUtils;
 
 import java.util.Map;
 import java.util.Optional;
@@ -46,7 +47,7 @@ public final class ChaosEffectTracker implements PlayerTickCallback {
 
 	@Override
 	public void tick(PlayerEntity player) {
-		if(player.getEntityWorld().isClient() || player.isDead() || player.isSpectator()) {
+		if(player.getEntityWorld().isClient() || player.isDead() || player.isSpectator() || PlayerUtils.getServerPlayer(player).filter((p) -> p.notInAnyWorld).isPresent()) {
 			return;
 		}
 		MCCEAPI.mutator.modifyEffectState(player, (pces) -> {
