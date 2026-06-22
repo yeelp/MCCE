@@ -43,7 +43,11 @@ public final class ChaosCommand {
 						.then(EFFECT_ARG_NODE
 								.executes((ctx) -> removeEffect(ctx.getSource(), getEffectArg(ctx))))
 						.executes((ctx) -> removeEffect(ctx.getSource(), null)))
-				));
+				.then(CommandManager.literal("applicable")
+						.then(EFFECT_ARG_NODE
+								.executes((ctx) -> applicable(ctx.getSource(), getEffectArg(ctx))))
+						.executes((ctx) -> applicable(ctx.getSource(), null)))
+		));
 	}
 
 	@SuppressWarnings("SameReturnValue")
@@ -52,6 +56,22 @@ public final class ChaosCommand {
 		MCCEAPI.mutator.addNewChaosEffect(src.getPlayer(), ce);
 		src.sendFeedback(() -> Text.literal("Success!"), false);
 		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int applicable(ServerCommandSource src, String effect) throws CommandSyntaxException {
+		StringBuilder result;
+		boolean applicable;
+		if(effect == null) {
+			applicable = true;
+			result = ChaosEffectRegistry.getAllEffects().filter((entry) -> entry.isApplicable(src.getPlayer())).map(ChaosEffectRegistryEntry::getName).reduce(new StringBuilder(), (sb, s2) -> sb.append(", ").append(s2), StringBuilder::append);
+			result.delete(0, 2);
+		}
+        else {
+			applicable = getChaosEffectEntryOrThrow(effect).isApplicable(src.getPlayer());
+            result = new StringBuilder(applicable ? "Yes!": "No");
+        }
+        src.sendFeedback(() -> Text.literal(result.toString()), false);
+		return applicable ? Command.SINGLE_SUCCESS : 0;
 	}
 
 	private static int checkEffect(ServerCommandSource src, String effect) throws CommandSyntaxException {
