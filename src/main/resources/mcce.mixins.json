@@ -13,6 +13,7 @@
     "PlayerMixin",
     "ServerPlayerASMMixin",
     "ServerPlayerInteractionManagerMixin",
+    "ServerPlayerMixin",
     "ServerWorldASMMixin",
     "ServerWorldMixin"
   ],
