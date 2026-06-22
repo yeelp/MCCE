@@ -2,6 +2,8 @@ package yeelp.mcce.model.chaoseffects;
 
 import com.google.common.collect.Lists;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.component.type.ItemEnchantmentsComponent.Builder;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +51,8 @@ public final class EnchantmentEffect extends AbstractInstantChaosEffect {
 	public void applyEffect(PlayerEntity player) {
 		ItemStack mainHand = player.getInventory().getSelectedStack();
 		if(mainHand.hasEnchantments()) {
-			mainHand.remove(DataComponentTypes.ENCHANTMENTS);
+			Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
+			mainHand.set(DataComponentTypes.ENCHANTMENTS, builder.build());
 		}
 		int times = this.getRNG().nextInt(5);
 		Collections.shuffle(ENCHANTS, this.getRNG());
