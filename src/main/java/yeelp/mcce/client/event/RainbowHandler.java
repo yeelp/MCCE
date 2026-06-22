@@ -49,7 +49,7 @@ public final class RainbowHandler implements ChangeSpriteColourCallback, PlayerT
 	@Override
 	@SuppressWarnings("MagicNumber")
 	public void tick(PlayerEntity player) {
-		if(RainbowEffect.isAffected(player)) {
+		if(RainbowEffect.isClientTracked(player)) {
 			HUE_SHIFT.merge(player.getUuid(), 0.2f, (old, curr) -> (old + curr) % 360);
 		}
 	}
