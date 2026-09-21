@@ -18,9 +18,7 @@ public class StatusUpdatePacketReceiver implements ClientPacketReceiver<StatusPa
 
     @Override
     public void handlePayload(StatusPayload statusPayload, Context context) {
-        context.client().execute(() -> {
-            this.trackingAction.accept(context.player(), statusPayload);
-        });
+        context.client().execute(() -> this.trackingAction.accept(context.player(), statusPayload));
     }
 
     @Override

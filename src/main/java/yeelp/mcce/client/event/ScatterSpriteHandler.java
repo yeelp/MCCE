@@ -10,7 +10,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import yeelp.mcce.MCCE;
 import yeelp.mcce.client.event.ClientRenderCallbacks.OnSpriteDrawCallback;
 import yeelp.mcce.event.CallbackResult;
 import yeelp.mcce.model.chaoseffects.ScatterEffect;
@@ -192,9 +191,6 @@ public final class ScatterSpriteHandler implements OnSpriteDrawCallback {
                 int left = context.getScaledWindowWidth() / 2 + 91;
                 int bubbleNo = ((left - 9 - xPos) / 8) + 1;
                 inc = Math.max(1, bubbleNo - this.bubbleCount);
-                if(inc != 1) {
-                    MCCE.LOGGER.info(""+inc);
-                }
                 this.bubbleCount = bubbleNo;
             }
             if(!type.hasSeparateContainers() || isContainer) {

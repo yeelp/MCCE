@@ -28,9 +28,7 @@ public final class MCCE implements ModInitializer {
 		Callbacks.registerCallbacks();
 		ChaosCommand.register();
 		NetworkingPayloads.initialize();
-		ServerPlayNetworking.registerGlobalReceiver(PolitePayload.ID, (payload, context) -> {
-			context.server().execute(() -> MCCEAPI.mutator.addNewChaosEffect(context.player(), ChaosEffectRegistry.getEffect(payload.effect())));
-		});
+		ServerPlayNetworking.registerGlobalReceiver(PolitePayload.ID, (payload, context) -> context.server().execute(() -> MCCEAPI.mutator.addNewChaosEffect(context.player(), ChaosEffectRegistry.getEffect(payload.effect()))));
 	}
 
 	public static Identifier createIdentifier(String name) {

@@ -27,7 +27,7 @@ public final class BakeEffect extends ShaderChaosEffect<BakeStatusPayload> {
 
     @Override
     protected ResetEffectHandler getHandler() {
-        return new GlintedTickHandler();
+        return new BakeTickHandler();
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class BakeEffect extends ShaderChaosEffect<BakeStatusPayload> {
         ClientPlayerTrackingChaosEffect.trackClient(player, ChaosEffects.BAKE, payload);
     }
 
-    private static final class GlintedTickHandler extends ResetEffectHandler {
+    private static final class BakeTickHandler extends ResetEffectHandler {
 
         @Override
         protected ChaosEffectRegistryEntry getRegistryEntry() {

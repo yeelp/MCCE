@@ -34,7 +34,7 @@ public final class PressLToLevitateEffect extends AbstractTimedChaosEffect {
 	@Override
 	public void onEffectEnd(PlayerEntity player) {
 		player.setNoGravity(false);
-		//reset floating timing so player doesn't get kicked for flying too long on non flying servers.
+		//reset floating timing so player doesn't get kicked for flying too long on non-flying servers.
 		PlayerUtils.getServerPlayer(player).ifPresent((p) -> p.networkHandler.resetFloatingTicks());
 	}
 

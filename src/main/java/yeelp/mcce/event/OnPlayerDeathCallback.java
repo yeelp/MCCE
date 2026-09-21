@@ -8,9 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 public interface OnPlayerDeathCallback {
 
-    Event<OnPlayerDeathCallback> EVENT = EventFactory.createArrayBacked(OnPlayerDeathCallback.class, (listeners) -> (player, damageSource) -> {
-        Iterators.forArray(listeners).forEachRemaining((callback) -> callback.onDeath(player, damageSource));
-    });
+    Event<OnPlayerDeathCallback> EVENT = EventFactory.createArrayBacked(OnPlayerDeathCallback.class, (listeners) -> (player, damageSource) -> Iterators.forArray(listeners).forEachRemaining((callback) -> callback.onDeath(player, damageSource)));
 
     void onDeath(ServerPlayerEntity player, DamageSource source);
 }
