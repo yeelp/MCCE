@@ -35,7 +35,7 @@ public final class QuiverEffect extends SimpleTimedChaosEffect implements Option
 
 	@Override
 	public boolean enabled() {
-		return ModConfig.getInstance().game.quiver;
+		return ModConfig.getInstance().game.isQuiverEnabled();
 	}
 
 }

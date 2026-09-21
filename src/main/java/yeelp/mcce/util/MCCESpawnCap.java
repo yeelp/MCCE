@@ -24,7 +24,7 @@ public enum MCCESpawnCap {
     }
 
     public <E extends Entity> void attemptEntitySpawn(World world, E entity) {
-        if(this.clazz.isInstance(entity) && ModConfig.getInstance().performance.enableEntityCaps && world.getEntitiesByClass(this.clazz, ChaosLib.getBoxCenteredOnPosWithRadius(entity.getBlockPos(), ModConfig.getInstance().performance.spawnCaps.getRadius), Predicate.not(PlayerEntity.class::isInstance)).size() > this.cap.getAsInt()) {
+        if(this.clazz.isInstance(entity) && ModConfig.getInstance().performance.areSpawnCapsEnabled() && world.getEntitiesByClass(this.clazz, ChaosLib.getBoxCenteredOnPosWithRadius(entity.getBlockPos(), ModConfig.getInstance().performance.spawnCaps.getLocalCapRadius()), Predicate.not(PlayerEntity.class::isInstance)).size() > this.cap.getAsInt()) {
             return;
         }
         world.spawnEntity(entity);

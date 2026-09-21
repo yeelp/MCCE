@@ -30,7 +30,7 @@ public final class XPRandomizerEffect extends SimpleTimedChaosEffect implements 
 
 	@Override
 	public boolean enabled() {
-		return ModConfig.getInstance().game.xprandomizer;
+		return ModConfig.getInstance().game.isXPRandomizerEnabled();
 	}
 
 	@Override

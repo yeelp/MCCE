@@ -12,6 +12,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@SuppressWarnings("CanBeFinal")
 public final class ModConfig {
 
 	private static ModConfig instance;
@@ -20,23 +21,40 @@ public final class ModConfig {
 	
 	public final GameEffectsOptions game = new GameEffectsOptions();
 	public final PerformanceOptions performance = new PerformanceOptions();
-	
-	public static class GameEffectsOptions {
-		public final boolean quiver = true;
-		public final boolean blockrain = true;
-		public final boolean xprandomizer = true;
-		public final boolean paint = false;
+
+    public static class GameEffectsOptions {
+		boolean quiver = true;
+		boolean blockrain = true;
+		boolean xprandomizer = true;
+		boolean paint = false;
+
+		public boolean isQuiverEnabled() {
+			return this.quiver;
+		}
+
+		public boolean isBlockRainEnabled() {
+			return this.blockrain;
+		}
+
+		public boolean isXPRandomizerEnabled() {
+			return this.xprandomizer;
+		}
+
+		public boolean isPaintEnabled() {
+			return this.paint;
+		}
 	}
 
 	public static class PerformanceOptions {
-		public final boolean enableMassEntityDeletionWhenLagDetected = true;
-		public final boolean enableEntityCaps = true;
+		boolean enableMassEntityDeletionWhenLagDetected = true;
+		boolean enableEntityCaps = true;
 		public final SpawnCaps spawnCaps = new SpawnCaps();
+		@SuppressWarnings("MagicNumber")
 		public static class SpawnCaps {
-			public final int localMobCap = 600;
-			public final int localItemCap = 1000;
-			public final int localFallingBlockCap = 600;
-			public final int getRadius = 100;
+			int localMobCap = 600;
+			int localItemCap = 1000;
+			int localFallingBlockCap = 600;
+			int getRadius = 100;
 
 			public int getLocalMobCap() {
 				return this.localMobCap;
@@ -49,6 +67,18 @@ public final class ModConfig {
 			public int getLocalFallingBlockCap() {
 				return this.localFallingBlockCap;
 			}
+
+			public int getLocalCapRadius() {
+				return this.getRadius;
+			}
+		}
+
+		public boolean shouldDoMassEntityDeletionWhenLagDetected() {
+			return this.enableMassEntityDeletionWhenLagDetected;
+		}
+
+		public boolean areSpawnCapsEnabled() {
+			return this.enableEntityCaps;
 		}
 	}
 	

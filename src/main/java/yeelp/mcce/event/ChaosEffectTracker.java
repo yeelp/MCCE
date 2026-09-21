@@ -98,7 +98,7 @@ public final class ChaosEffectTracker implements PlayerTickCallback {
 	}
 
 	private static Optional<LagTimer> getLagTimer(UUID uuid) {
-		if(!ModConfig.getInstance().performance.enableMassEntityDeletionWhenLagDetected) {
+		if(!ModConfig.getInstance().performance.shouldDoMassEntityDeletionWhenLagDetected()) {
 			return Optional.empty();
 		}
 		if(!LAST_CALL_TIME.containsKey(uuid)) {

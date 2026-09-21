@@ -51,7 +51,7 @@ public final class PaintEffect extends ClientPlayerTrackingChaosEffect<PaintStat
 
     @Override
     public boolean enabled() {
-        return ModConfig.getInstance().game.paint;
+        return ModConfig.getInstance().game.isPaintEnabled();
     }
 
     private static final class PaintTickHandler extends ResetEffectHandler {

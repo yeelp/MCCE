@@ -50,7 +50,7 @@ public final class BlockRainEffect extends AbstractRainEffect implements Optiona
 
 	@Override
 	public boolean enabled() {
-		return ModConfig.getInstance().game.blockrain;
+		return ModConfig.getInstance().game.isBlockRainEnabled();
 	}
 
 }
